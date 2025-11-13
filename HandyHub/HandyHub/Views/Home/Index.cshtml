@@ -1,8 +1,100 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "HandyHub - الخدمات المنزلية";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Hero Section -->
+<section class="bg-primary text-white text-center py-5 shadow-sm">
+    <div class="container py-4">
+        <h1 class="fw-bold mb-3">مرحباً بك في منصة <span class="text-warning">HandyHub</span></h1>
+        <p class="lead mb-4">أفضل منصة للعثور على العمال الموثوقين في مدينتك بسهولة وسرعة ⚡</p>
+
+        <a href="@Url.Action("SearchWorkers", "Client")" class="btn btn-warning btn-lg text-dark fw-bold me-2">
+            <i class="fas fa-search me-2"></i> ابحث الآن
+        </a>
+        <a href="@Url.Action("Register", "Account")" class="btn btn-outline-light btn-lg fw-bold">
+            <i class="fas fa-user-plus me-2"></i> انضم كعامل
+        </a>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-5">خدماتنا المتوفرة 🔧</h2>
+
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 rounded-4 p-4">
+                    <i class="fas fa-bolt fa-3x text-warning mb-3"></i>
+                    <h5 class="fw-bold mb-2">كهربائي</h5>
+                    <p class="text-muted small">تصليح وتمديد الكهرباء والتوصيلات والأجهزة.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 rounded-4 p-4">
+                    <i class="fas fa-faucet-drip fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold mb-2">سباك</h5>
+                    <p class="text-muted small">إصلاح السباكة والتركيبات وصيانة الأنابيب.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 rounded-4 p-4">
+                    <i class="fas fa-hammer fa-3x text-secondary mb-3"></i>
+                    <h5 class="fw-bold mb-2">نجّار</h5>
+                    <p class="text-muted small">تصميم وصيانة الأثاث والأبواب والأخشاب.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 rounded-4 p-4">
+                    <i class="fas fa-paint-roller fa-3x text-success mb-3"></i>
+                    <h5 class="fw-bold mb-2">دهّان</h5>
+                    <p class="text-muted small">دهانات وتشطيبات داخلية وخارجية احترافية.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-5">كيف تعمل HandyHub ❓</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+                    <h5>التسجيل</h5>
+                    <p class="text-muted small">أنشئ حساب جديد كعميل أو كعامل بسهولة.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="fas fa-search fa-3x text-success mb-3"></i>
+                    <h5>ابحث واختر</h5>
+                    <p class="text-muted small">ابحث عن العامل المناسب حسب مدينتك أو نوع الخدمة.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="fas fa-handshake fa-3x text-warning mb-3"></i>
+                    <h5>تواصل وتنفيذ الخدمة</h5>
+                    <p class="text-muted small">تواصل مباشرة وابدأ تنفيذ الخدمة بأمان ومصداقية.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white text-center">
+    <div class="container py-4">
+        <h2 class="fw-bold mb-3">جاهز تبدأ معنا؟ 🔥</h2>
+        <p class="lead mb-4">سجّل الآن كعميل أو كعامل وابدأ في استخدام HandyHub اليوم!</p>
+        <a href="@Url.Action("Register", "Account")" class="btn btn-warning btn-lg text-dark fw-bold">
+            <i class="fas fa-user-plus me-2"></i> سجّل الآن
+        </a>
+    </div>
+</section>

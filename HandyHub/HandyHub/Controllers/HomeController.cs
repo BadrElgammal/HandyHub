@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using HandyHub.Models;
 using Microsoft.AspNetCore.Mvc;
+using HandyHub.Models;
 
 namespace HandyHub.Controllers
 {
