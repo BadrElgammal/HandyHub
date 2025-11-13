@@ -1,0 +1,39 @@
+﻿@model HandyHub.Models.Entities.Client
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "تفاصيل العميل";
+}
+
+<div class="container py-5" dir="rtl">
+    <div class="card shadow border-0 rounded-4 p-4 bg-white">
+        <h3 class="fw-bold mb-4 text-primary text-center">تفاصيل العميل</h3>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <strong>الاسم:</strong>
+                    <p class="mb-0">@Model.Name</p>
+                </div>
+                <div class="mb-3">
+                    <strong>البريد الإلكتروني:</strong>
+                    <p class="mb-0">@Model.Email</p>
+                </div>
+                <div class="mb-3">
+                    <strong>رقم الهاتف:</strong>
+                    <p class="mb-0">@Model.Phone</p>
+                </div>
+                <div class="mb-3">
+                    <strong>المدينة:</strong>
+                    <p class="mb-0">@Model.City</p>
+                </div>
+                <div class="mb-3">
+                    <strong>تاريخ التسجيل:</strong>
+                    <p class="mb-0">@Model.CreatedAt.ToShortDateString()</p>
+                </div>
+            </div>
+        </div>
+
+        <a asp-action="ManageClients" class="btn btn-secondary mt-3">رجوع</a>
+
+    </div>
+</div>

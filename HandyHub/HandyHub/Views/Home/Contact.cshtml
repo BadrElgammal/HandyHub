@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "تواصل معنا";
+}
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="fw-bold mb-4"><i class="fas fa-envelope text-primary me-2"></i> تواصل معنا</h2>
+
+        <div class="row">
+            <div class="col-md-6">
+                <form class="p-4 bg-light rounded-4 shadow-sm">
+                    <div class="mb-3">
+                        <label class="form-label">الاسم</label>
+                        <input type="text" class="form-control rounded-3" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input type="email" class="form-control rounded-3" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">الرسالة</label>
+                        <textarea rows="4" class="form-control rounded-3" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg fw-bold rounded-3">
+                        <i class="fas fa-paper-plane me-2"></i> إرسال
+                    </button>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <div class="p-4 bg-white shadow-sm rounded-4">
+                    <h5 class="fw-bold mb-3">معلومات التواصل</h5>
+                    <p><i class="fas fa-map-marker-alt text-danger me-2"></i> الرياض - المملكة العربية السعودية</p>
+                    <p><i class="fas fa-phone text-success me-2"></i> +966 50 123 4567</p>
+                    <p><i class="fas fa-envelope text-primary me-2"></i> support@handyhub.sa</p>
+
+                    <div class="mt-4">
+                        <a href="#" class="text-decoration-none text-primary me-3"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="#" class="text-decoration-none text-primary me-3"><i class="fab fa-twitter fa-2x"></i></a>
+                        <a href="#" class="text-decoration-none text-primary"><i class="fab fa-instagram fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

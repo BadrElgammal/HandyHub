@@ -1,0 +1,111 @@
+﻿@using HandyHub.Models.ViewModels
+@model AdminReportViewModel
+@{
+    Layout = "_AdminLayout";  // أو "_AdminSidebarLayout" لو عندك
+    ViewData["Title"] = "التقارير";
+}
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="fw-bold mb-5">
+            <i class="fas fa-chart-line text-success me-2"></i> التقارير والإحصاءات
+        </h2>
+
+        <!-- بطاقات الإحصاءات -->
+        <div class="row g-4 mb-5 text-center">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 bg-primary text-white">
+                    <div class="card-body">
+                        <h4 class="fw-bold">@Model.TotalClients</h4>
+                        <p class="text-white-50 mb-0">العملاء</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 bg-success text-white">
+                    <div class="card-body">
+                        <h4 class="fw-bold">@Model.TotalWorkers</h4>
+                        <p class="text-white-50 mb-0">العمال</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 bg-warning text-white">
+                    <div class="card-body">
+                        <h4 class="fw-bold">@Model.TotalReviews</h4>
+                        <p class="text-white-50 mb-0">التقييمات</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 bg-info text-white">
+                    <div class="card-body">
+                        <h4 class="fw-bold">@Model.AverageRating.ToString("F1") ⭐</h4>
+                        <p class="text-white-50 mb-0">متوسط التقييم</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- أفضل ٥ عمال -->
+        <div class="card border-0 shadow rounded-4">
+            <div class="card-header bg-success text-white fw-bold">
+                <i class="fas fa-trophy me-2"></i> أفضل ٥ عمال تقييماً
+            </div>
+            <div class="card-body p-0">
+                @if (Model.TopWorkers != null && Model.TopWorkers.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0 align-middle text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>الفئة</th>
+                                    <th>عدد التقييمات</th>
+                                    <th>متوسط التقييم</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var w in Model.TopWorkers)
+                                {
+                                    var avg = (w.Reviews != null && w.Reviews.Any()) ? w.Reviews.Average(r => r.Rating) : 0;
+                                    <tr>
+                                        <td class="fw-semibold">@w.Name</td>
+                                        <td>
+                                            @foreach (var c in Model.Categories)
+                                            {
+                                                if (c.Id == w.CategoryId)
+                                                {@c.Name}
+                                            }
+                                            </td>
+                                        <td>
+                                            
+                                            @(w.Reviews?.Count ?? 0)</td>
+                                        <td>
+                                            <span class="badge bg-warning text-dark">
+                                                @avg.ToString("F1") ⭐
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-4 text-center text-muted">
+                        لا توجد بيانات متاحة حالياً.
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- زر الطباعة -->
+        <div class="text-end mt-4">
+            <button class="btn btn-outline-secondary" onclick="window.print()">
+                <i class="fas fa-print"></i> طباعة التقرير
+            </button>
+        </div>
+    </div>
+</section>

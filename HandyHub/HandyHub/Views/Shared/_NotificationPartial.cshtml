@@ -1,0 +1,27 @@
+﻿@{
+    var success = TempData["Success"];
+    var error = TempData["Error"];
+    var info = TempData["Info"];
+}
+
+@if (success != null)
+{
+    <div class="alert alert-success alert-dismissible fade show text-center m-3 shadow-sm" role="alert">
+        <i class="fas fa-check-circle me-1"></i> @success
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show text-center m-3 shadow-sm" role="alert">
+        <i class="fas fa-times-circle me-1"></i> @error
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (info != null)
+{
+    <div class="alert alert-info alert-dismissible fade show text-center m-3 shadow-sm" role="alert">
+        <i class="fas fa-info-circle me-1"></i> @info
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}

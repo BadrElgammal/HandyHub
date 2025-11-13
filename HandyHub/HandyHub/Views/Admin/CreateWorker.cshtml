@@ -1,0 +1,82 @@
+﻿@model HandyHub.Models.ViewModels.WorkerWithCatigoryViewModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "إضافة عامل جديد";
+}
+@if (ViewBag.errorMessage != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.errorMessage
+    </div>
+}
+@if (TempData["msg"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["msg"]
+    </div>
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="container py-5">
+    <h3 class="fw-bold mb-4 text-success">إضافة عامل جديد</h3>
+
+    <form asp-action="CreateWorker" method="post" class="bg-white p-4 shadow rounded-3">
+        <div class="mb-3">
+            <label class="form-label">الاسم</label>
+            <input asp-for="Worker.Name" class="form-control" />
+            <span asp-validation-for="Worker.Name" class="text-danger"></span>
+
+        </div>
+        <div class="mb-3">
+            <label class="form-label">البريد الإلكتروني</label>
+            <input asp-for="Worker.Email" class="form-control" />
+            <span asp-validation-for="Worker.Email" class="text-danger"></span>
+
+
+        </div>
+        <div class="mb-3">
+            <label class="form-label">رقم الهاتف</label>
+            <input asp-for="Worker.Phone" class="form-control" />
+            <span asp-validation-for="Worker.Phone" class="text-danger"></span>
+
+        </div>
+        <div class="mb-3">
+            <label class="form-label">المدينة</label>
+            <input asp-for="Worker.City" class="form-control" />
+            <span asp-validation-for="Worker.City" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">المنطقه</label>
+            <input asp-for="Worker.Area" class="form-control" />
+            <span asp-validation-for="Worker.City" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">نبزه عنك</label>
+            <input asp-for="Worker.Bio" class="form-control" />
+            <span asp-validation-for="Worker.City" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <select class="form-select" asp-for="Worker.CategoryId">
+                @foreach (var item in Model.Categorys)
+                {
+                    if (item.Id == Model.Worker.CategoryId)
+                    {
+                        <option selected value="@item.Id">@item.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">كلمة المرورو</label>
+            <input asp-for="Worker.PasswordHash" class="form-control" />
+            <span asp-validation-for="Worker.PasswordHash" class="text-danger"></span>
+
+        </div>
+        <button type="submit" class="btn btn-success">حفظ</button>
+        <a asp-action="ManageWorkers" class="btn btn-secondary">رجوع</a>
+    </form>
+</div>
