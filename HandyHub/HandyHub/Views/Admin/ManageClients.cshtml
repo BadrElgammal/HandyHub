@@ -2,64 +2,91 @@
 @model IEnumerable<Client>
 
 @{
-    Layout = "_AdminLayout"; // لو بتستخدم الـ Sidebar Layout
+    Layout = "_AdminLayout";
     ViewData["Title"] = "إدارة العملاء";
 }
+
 @if (ViewBag.errorMessage != null)
 {
     <div class="alert alert-danger">
         @ViewBag.errorMessage
     </div>
 }
+
 @if (TempData["msg"] != null)
 {
     <div class="alert alert-success">
         @TempData["msg"]
     </div>
 }
+
 <section class="py-5 bg-light">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold"><i class="fas fa-users text-primary me-2"></i> إدارة العملاء</h2>
+            <h2 class="fw-bold">
+                <i class="fas fa-users text-primary me-2"></i> إدارة العملاء
+            </h2>
             <a asp-action="CreateClient" class="btn btn-primary rounded-3">
                 <i class="fas fa-plus-circle"></i> إضافة عميل جديد
             </a>
         </div>
 
-        <div class="card shadow border-0 rounded-4">
-            <table class="table table-hover mb-0">
+        <div class="card shadow border-0 rounded-4 overflow-hidden">
+            <table class="table table-hover mb-0 text-center align-middle">
                 <thead class="bg-primary text-white">
                     <tr>
                         <th>الاسم</th>
-                        <th>البريد</th>
+                        <th>البريد الإلكتروني</th>
                         <th>المدينة</th>
-                        <th>التاريخ</th>
+                        <th>تاريخ التسجيل</th>
                         <th>إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var user in Model)
+                    @if (!Model.Any())
                     {
                         <tr>
-                            <td>@user.Name</td>
-                            <td>@user.Email</td>
-                            <td>@user.City</td>
-                            <td>@user.CreatedAt.ToShortDateString()</td>
-                            <td>
-                                <a asp-action="ClientDetails" asp-route-id="@user.Id" class="btn btn-sm btn-info text-white rounded-3 me-1">
-                                    <i class="fas fa-info-circle"></i>
-                                </a>
-                                <a asp-action="EditClient" asp-route-id="@user.Id" class="btn btn-sm btn-warning text-white rounded-3 me-1">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form asp-action="DeleteClient" method="post" style="display:inline-block;">
-                                    <input type="hidden" name="id" value="@user.Id" />
-                                    <button class="btn btn-sm btn-danger rounded-3">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
+                            <td colspan="5" class="text-muted py-4">لا يوجد عملاء حالياً</td>
                         </tr>
+                    }
+                    else
+                    {
+                        @foreach (var client in Model)
+                        {
+                            <tr>
+                                <td>@client.User?.Name</td>
+                                <td>@client.User?.Email</td>
+                                <td>@client.User?.City</td>
+                                <td>@client.CreatedAt.ToShortDateString()</td>
+                                <td>
+                                    <a asp-action="ClientDetails"
+                                       asp-route-id="@client.Id"
+                                       class="btn btn-sm btn-info text-white rounded-3 me-1"
+                                       title="تفاصيل العميل">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+
+                                    <a asp-action="EditClient"
+                                       asp-route-id="@client.Id"
+                                       class="btn btn-sm btn-warning text-white rounded-3 me-1"
+                                       title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <form asp-action="DeleteClient"
+                                          method="post"
+                                          onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');"
+                                          style="display:inline-block;">
+                                        <input type="hidden" name="id" value="@client.Id" />
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger rounded-3"
+                                                title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

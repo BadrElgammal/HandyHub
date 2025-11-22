@@ -37,8 +37,16 @@ namespace HandyHub.Controllers
                 TotalCategories = catigoryService.GetAll().Count(),
                 TotalReviews = ReviewService.GetAll().Count(),
                 AverageRating = ReviewService.GetAll().Any() ? Math.Round(ReviewService.GetAll().Average(r => r.Rating), 2) : 0,
-                RecentWorkers = workerService.GetAll(),
-                RecentClients = clientService.GetAll()
+                RecentClients = _context.Clients
+                    .Include(c => c.User)
+                    .OrderByDescending(c => c.CreatedAt)
+                    .Take(5)
+                    .ToList(),
+                RecentWorkers = _context.Workers
+                    .Include(w => w.User)
+                    .OrderByDescending(w => w.CreatedAt)
+                    .Take(5)
+                    .ToList(),
             };
 
             return View(model);
@@ -47,7 +55,7 @@ namespace HandyHub.Controllers
         // =============================== Manage Users ===============================
         public IActionResult ManageClients ()
         {
-            var clients = clientService.GetAll();
+            var clients = clientService.GetAllWithUser();
             return View(clients);
         }
 
@@ -60,7 +68,7 @@ namespace HandyHub.Controllers
         [HttpPost]
         public IActionResult CreateClient ( Client model )
         {
-            var exist = clientService.IsEmailExist(model.Email);
+            var exist = clientService.IsEmailExist(model.User.Email);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
@@ -69,8 +77,7 @@ namespace HandyHub.Controllers
             {
                 return View(model);
             }
-            model.CreatedAt = DateTime.Now;
-            clientService.Insert(model);
+            clientService.CreateClientWithUser(model);
             TempData["msg"] = "created successfully";
             return RedirectToAction("ManageClients");
 
@@ -80,7 +87,7 @@ namespace HandyHub.Controllers
 
         public IActionResult ClientDetails ( int id )
         {
-            var client = clientService.GetById(id);
+            var client = clientService.GetClientWithUserById(id);
             if (client == null)
                 return NotFound();
             return View(client);
@@ -93,7 +100,7 @@ namespace HandyHub.Controllers
         {
             if (id == null)
                 return BadRequest();
-            var client = clientService.GetById(id);
+            var client = clientService.GetClientWithUserById(id);
             if (client == null)
                 return NotFound();
             return View(client);
@@ -102,7 +109,7 @@ namespace HandyHub.Controllers
         [HttpPost]
         public IActionResult EditClient ( Client model )
         {
-            var exist = clientService.IsEmailExist(model.Email, model.Id);
+            var exist = clientService.IsEmailExist(model.User.Email);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
@@ -111,7 +118,7 @@ namespace HandyHub.Controllers
             {
                 return View(model);
             }
-            clientService.Update(model);
+            clientService.UpdateClientWithUser(model);
             TempData["msg"] = "Update successfully";
             return RedirectToAction("ManageClients");
         }
@@ -123,19 +130,15 @@ namespace HandyHub.Controllers
         [HttpPost]
         public IActionResult DeleteClient ( int id )
         {
-            var user = clientService.GetById(id);
-            if (user != null)
-            {
-                clientService.Delete(id);
-                TempData["msg"] = "تم حذف المستخدم بنجاح.";
-            }
+            clientService.DeleteClientWithUser(id);
+            TempData["msg"] = "تم حذف المستخدم بنجاح.";
             return RedirectToAction("ManageClients");
         }
 
         // =============================== Manage Workers ===============================
         public IActionResult ManageWorkers ()
         {
-            var workers = _context.Workers.Include(w => w.Category).ToList();
+            var workers = workerService.GetAllWithUser();
             return View(workers);
         }
 
@@ -147,43 +150,45 @@ namespace HandyHub.Controllers
                 return NotFound();
 
             if (workerService.SuspendWorker(worker))
-                TempData["msg"] = $"تم اتاحة العامل {worker.Name}.";
+                TempData["msg"] = $"تم اتاحة العامل {worker.User.Name}.";
             else
-                TempData["msg"] = $"تم إيقاف العامل {worker.Name} مؤقتاً.";
+                TempData["msg"] = $"تم إيقاف العامل {worker.User.Name} مؤقتاً.";
             return RedirectToAction("ManageWorkers");
         }
 
         [HttpPost]
         public IActionResult DeleteWorker ( int id )
         {
-            var worker = workerService.GetById(id);
-            if (worker != null)
-            {
-                workerService.Delete(id);
-                TempData["msg"] = "تم حذف العامل بنجاح.";
-            }
+            workerService.DeleteWorkerWithUser(id);
+            TempData["msg"] = "تم حذف العامل بنجاح.";
             return RedirectToAction("ManageWorkers");
         }
 
         [HttpGet]
         public IActionResult CreateWorker ()
         {
-            return View(GetWorkerCreateViewModel());
+            var vm = new WorkerWithCatigoryViewModel
+            {
+                Worker = new Worker(),
+                Categorys = catigoryService.GetAll()
+            };
+            return View(vm);
         }
         [HttpPost]
         public IActionResult CreateWorker ( WorkerWithCatigoryViewModel vm )
         {
-            var exists = workerService.IsEmailExist(vm.Worker.Email);
+            var exists = workerService.IsEmailExist(vm.Worker.User.Email);
             if (exists)
             {
                 ModelState.AddModelError("", "email already exists");
             }
             if (ModelState.IsValid == false)
             {
-                return View(GetWorkerCreateViewModel(vm.Worker));
+                vm.Categorys = catigoryService.GetAll();
+                return View(vm);
             }
 
-            workerService.Insert(vm.Worker);
+            workerService.CreateWorkerWithUser(vm.Worker);
             TempData["msg"] = "created successfully";
             return RedirectToAction("ManageWorkers");
         }
@@ -192,7 +197,7 @@ namespace HandyHub.Controllers
         {
             if (id == null)
                 return BadRequest();
-            var worker = GetByIdWithCatigory(id.Value);
+            var worker = workerService.GetWorkerWithUserById(id.Value);
             if (worker == null)
                 return NotFound();
             return View(worker);
@@ -204,17 +209,21 @@ namespace HandyHub.Controllers
         {
             if (id == null)
                 return BadRequest();
-            var worker = workerService.GetById(id);
-            var vm = GetWorkerCreateViewModel(worker);
-            if (worker == null)
-                return NotFound();
+            var worker = workerService.GetWorkerWithUserById(id.Value);
+            if (worker == null) return NotFound();
+
+            var vm = new WorkerWithCatigoryViewModel
+            {
+                Worker = worker,
+                Categorys = catigoryService.GetAll()
+            };
             return View(vm);
         }
 
         [HttpPost]
         public IActionResult EditWorker ( WorkerWithCatigoryViewModel model )
         {
-            var exist = workerService.IsEmailExist(model.Worker.Email, model.Worker.Id);
+            var exist = workerService.IsEmailExist(model.Worker.User.Email, model.Worker.Id);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
@@ -223,19 +232,15 @@ namespace HandyHub.Controllers
             {
                 return View(model);
             }
-            workerService.Update(model.Worker);
+            workerService.UpdateWorkerWithUser(model.Worker);
             TempData["msg"] = "Update successfully";
             return RedirectToAction("ManageWorkers");
         }
         [HttpPost]
         public IActionResult DeleteWorkers ( int id )
         {
-            var worker = workerService.GetById(id);
-            if (worker != null)
-            {
-                workerService.Delete(id);
-                TempData["msg"] = "تم حذف العامل بنجاح.";
-            }
+            workerService.DeleteWorkerWithUser(id);
+            TempData["msg"] = "تم حذف العامل بنجاح.";
             return RedirectToAction("ManageWorkers");
         }
 
@@ -296,15 +301,19 @@ namespace HandyHub.Controllers
         {
             var model = new AdminReportViewModel
             {
-                TotalClients = clientService.GetAll().Count(),
-                TotalWorkers = workerService.GetAll().Count(),
-                TotalReviews = ReviewService.GetAll().Count(),
-                AverageRating = ReviewService.GetAll().Any() ? Math.Round(ReviewService.GetAll().Average(r => r.Rating), 2) : 0,
+                TotalClients = _context.Clients.Count(),
+                TotalWorkers = _context.Workers.Count(),
+                TotalReviews = _context.Reviews.Count(),
+                AverageRating = _context.Reviews.Any()
+                    ? Math.Round(_context.Reviews.Average(r => r.Rating), 2)
+                    : 0,
                 TopWorkers = _context.Workers
-                    .OrderByDescending(w => w.Reviews.Average(r => r.Rating))
+                    .Include(w => w.User)
+                    .Include(w => w.Reviews)
+                    .OrderByDescending(w => w.Reviews.Average(r => (double?)r.Rating) ?? 0)
                     .Take(5)
                     .ToList(),
-                Categories = catigoryService.GetAll()
+                Categories = _context.Categories.ToList()
             };
 
             return View(model);

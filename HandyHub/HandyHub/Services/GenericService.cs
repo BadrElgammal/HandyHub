@@ -1,5 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using HandyHub.Models.Entities;
 using HandyHub.Repositories;
+using System.Linq.Expressions;
 using static HandyHub.Repositories.IRepository;
 
 namespace HandyHub.Services
@@ -45,6 +46,15 @@ namespace HandyHub.Services
         {
             _repository.Update(entity);
             _repository.Save();
+        }
+        public void AddUser(User user)
+        {
+            _repository.AddUser(user);
+        }
+
+        public void DeleteUser(User user)
+        {
+            _repository.DeleteUser(user);
         }
     }
 }

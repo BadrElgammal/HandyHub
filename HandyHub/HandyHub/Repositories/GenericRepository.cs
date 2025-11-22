@@ -52,5 +52,16 @@ namespace HandyHub.Repositories
         {
             return _dbSet.Where(predicate).ToList();
         }
+        public void AddUser(User user)
+        {
+            _context.Users.Add(user);
+            _context.SaveChanges();
+        }
+
+        public void DeleteUser(User user)
+        {
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+        }
     }
 }

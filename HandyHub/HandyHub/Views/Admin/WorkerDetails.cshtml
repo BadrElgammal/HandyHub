@@ -1,4 +1,5 @@
 ﻿@model HandyHub.Models.Entities.Worker
+
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "تفاصيل العامل";
@@ -9,22 +10,23 @@
         <h3 class="fw-bold mb-4 text-primary text-center">تفاصيل العامل</h3>
 
         <div class="row mb-3">
+            <!-- العمود الأول -->
             <div class="col-md-6">
                 <div class="mb-3">
                     <strong>الاسم:</strong>
-                    <p class="mb-0">@Model.Name</p>
+                    <p class="mb-0">@Model.User?.Name</p>
                 </div>
                 <div class="mb-3">
                     <strong>البريد الإلكتروني:</strong>
-                    <p class="mb-0">@Model.Email</p>
+                    <p class="mb-0">@Model.User?.Email</p>
                 </div>
                 <div class="mb-3">
                     <strong>رقم الهاتف:</strong>
-                    <p class="mb-0">@Model.Phone</p>
+                    <p class="mb-0">@Model.User?.Phone</p>
                 </div>
                 <div class="mb-3">
                     <strong>المدينة:</strong>
-                    <p class="mb-0">@Model.City</p>
+                    <p class="mb-0">@Model.User?.City</p>
                 </div>
                 <div class="mb-3">
                     <strong>المنطقة:</strong>
@@ -32,6 +34,7 @@
                 </div>
             </div>
 
+            <!-- العمود الثاني -->
             <div class="col-md-6">
                 <div class="mb-3">
                     <strong>نبذة:</strong>
@@ -45,10 +48,15 @@
                     <strong>تاريخ التسجيل:</strong>
                     <p class="mb-0">@Model.CreatedAt.ToShortDateString()</p>
                 </div>
+                <div class="mb-3">
+                    <strong>الحالة:</strong>
+                    <p class="mb-0">
+                        @(Model.IsAvailable ? "✅ متاح" : "⛔ غير متاح")
+                    </p>
+                </div>
             </div>
         </div>
 
         <a asp-action="ManageWorkers" class="btn btn-secondary mt-3">رجوع</a>
-
     </div>
 </div>

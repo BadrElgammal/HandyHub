@@ -28,6 +28,8 @@ public class JwtService
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
+            issuer: "HandyHubApp",          
+            audience: "HandyHubUsers",
             claims: claims,
             expires: DateTime.Now.AddHours(2),
             signingCredentials: creds);

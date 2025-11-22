@@ -6,6 +6,10 @@ namespace HandyHub.Services
     {
         bool IsEmailExist(string email, int? id = null);
         bool SuspendWorker(Worker worker);
-
+        Worker? GetWorkerWithUserById(int id);
+        List<Worker> GetAllWithUser();
+        void CreateWorkerWithUser(Worker model);
+        void UpdateWorkerWithUser(Worker model);
+        void DeleteWorkerWithUser(int id);
     }
 }

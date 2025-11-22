@@ -2,6 +2,7 @@
 using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 //[Route("[controller]")]
 public class AuthController : Controller
@@ -43,12 +44,41 @@ public class AuthController : Controller
             return View(model);
         }
 
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.Name),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role)
+        };
+
         var token = _jwtService.GenerateToken(user);
+
+        Response.Cookies.Append("jwt", token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false,
+            Expires = DateTime.UtcNow.AddHours(2)
+        });
 
         TempData["SuccessMessage"] = "Login Successfully";
         ViewBag.Token = token;
         ViewBag.Message = "تم تسجيل الدخول بنجاح.";
-        return View(model);
+        if (user.Role == "Admin")
+        {
+            return RedirectToAction("Index", "Home");
+        }
+        else if (user.Role == "Worker")
+        {
+            return RedirectToAction("Index", "Home");
+        }
+        else if (user.Role == "Client")
+        {
+            return RedirectToAction("Index", "Home");
+        }
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
     [HttpGet]
     public IActionResult Register ()
