@@ -1,5 +1,6 @@
 ﻿@using HandyHub.Models.Entities
 @model IEnumerable<Worker>
+
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "إدارة العمال";
@@ -7,30 +8,26 @@
 
 @if (ViewBag.errorMessage != null)
 {
-    <div class="alert alert-danger">
-        @ViewBag.errorMessage
-    </div>
+    <div class="alert alert-danger">@ViewBag.errorMessage</div>
 }
 @if (TempData["msg"] != null)
 {
-    <div class="alert alert-success">
-        @TempData["msg"]
-    </div>
+    <div class="alert alert-success">@TempData["msg"]</div>
 }
-
 
 <section class="py-5 bg-light">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold mb-4"><i class="fas fa-hard-hat text-success me-2"></i> إدارة العمال</h2>
+            <h2 class="fw-bold mb-4">
+                <i class="fas fa-hard-hat text-success me-2"></i> إدارة العمال
+            </h2>
             <a asp-action="CreateWorker" class="btn btn-success rounded-3">
                 <i class="fas fa-plus-circle"></i> إضافة عامل جديد
             </a>
         </div>
 
-
-        <div class="card border-0 shadow rounded-4">
-            <table class="table table-hover mb-0">
+        <div class="card border-0 shadow rounded-4 overflow-hidden">
+            <table class="table table-hover mb-0 text-center align-middle">
                 <thead class="bg-success text-white">
                     <tr>
                         <th>الاسم</th>
@@ -41,32 +38,61 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var w in Model)
+                    @if (!Model.Any())
                     {
                         <tr>
-                            <td>@w.Name</td>
-                            <td>@w.Category?.Name</td>
-                            <td>@w.City</td>
-                            <td>
-                                @(w.IsAvailable ? "✅ متاح" : "⛔ غير متاح")
-                            </td>
-                            <td>
-                                <form asp-action="SuspendWorker" method="post" style="display:inline-block;">
-                                    <input type="hidden" name="id" value="@w.Id" />
-                                    <button class="btn btn-sm btn-warning rounded-3"><i class="fas fa-pause"></i></button>
-                                </form>
-                                <a asp-action="WorkerDetails" asp-route-id="@w.Id" class="btn btn-sm btn-info text-white rounded-3 me-1">
-                                    <i class="fas fa-info-circle"></i>
-                                </a>
-                                <a asp-action="EditWorker" asp-route-id="@w.Id" class="btn btn-sm btn-warning text-white rounded-3 me-1">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form asp-action="DeleteWorkers" method="post" style="display:inline-block;">
-                                    <input type="hidden" name="id" value="@w.Id" />
-                                    <button class="btn btn-sm btn-danger rounded-3"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
+                            <td colspan="5" class="text-muted py-4">لا يوجد عمال حالياً</td>
                         </tr>
+                    }
+                    else
+                    {
+                        @foreach (var w in Model)
+                        {
+                            <tr>
+                                <td>@w.User?.Name</td>
+                                <td>@w.Category?.Name</td>
+                                <td>@w.User?.City</td>
+                                <td>
+                                    @(w.IsAvailable ? "✅ متاح" : "⛔ غير متاح")
+                                </td>
+                                <td>
+                                    <form asp-action="SuspendWorker"
+                                          method="post"
+                                          style="display:inline-block;">
+                                        <input type="hidden" name="id" value="@w.Id" />
+                                        <button type="submit" class="btn btn-sm btn-warning rounded-3" title="تعطيل / تفعيل">
+                                            <i class="fas fa-pause"></i>
+                                        </button>
+                                    </form>
+
+                                    <a asp-action="WorkerDetails"
+                                       asp-route-id="@w.Id"
+                                       class="btn btn-sm btn-info text-white rounded-3 me-1"
+                                       title="تفاصيل العامل">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+
+                                    <a asp-action="EditWorker"
+                                       asp-route-id="@w.Id"
+                                       class="btn btn-sm btn-warning text-white rounded-3 me-1"
+                                       title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <form asp-action="DeleteWorker"
+                                          method="post"
+                                          onsubmit="return confirm('هل أنت متأكد من حذف هذا العامل؟');"
+                                          style="display:inline-block;">
+                                        <input type="hidden" name="id" value="@w.Id" />
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger rounded-3"
+                                                title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

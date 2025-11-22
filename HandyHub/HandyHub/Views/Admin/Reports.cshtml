@@ -1,7 +1,8 @@
 ﻿@using HandyHub.Models.ViewModels
 @model AdminReportViewModel
+
 @{
-    Layout = "_AdminLayout";  // أو "_AdminSidebarLayout" لو عندك
+    Layout = "_AdminLayout";
     ViewData["Title"] = "التقارير";
 }
 
@@ -70,17 +71,17 @@
                                 {
                                     var avg = (w.Reviews != null && w.Reviews.Any()) ? w.Reviews.Average(r => r.Rating) : 0;
                                     <tr>
-                                        <td class="fw-semibold">@w.Name</td>
+                                        <td class="fw-semibold">@w.User?.Name</td>
                                         <td>
                                             @foreach (var c in Model.Categories)
                                             {
                                                 if (c.Id == w.CategoryId)
-                                                {@c.Name}
+                                                {
+                                                    @c.Name
+                                                }
                                             }
-                                            </td>
-                                        <td>
-                                            
-                                            @(w.Reviews?.Count ?? 0)</td>
+                                        </td>
+                                        <td>@(w.Reviews?.Count ?? 0)</td>
                                         <td>
                                             <span class="badge bg-warning text-dark">
                                                 @avg.ToString("F1") ⭐

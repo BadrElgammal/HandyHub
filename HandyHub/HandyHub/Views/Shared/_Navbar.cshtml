@@ -1,56 +1,97 @@
-﻿<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
-    <div class="container-fluid px-4">
+﻿@using System.Security.Claims
+@{
+    bool isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
 
-        <a class="navbar-brand fw-bold fs-3" href="@Url.Action("Index", "Home")">
-            <i class="fas fa-toolbox text-warning me-2"></i> HandyHub
-        </a>
+    var userName = User?.FindFirst(ClaimTypes.Name)?.Value ?? "مستخدم";
+    var userRole = User?.FindFirst(ClaimTypes.Role)?.Value ?? "";
+    var profileImage = User?.FindFirst("ProfileImage")?.Value ?? "/images/OIP.jpeg";
+}
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-md">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
 
-        <div class="collapse navbar-collapse" id="mainNav">
-            <ul class="navbar-nav ms-auto align-items-lg-center">
+            <!-- ✅ الشعار -->
+            <a href="~/" class="flex items-center space-x-2 space-x-reverse">
+                <div class="w-10 h-10 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg flex items-center justify-center">
+                    <i class="ri-tools-fill text-white text-xl"></i>
+                </div>
+                <span class="text-2xl font-bold text-gray-900" style="font-family: 'Pacifico', serif;">HandyHub</span>
+            </a>
 
-                <li class="nav-item"><a class="nav-link" href="/">الرئيسية</a></li>
-                <li class="nav-item"><a class="nav-link" href="@Url.Action("SearchWorkers", "Client")">ابحث عن عاملين</a></li>
+            <!-- ✅ الروابط -->
+            <div class="hidden md:flex items-center space-x-8 space-x-reverse">
+                <a href="~/" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">الرئيسية</a>
+                <a href="~/Search" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">ابحث عن عمّال</a>
+                <a href="#how-it-works" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">كيف يعمل</a>
+                <a href="#features" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">المميزات</a>
+            </div>
 
-                @if (User.Identity.IsAuthenticated)
+            <!-- ✅ قسم المستخدم -->
+            <div class="flex items-center space-x-4 space-x-reverse">
+
+                @if (!isAuthenticated)
                 {
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                            <img src="~/images/default-avatar.png" class="rounded-circle me-2" width="30" height="30">
-                            <span>@User.Identity.Name</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end text-end">
-                            <li><a class="dropdown-item" href="@Url.Action("Profile", "Account")"><i class="fas fa-user me-2"></i> الملف الشخصي</a></li>
-                            @if (User.IsInRole("Client"))
-                            {
-                                <li><a class="dropdown-item" href="@Url.Action("Dashboard", "Client")"><i class="fas fa-chart-line me-2"></i> لوحة العميل</a></li>
-                            }
-                            @if (User.IsInRole("Worker"))
-                            {
-                                <li><a class="dropdown-item" href="@Url.Action("Dashboard", "Worker")"><i class="fas fa-toolbox me-2"></i> لوحة العامل</a></li>
-                            }
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <li><a class="dropdown-item text-danger" href="@Url.Action("Dashboard", "Admin")"><i class="fas fa-crown me-2"></i> لوحة المدير</a></li>
-                            }
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="@Url.Action("Logout", "Account")"><i class="fas fa-sign-out-alt me-2"></i> خروج</a></li>
-                        </ul>
-                    </li>
+                    <!-- مستخدم غير مسجل -->
+                    <a href="~/Auth/Login" class="px-4 py-2 text-teal-600 hover:text-teal-700 font-medium transition-colors">
+                        تسجيل الدخول
+                    </a>
+                    <a href="~/Auth/Register" class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-colors">
+                        إنشاء حساب
+                    </a>
                 }
                 else
                 {
-                    <li class="nav-item ms-2">
-                        <a href="@Url.Action("Login", "Auth")" class="btn btn-warning btn-sm text-dark fw-bold me-2">دخول</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="@Url.Action("Register", "Auth")" class="btn btn-success btn-sm text-white fw-bold">تسجيل</a>
-                    </li>
+                    <!-- مستخدم مسجل -->
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 space-x-reverse focus:outline-none">
+                            <img src="@profileImage" alt="@userName" class="w-10 h-10 rounded-full border-2 border-teal-500 object-cover">
+                            <span class="font-medium text-gray-800">@userName</span>
+                            <i class="ri-arrow-down-s-line text-gray-500"></i>
+                        </button>
+
+                        <!-- ✅ القائمة المنسدلة -->
+                        <div class="absolute hidden group-hover:block bg-white shadow-lg rounded-lg mt-2 right-0 w-52 border border-gray-100 z-50 text-right">
+
+                            @* 🎯 القوائم حسب الدور *@
+
+                            @if (userRole == "Admin")
+                            {
+                                <a href="~/Admin" class="block px-4 py-2 hover:bg-gray-50 text-gray-700">
+                                    <i class="ri-dashboard-line ml-1 text-teal-600"></i> لوحة التحكم
+                                </a>
+                                <a href="~/Admin/ManageClients" class="block px-4 py-2 hover:bg-gray-50 text-gray-700">
+                                    <i class="ri-user-settings-line ml-1 text-teal-600"></i> إدارة المستخدمين
+                                </a>
+                            }
+                            else if (userRole == "Client")
+                            {
+                                <a href="~/Client/MyRequests" class="block px-4 py-2 hover:bg-gray-50 text-gray-700">
+                                    <i class="ri-file-list-line ml-1 text-teal-600"></i> طلباتي
+                                </a>
+                                <a href="~/Client/Profile" class="block px-4 py-2 hover:bg-gray-50 text-gray-700">
+                                    <i class="ri-user-line ml-1 text-teal-600"></i> الملف الشخصي
+                                </a>
+                            }
+                            else if (userRole == "Worker")
+                            {
+                                <a href="~/Worker/MyJobs" class="block px-4 py-2 hover:bg-gray-50 text-gray-700">
+                                    <i class="ri-briefcase-line ml-1 text-teal-600"></i> أعمالي
+                                </a>
+                                <a href="~/Worker/Profile" class="block px-4 py-2 hover:bg-gray-50 text-gray-700">
+                                    <i class="ri-user-line ml-1 text-teal-600"></i> الملف الشخصي
+                                </a>
+                            }
+
+                            <hr class="my-1">
+                            <a href="~/Auth/Logout" class="block px-4 py-2 text-red-500 font-semibold hover:bg-gray-50">
+                                <i class="ri-logout-box-line ml-1"></i> تسجيل الخروج
+                            </a>
+                        </div>
+                    </div>
                 }
-            </ul>
+            </div>
+
         </div>
-    </div>
-</nav>
+    </nav>
+</header>

@@ -1,100 +1,249 @@
 ﻿@{
-    ViewData["Title"] = "HandyHub - الخدمات المنزلية";
+    ViewData["Title"] = "الرئيسية";
 }
 
+<!-- ✅ Hero Section -->
 <!-- Hero Section -->
-<section class="bg-primary text-white text-center py-5 shadow-sm">
-    <div class="container py-4">
-        <h1 class="fw-bold mb-3">مرحباً بك في منصة <span class="text-warning">HandyHub</span></h1>
-        <p class="lead mb-4">أفضل منصة للعثور على العمال الموثوقين في مدينتك بسهولة وسرعة ⚡</p>
+<section class="relative bg-gradient-to-br from-teal-50 via-white to-blue-50 overflow-hidden">
+    <div class="absolute inset-0 bg-[url('https://public.readdy.ai/ai/img_res/ff8fc6a6176f5f66a90f607af44a0185.jpg')] bg-cover bg-center opacity-10"></div>
 
-        <a href="@Url.Action("SearchWorkers", "Client")" class="btn btn-warning btn-lg text-dark fw-bold me-2">
-            <i class="fas fa-search me-2"></i> ابحث الآن
-        </a>
-        <a href="@Url.Action("Register", "Account")" class="btn btn-outline-light btn-lg fw-bold">
-            <i class="fas fa-user-plus me-2"></i> انضم كعامل
-        </a>
-    </div>
-</section>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Text -->
+            <div class="w-full">
+                <h1 class="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                    ابحث عن <span class="text-teal-600">العمّال المهرة</span><br>في منطقتك
+                </h1>
+                <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                    تواصل مع أفضل المهنيين الموثوقين لكل احتياجاتك الخدمية. ابحث حسب الفئة والموقع والتقييم للعثور على العامل المناسب لمشروعك.
+                </p>
 
-<!-- Services Section -->
-<section class="py-5 bg-light">
-    <div class="container text-center">
-        <h2 class="fw-bold mb-5">خدماتنا المتوفرة 🔧</h2>
+                <!-- Search Box -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <i class="ri-search-line absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+                            <input type="text"
+                                   placeholder="ما نوع الخدمة التي تحتاجها؟"
+                                   class="w-full pr-12 pl-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-base" />
+                        </div>
+                        <div class="relative">
+                            <i class="ri-map-pin-line absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+                            <input type="text"
+                                   placeholder="أدخل مدينتك أو منطقتك"
+                                   class="w-full pr-12 pl-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-base" />
+                        </div>
+                        <button class="w-full bg-teal-600 text-white py-4 rounded-xl hover:bg-teal-700 font-semibold text-lg transition-colors">
+                            ابحث عن العمّال
+                        </button>
+                    </div>
+                </div>
 
-        <div class="row g-4">
-            <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <i class="fas fa-bolt fa-3x text-warning mb-3"></i>
-                    <h5 class="fw-bold mb-2">كهربائي</h5>
-                    <p class="text-muted small">تصليح وتمديد الكهرباء والتوصيلات والأجهزة.</p>
+                <!-- Info icons -->
+                <div class="flex items-center space-x-8 space-x-reverse">
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <i class="ri-shield-check-fill text-green-500 text-2xl"></i>
+                        <span class="text-gray-700 font-medium">عمّال موثوقون</span>
+                    </div>
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <i class="ri-star-fill text-yellow-400 text-2xl"></i>
+                        <span class="text-gray-700 font-medium">خدمات مُقَيّمة</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <i class="fas fa-faucet-drip fa-3x text-primary mb-3"></i>
-                    <h5 class="fw-bold mb-2">سباك</h5>
-                    <p class="text-muted small">إصلاح السباكة والتركيبات وصيانة الأنابيب.</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <i class="fas fa-hammer fa-3x text-secondary mb-3"></i>
-                    <h5 class="fw-bold mb-2">نجّار</h5>
-                    <p class="text-muted small">تصميم وصيانة الأثاث والأبواب والأخشاب.</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <i class="fas fa-paint-roller fa-3x text-success mb-3"></i>
-                    <h5 class="fw-bold mb-2">دهّان</h5>
-                    <p class="text-muted small">دهانات وتشطيبات داخلية وخارجية احترافية.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- How It Works -->
-<section class="py-5">
-    <div class="container text-center">
-        <h2 class="fw-bold mb-5">كيف تعمل HandyHub ❓</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="p-4">
-                    <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
-                    <h5>التسجيل</h5>
-                    <p class="text-muted small">أنشئ حساب جديد كعميل أو كعامل بسهولة.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="p-4">
-                    <i class="fas fa-search fa-3x text-success mb-3"></i>
-                    <h5>ابحث واختر</h5>
-                    <p class="text-muted small">ابحث عن العامل المناسب حسب مدينتك أو نوع الخدمة.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="p-4">
-                    <i class="fas fa-handshake fa-3x text-warning mb-3"></i>
-                    <h5>تواصل وتنفيذ الخدمة</h5>
-                    <p class="text-muted small">تواصل مباشرة وابدأ تنفيذ الخدمة بأمان ومصداقية.</p>
-                </div>
+            <!-- Image -->
+            <div class="hidden lg:block">
+                <img alt="Professional skilled workers" class="rounded-2xl shadow-2xl object-cover w-full h-[600px]" src="https://readdy.ai/api/search-image?query=Professional%20diverse%20skilled%20workers%20team%20portrait%20with%20various%20tools%20and%20equipment%2C%20friendly%20smiling%20craftspeople%20and%20service%20professionals%2C%20modern%20clean%20studio%20photography%20with%20simple%20white%20background%2C%20bright%20natural%20lighting%2C%20high%20quality%20professional%20composition%2C%20workers%20wearing%20professional%20attire%20and%20safety%20gear%2C%20contemporary%20aesthetic&amp;width=800&amp;height=900&amp;seq=hero-img-001&amp;orientation=portrait">
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="py-5 bg-primary text-white text-center">
-    <div class="container py-4">
-        <h2 class="fw-bold mb-3">جاهز تبدأ معنا؟ 🔥</h2>
-        <p class="lead mb-4">سجّل الآن كعميل أو كعامل وابدأ في استخدام HandyHub اليوم!</p>
-        <a href="@Url.Action("Register", "Account")" class="btn btn-warning btn-lg text-dark fw-bold">
-            <i class="fas fa-user-plus me-2"></i> سجّل الآن
-        </a>
+<!-- التصنيفات -->
+<section id="categories" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">الفئات الخدمية الشائعة</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">تصفّح مجموعة واسعة من الفئات للعثور على العامل المثالي لاحتياجاتك.</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <button class="group bg-white border-2 border-gray-100 rounded-2xl p-8 hover:border-teal-600 hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110">
+                    <i class="ri-drop-line text-3xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-teal-600">السباكة</h3>
+            </button>
+            <button class="group bg-white border-2 border-gray-100 rounded-2xl p-8 hover:border-teal-600 hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110">
+                    <i class="ri-flashlight-line text-3xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-teal-600">الكهرباء</h3>
+            </button>
+            <button class="group bg-white border-2 border-gray-100 rounded-2xl p-8 hover:border-teal-600 hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110">
+                    <i class="ri-hammer-line text-3xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-teal-600">النجارة</h3>
+            </button>
+            <button class="group bg-white border-2 border-gray-100 rounded-2xl p-8 hover:border-teal-600 hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110">
+                    <i class="ri-brush-line text-3xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-teal-600">الدهان</h3>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- كيف يعمل -->
+<section id="how-it-works" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">كيف يعمل HandyHub؟</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">العثور على العمّال المهرة أصبح أسهل من أي وقت مضى — فقط اتبع هذه الخطوات البسيطة.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-right">
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-blue-500 rounded-xl flex items-center justify-center mb-6 mx-auto">
+                    <i class="ri-search-line text-white text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">1. ابحث عن العمّال</h3>
+                <p class="text-gray-600 leading-relaxed">تصفّح قاعدة البيانات للعثور على العامل المناسب حسب الفئة والموقع والتقييم.</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-teal-500 rounded-xl flex items-center justify-center mb-6 mx-auto">
+                    <i class="ri-user-star-line text-white text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">2. اطّلع على الملفات والتقييمات</h3>
+                <p class="text-gray-600 leading-relaxed">راجع ملفات العمّال وسيرهم وأعمالهم السابقة وآراء العملاء قبل اتخاذ قرارك.</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center mb-6 mx-auto">
+                    <i class="ri-phone-line text-white text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">3. تواصل واتفق</h3>
+                <p class="text-gray-600 leading-relaxed">تواصل مباشرة مع العامل عبر الهاتف أو الواتساب لترتيب تفاصيل العمل بسرعة.</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-blue-500 rounded-xl flex items-center justify-center mb-6 mx-auto">
+                    <i class="ri-star-line text-white text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">4. اترك تقييماً</h3>
+                <p class="text-gray-600 leading-relaxed">شارك تجربتك وساعد الآخرين في اتخاذ قرارات مستنيرة عند التوظيف.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- باقي السكاشن كما هي -->
+<!-- المميزات -->
+<section id="features" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">لماذا تختار HandyHub؟</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">نوفر لك كل ما تحتاجه للعثور على أفضل العمّال وإنجاز مشاريعك بسهولة.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-right">
+            <div class="bg-gray-50 border border-gray-100 rounded-2xl p-8 hover:shadow-xl transition-shadow">
+                <div class="w-14 h-14 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6">
+                    <i class="ri-shield-check-line text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">عمّال موثوقون</h3>
+                <p class="text-gray-600 leading-relaxed">جميع العمّال موثوقون عبر ملفات تفصيلية وتقييمات حقيقية من العملاء.</p>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-100 rounded-2xl p-8 hover:shadow-xl transition-shadow">
+                <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6">
+                    <i class="ri-filter-3-line text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">بحث ذكي</h3>
+                <p class="text-gray-600 leading-relaxed">خيارات بحث متقدمة لتصفية النتائج حسب الفئة والموقع والتقييم والتوافر.</p>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-100 rounded-2xl p-8 hover:shadow-xl transition-shadow">
+                <div class="w-14 h-14 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center mb-6">
+                    <i class="ri-message-3-line text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">تواصل مباشر</h3>
+                <p class="text-gray-600 leading-relaxed">تواصل مع العمّال مباشرة دون وسطاء أو رسوم خفية.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HandyHub بالأرقام -->
+<section class="py-20 bg-gradient-to-br from-teal-600 to-blue-600 text-white text-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-4xl font-bold mb-4">HandyHub بالأرقام</h2>
+        <p class="text-xl text-teal-100 mb-12">انضم إلى آلاف العملاء والعمّال الراضين على منصتنا</p>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <div>
+                <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-user-line text-white text-3xl"></i>
+                </div>
+                <div class="text-5xl font-bold">+10,000</div>
+                <p class="text-teal-100">عمّال مهرة</p>
+            </div>
+
+            <div>
+                <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-emotion-happy-line text-white text-3xl"></i>
+                </div>
+                <div class="text-5xl font-bold">+50,000</div>
+                <p class="text-teal-100">عملاء سعداء</p>
+            </div>
+
+            <div>
+                <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-checkbox-circle-line text-white text-3xl"></i>
+                </div>
+                <div class="text-5xl font-bold">+100,000</div>
+                <p class="text-teal-100">مشروع مكتمل</p>
+            </div>
+
+            <div>
+                <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-star-fill text-white text-3xl"></i>
+                </div>
+                <div class="text-5xl font-bold">4.8/5</div>
+                <p class="text-teal-100">متوسط التقييم</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- جاهز للبدء -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-br from-teal-600 to-blue-600 rounded-3xl overflow-hidden">
+            <div class="grid lg:grid-cols-2 gap-12 items-center p-12 lg:p-16">
+                <div>
+                    <h2 class="text-4xl font-bold text-white mb-6">هل أنت جاهز للبدء؟</h2>
+                    <p class="text-xl text-teal-100 mb-8 leading-relaxed">
+                        سواء كنت تبحث عن عمّال مهرة أو ترغب في تقديم خدماتك،
+                        فإن HandyHub هي المنصة المثالية لك.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="px-8 py-4 bg-white text-teal-600 rounded-xl hover:bg-gray-50 font-semibold text-lg transition-colors">
+                            سجل كعميل
+                        </button>
+                        <button class="px-8 py-4 bg-teal-700 text-white rounded-xl hover:bg-teal-800 font-semibold text-lg transition-colors border-2 border-white/20">
+                            سجل كعامل
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hidden lg:block">
+                    <img src="https://public.readdy.ai/ai/img_res/b9498a30328f96703bd1e90b743b6daa.jpg"
+                         alt="انضم إلى HandyHub"
+                         class="rounded-2xl shadow-2xl object-cover w-full h-[400px]" />
+                </div>
+            </div>
+        </div>
     </div>
 </section>
