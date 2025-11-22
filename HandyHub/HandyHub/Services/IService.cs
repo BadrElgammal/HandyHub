@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using HandyHub.Models.Entities;
+using System.Linq.Expressions;
 
 namespace HandyHub.Services
 {
@@ -10,5 +11,7 @@ namespace HandyHub.Services
         void Update(T entity);
         void Delete(object id);
         IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
+        public void AddUser(User user);
+        public void DeleteUser(User user);
     }
 }

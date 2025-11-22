@@ -7,6 +7,8 @@ namespace HandyHub.Repositories
     {
         bool IsEmailExist(string email, int? id = null);
         bool SuspendWorker(Worker worker);
+        Worker? GetWorkerWithUserById(int id);
+        List<Worker> GetAllWithUser();
 
     }
 }

@@ -1,7 +1,9 @@
 using HandyHub.Data;
 using HandyHub.Repositories;
 using HandyHub.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using static HandyHub.Repositories.IRepository;
@@ -50,6 +52,17 @@ namespace HandyHub
                     ValidateAudience = true,
                     ValidAudience = jwtAudience,
                     ValidateLifetime = true
+                };
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var token = context.Request.Cookies["jwt"];
+                        if (!string.IsNullOrEmpty(token))
+                            context.Token = token;
+
+                        return Task.CompletedTask;
+                    }
                 };
             });
 

@@ -1,7 +1,11 @@
-﻿
-@*
-    Layout خاص بلوحة الإدارة فيه كل الـ CSS المطلوبة
-*@
+﻿@using System.Security.Claims
+@{
+    var userEmail = User?.FindFirst(ClaimTypes.Email)?.Value ?? "email@example.com";
+    var userRole = User?.FindFirst(ClaimTypes.Role)?.Value ?? "Admin";
+    var userName = User?.FindFirst(ClaimTypes.Name)?.Value ?? "Administrator";
+    var adminImage = ViewBag.AdminImage ?? "/images/OIP.jpeg";
+}
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -9,11 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - HandyHub Admin</title>
 
-    <!-- ✅ روابط Bootstrap و CSS العامة -->
-
-    @* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" /> *@
-    <link href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" rel="stylesheet" />
-    <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <!-- ✅ روابط Bootstrap و FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
     <style>
@@ -29,16 +30,16 @@
 
         .sidebar {
             width: 240px;
-            background-color: #212529;
+            background: #212529;
             color: #fff;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding-top: 20px;
             position: fixed;
             right: 0;
             top: 0;
             bottom: 0;
+            padding-top: 20px;
         }
 
         .sidebar-header {
@@ -47,13 +48,20 @@
         }
 
             .sidebar-header img {
-                width: 60px;
-                height: 60px;
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                border: 2px solid #0d6efd;
             }
 
             .sidebar-header h5 {
                 margin-top: 10px;
                 color: #fff;
+                font-weight: bold;
+            }
+
+            .sidebar-header small {
+                color: #bbb;
             }
 
         .nav-links a {
@@ -61,7 +69,7 @@
             color: #ddd;
             padding: 12px 20px;
             text-decoration: none;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
         }
 
             .nav-links a:hover,
@@ -86,62 +94,66 @@
 
 <body>
     <div class="admin-container">
-        <!-- الشريط الجانبي -->
+        <!-- ✅ الشريط الجانبي -->
         <div class="sidebar">
             <div>
+                <!-- ✅ رأس الشريط الجانبي -->
                 <div class="sidebar-header">
-                    <img src="~/images/OIP.jpeg" alt="Logo" />
-                    <h5>HandyHub Admin</h5>
+                    <img src="@adminImage" alt="Profile" />
+                    <h5>@userName</h5>
+                    <small>@userEmail</small><br />
+                    <span class="badge bg-success">@userRole</span>
                 </div>
 
+                <!-- ✅ روابط لوحة التحكم -->
                 <div class="nav-links">
                     <a asp-controller="Admin" asp-action="Dashboard"
                        class="@(ViewContext.RouteData.Values["action"]!.ToString() == "Dashboard" ? "active" : "")">
-                        <i class="bi bi-speedometer2"></i> لوحة التحكم
+                        <i class="fa-solid fa-gauge"></i> لوحة التحكم
                     </a>
 
                     <a asp-controller="Admin" asp-action="ManageClients"
                        class="@(ViewContext.RouteData.Values["action"]!.ToString() == "ManageClients" ? "active" : "")">
-                        <i class="bi bi-people"></i> المستخدمين
+                        <i class="fa-solid fa-users"></i> العملاء
                     </a>
 
                     <a asp-controller="Admin" asp-action="ManageWorkers"
                        class="@(ViewContext.RouteData.Values["action"]!.ToString() == "ManageWorkers" ? "active" : "")">
-                        <i class="bi bi-person-badge"></i> العمال
+                        <i class="fa-solid fa-person-digging"></i> العمال
                     </a>
 
                     <a asp-controller="Admin" asp-action="ManageCategories"
                        class="@(ViewContext.RouteData.Values["action"]!.ToString() == "ManageCategories" ? "active" : "")">
-                        <i class="bi bi-tags"></i> الفئات
+                        <i class="fa-solid fa-tags"></i> الفئات
                     </a>
 
                     <a asp-controller="Admin" asp-action="ManageReviews"
                        class="@(ViewContext.RouteData.Values["action"]!.ToString() == "ManageReviews" ? "active" : "")">
-                        <i class="bi bi-chat-left-text"></i> التقييمات
+                        <i class="fa-solid fa-comments"></i> التقييمات
                     </a>
 
                     <a asp-controller="Admin" asp-action="Reports"
                        class="@(ViewContext.RouteData.Values["action"]!.ToString() == "Reports" ? "active" : "")">
-                        <i class="bi bi-bar-chart"></i> التقارير
+                        <i class="fa-solid fa-chart-bar"></i> التقارير
                     </a>
                 </div>
             </div>
 
+            <!-- ✅ تذييل الشريط الجانبي -->
             <div class="sidebar-footer">
-                <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-light btn-sm">تسجيل خروج</a>
+                <li><a class="dropdown-item text-danger" href="@Url.Action("Logout", "Auth")"><i class="fas fa-sign-out-alt me-2"></i> خروج</a></li>
             </div>
         </div>
 
-        <!-- المحتوى -->
+        <!-- ✅ منطقة المحتوى -->
         <div class="content">
             @RenderBody()
         </div>
     </div>
 
-    <!-- ✅ روابط JS المطلوبة -->
+    <!-- ✅ ملفات الـ JS -->
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/custom.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

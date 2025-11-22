@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - HandyHub</title>
 
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Tajawal", sans-serif;
+        }
+    </style>
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
 
@@ -17,6 +26,7 @@
     <!-- Project CSS -->
     <link href="~/css/main.css" rel="stylesheet" />
     <link href="~/css/bootstrap-override.css" rel="stylesheet" />
+
 
     @RenderSection("Styles", required: false)
 </head>
@@ -37,6 +47,13 @@
     @await Html.PartialAsync("_Footer")
 
     <!-- Scripts -->
+    <script>
+        // نفس الكود الأصلي، مع تحديث اللون في focus فقط
+        document.querySelectorAll('input').forEach(input => {
+          input.addEventListener('focus', () => input.classList.add('ring-2', 'ring-teal-500'));
+          input.addEventListener('blur', () => input.classList.remove('ring-2', 'ring-teal-500'));
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="~/js/custom.js"></script>

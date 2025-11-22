@@ -9,4 +9,5 @@ public class User
     public string Phone { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;// "Client", "Worker", "Admin"
+    public string? ImageUrl { get; set; } = "/images/default-avatar-admin.png";
 }
