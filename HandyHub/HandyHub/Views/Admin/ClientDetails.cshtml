@@ -1,4 +1,5 @@
 ﻿@model HandyHub.Models.Entities.Client
+
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "تفاصيل العميل";
@@ -12,19 +13,19 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <strong>الاسم:</strong>
-                    <p class="mb-0">@Model.Name</p>
+                    <p class="mb-0">@Model.User?.Name</p>
                 </div>
                 <div class="mb-3">
                     <strong>البريد الإلكتروني:</strong>
-                    <p class="mb-0">@Model.Email</p>
+                    <p class="mb-0">@Model.User?.Email</p>
                 </div>
                 <div class="mb-3">
                     <strong>رقم الهاتف:</strong>
-                    <p class="mb-0">@Model.Phone</p>
+                    <p class="mb-0">@Model.User?.Phone</p>
                 </div>
                 <div class="mb-3">
                     <strong>المدينة:</strong>
-                    <p class="mb-0">@Model.City</p>
+                    <p class="mb-0">@Model.User?.City</p>
                 </div>
                 <div class="mb-3">
                     <strong>تاريخ التسجيل:</strong>
@@ -34,6 +35,5 @@
         </div>
 
         <a asp-action="ManageClients" class="btn btn-secondary mt-3">رجوع</a>
-
     </div>
 </div>

@@ -1,22 +1,36 @@
 ﻿using HandyHub.Data;
 using HandyHub.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace HandyHub.Repositories
 {
     public class WorkerRepository : GenericRepository<Worker>, IWorkerRepository
     {
+        private readonly HandyHubDbContext _context;
+
         public WorkerRepository(HandyHubDbContext context) : base(context)
         {
+            _context = context;
         }
 
         public bool IsEmailExist(string email, int? id = null)
         {
-            return _dbSet.Any(c => c.Email == email && (id == null || c.Id != id));
+            return _context.Users.Any(u => u.Email == email && (id == null || u.Id != id) && u.Role == "Worker");
         }
 
         public bool SuspendWorker(Worker worker)
         {
             return worker.IsAvailable = worker.IsAvailable ? false : true;
         }
+        public Worker? GetWorkerWithUserById(int id)
+        {
+            return _context.Workers.Include(c => c.User).FirstOrDefault(c => c.Id == id);
+        }
+
+        public List<Worker> GetAllWithUser()
+        {
+            return _context.Workers.Include(w => w.User).ToList();
+        }
+
     }
 }
