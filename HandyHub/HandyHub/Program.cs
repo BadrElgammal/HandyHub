@@ -74,6 +74,8 @@ namespace HandyHub
             builder.Services.AddScoped<IWorkerRepository, WorkerRepository>();
             builder.Services.AddScoped<ClientService>();
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
+            builder.Services.AddScoped<IWorkerService, WorkerService>();    
+
 
             var app = builder.Build();
 

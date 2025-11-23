@@ -19,8 +19,8 @@ namespace HandyHub.Models.Entities
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
 
-        public ICollection<Review>? Reviews { get; set; }
-        public ICollection<WorkerPortfolio>? Portfolio { get; set; }
+        public ICollection<Review>? Reviews { get; set; }=new List<Review>();
+        public ICollection<WorkerPortfolio>? Portfolio { get; set; }=new List<WorkerPortfolio>();   
 
         [ForeignKey("User")]
         public int? UserId { get; set; }
