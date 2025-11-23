@@ -9,6 +9,7 @@ namespace HandyHub.Repositories
         bool SuspendWorker(Worker worker);
         Worker? GetWorkerWithUserById(int id);
         List<Worker> GetAllWithUser();
+        List<Worker> GetAllWorkersWithPortfolioWithUserWithReviews();
 
     }
 }
