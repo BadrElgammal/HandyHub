@@ -114,8 +114,26 @@ public class AuthController : Controller
 
         _context.Users.Add(user);
         _context.SaveChanges();
+        switch (model.Role.ToLower())
+        {
+            case "admin":
+                var admin = new Admin { UserId = user.Id };
+                _context.Admins.Add(admin);
+                break;
 
+            case "client":
+                var client = new Client { UserId = user.Id };
+                _context.Clients.Add(client);
+                break;
+
+            case "worker":
+                var worker = new Worker { UserId = user.Id };
+                _context.Workers.Add(worker);
+                break;
+        }
+
+        _context.SaveChanges();
         ViewBag.Message = "تم إنشاء الحساب بنجاح. يمكنك الآن تسجيل الدخول.";
-        return View(model);
+        return RedirectToAction("Login");
     }
 }
