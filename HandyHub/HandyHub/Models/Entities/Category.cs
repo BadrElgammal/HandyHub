@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 
 namespace HandyHub.Models.Entities
@@ -16,9 +17,9 @@ namespace HandyHub.Models.Entities
         [StringLength(300)]
         public string Description { get; set; }
 
-        public string? IconUrl { get; set; } 
+        public string? IconUrl { get; set; }
 
-       
+        [IgnoreDataMember]
         public ICollection<Worker>? Workers { get; set; }
     }
 }
