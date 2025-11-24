@@ -66,9 +66,5 @@ namespace HandyHub.Services
             clientRepo.Save();
         }
 
-        internal object GetClientWithUserById(int? id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

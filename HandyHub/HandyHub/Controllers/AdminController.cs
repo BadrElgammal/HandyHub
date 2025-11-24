@@ -77,6 +77,7 @@ namespace HandyHub.Controllers
             {
                 return View(model);
             }
+            model.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.User.PasswordHash);
             clientService.CreateClientWithUser(model);
             TempData["msg"] = "created successfully";
             return RedirectToAction("ManageClients");
@@ -96,7 +97,7 @@ namespace HandyHub.Controllers
 
 
         [HttpGet]
-        public IActionResult EditClient ( int? id )
+        public IActionResult EditClient ( int id )
         {
             if (id == null)
                 return BadRequest();
@@ -109,7 +110,7 @@ namespace HandyHub.Controllers
         [HttpPost]
         public IActionResult EditClient ( Client model )
         {
-            var exist = clientService.IsEmailExist(model.User.Email);
+            var exist = clientService.IsEmailExist(model.User.Email,model.UserId);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
@@ -118,6 +119,7 @@ namespace HandyHub.Controllers
             {
                 return View(model);
             }
+            model.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.User.PasswordHash);
             clientService.UpdateClientWithUser(model);
             TempData["msg"] = "Update successfully";
             return RedirectToAction("ManageClients");
@@ -138,14 +140,14 @@ namespace HandyHub.Controllers
         // =============================== Manage Workers ===============================
         public IActionResult ManageWorkers ()
         {
-            var workers = workerService.GetAllWithUser();
+            var workers = _context.Workers.Include(w => w.User).Include(w => w.Category).ToList();
             return View(workers);
         }
 
         [HttpPost]
         public IActionResult SuspendWorker ( int id )
         {
-            var worker = workerService.GetById(id);
+            var worker = workerService.GetWorkerWithUserById(id);
             if (worker == null)
                 return NotFound();
 
@@ -187,7 +189,7 @@ namespace HandyHub.Controllers
                 vm.Categorys = catigoryService.GetAll();
                 return View(vm);
             }
-
+            vm.Worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(vm.Worker.User.PasswordHash);
             workerService.CreateWorkerWithUser(vm.Worker);
             TempData["msg"] = "created successfully";
             return RedirectToAction("ManageWorkers");
@@ -223,7 +225,7 @@ namespace HandyHub.Controllers
         [HttpPost]
         public IActionResult EditWorker ( WorkerWithCatigoryViewModel model )
         {
-            var exist = workerService.IsEmailExist(model.Worker.User.Email, model.Worker.Id);
+            var exist = workerService.IsEmailExist(model.Worker.User.Email, model.Worker.UserId);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
@@ -232,6 +234,7 @@ namespace HandyHub.Controllers
             {
                 return View(model);
             }
+            model.Worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Worker.User.PasswordHash);
             workerService.UpdateWorkerWithUser(model.Worker);
             TempData["msg"] = "Update successfully";
             return RedirectToAction("ManageWorkers");
