@@ -1,0 +1,50 @@
+﻿@using HandyHub.Models.ViewModels
+@model ClientDashboardVM
+
+<h1>@Model.Client.Id</h1>
+<h1>@Model.Client.User.Name</h1>
+<h1>@Model.Client.User.City</h1>
+<h1>@Model.Client.User.Email</h1>
+
+<h1>@Model.Reviews.Count</h1>
+<h1>@Model.Favorites.Count</h1>
+
+@foreach(var item in Model.Reviews)
+{
+	@foreach(var i in Model.Workers)
+	{
+		if (i.Id == @item.WorkerId)
+		{
+			<h1>@i.User.Name</h1>
+		}
+	}
+	<h1>@item.Rating</h1>
+	<h1>@item.Comment</h1>
+}
+
+@foreach (var item in Model.Favorites)
+{
+	@foreach (var i in Model.Workers)
+	{
+		if (i.Id == @item.WorkerId)
+		{
+			<h1>@i.User.Name</h1>
+		}
+	}
+	<h1>@item.CreatedAt</h1>
+}
+
+
+<a class="btn btn-warning" asp-action="EditClient" asp-route-id="@Model.Client.Id">Edite</a>
+<form asp-action="DeleteClient"
+	  method="post"
+	  onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');"
+	  style="display:inline-block;">
+	<input type="hidden" name="id" value="@Model.Client.Id" />
+	<button type="submit"
+			class="btn btn-sm btn-danger rounded-3"
+			title="حذف">
+		<i class="fas fa-trash"></i>
+	</button>
+</form>
+
