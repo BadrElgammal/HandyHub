@@ -20,11 +20,11 @@ namespace HandyHub.Repositories
 
         public bool SuspendWorker(Worker worker)
         {
-            return worker.IsAvailable = worker.IsAvailable ? false : true;
+            return worker.IsAvailable = !worker.IsAvailable ;
         }
         public Worker? GetWorkerWithUserById(int id)
         {
-            return _context.Workers.Include(c => c.User).FirstOrDefault(c => c.Id == id);
+            return _context.Workers.Include(c => c.User).Include(c => c.Category).FirstOrDefault(c => c.Id == id);
         }
 
         public List<Worker> GetAllWithUser()
