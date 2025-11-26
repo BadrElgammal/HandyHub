@@ -72,5 +72,13 @@ namespace HandyHub.Services
             workerRepo.Delete(id);
             workerRepo.Save();
         }
+        public List<Worker> GetAllWorkersWithPortfolioWithUserWithReviews()
+        {
+            return workerRepo.GetAllWorkersWithPortfolioWithUserWithReviews();
+        }
+        public Worker GetAllWorkersWithPortfolioWithUserWithReviews(int id)
+        {
+            return workerRepo.GetAllWorkersWithPortfolioWithUserWithReviews(id);
+        }
     }
 }
