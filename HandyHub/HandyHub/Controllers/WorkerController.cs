@@ -40,8 +40,9 @@ namespace HandyHub.Controllers
         }
         // GET: WorkerPortfolio/Create
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
+            ViewBag["id"] = (int)id;
             // 1. استخراج الـ WorkerId بالطريقة المتبعة في Profile()
             var userIdClaim = User.FindFirst("UserId");
             if (userIdClaim == null)
@@ -70,6 +71,7 @@ namespace HandyHub.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(WorkerPortfolio portfolio)
         {
+            portfolio.WorkerId = ViewBag["id"];
             // 1. استخراج الـ WorkerId من هوية المستخدم المسجل دخوله
             try
             {
