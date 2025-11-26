@@ -36,5 +36,15 @@ namespace HandyHub.Repositories
         {
             return _context.Workers.Include(w => w.Portfolio).Include(u=>u.User).Include(c=>c.Category).Include(r => r.Reviews).ToList();
         }
+        public Worker GetAllWorkersWithPortfolioWithUserWithReviews(int id)
+        {
+            return _context.Workers.Include(w => w.Portfolio).Include(u => u.User).Include(c => c.Category).Include(r => r.Reviews).FirstOrDefault(w=>w.Id==id);
+
+        }
+
+        public Worker? GetByid()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

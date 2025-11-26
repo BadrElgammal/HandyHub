@@ -1,0 +1,51 @@
+﻿@using HandyHub.Models.ViewModels.WorkerVM
+@model WorkerEditViewModel
+@{
+    ViewData["Title"] = "الملف الشخصي للعمّال";
+}
+<h1 class="text-3xl font-bold text-gray-900 mb-6">الملف الشخصي للعمّال</h1>
+<h1>@Model.Worker.User.Name</h1>
+@foreach(var item in Model.Worker.Portfolio)
+{
+    <div>
+        <h2>@item.Area</h2>
+        <img src="@item.ImageUrl" alt="@item.ImageUrl" />
+
+    </div>
+}
+@foreach (var item in Model.Worker.Reviews)
+{
+    <h2>@item.Rating STAR
+        - @item.Comment</h2>
+        @foreach(var client in Model.Clients){
+        if (item.ClientId == client.Id)
+        {
+            
+        <h1>
+            
+            @client.User.Name
+        </h1>
+        }
+        }
+}
+<h1>@Model.Categories.Name</h1>
+
+
+<a asp-action="EditWorker" asp-route-id="@Model.Worker.Id" class="btn btn-info">Edit</a>
+<a asp-action="Create" asp-route-id="@Model.Worker.Id" class="btn btn-info">Create protfilio</a>
+<form asp-action="DeleteWorker"
+          method="post"
+          onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');"
+          style="display:inline-block;">
+        <input type="hidden" name="id" value="@Model.Worker.Id" />
+        <button type="submit"
+                class="btn btn-sm btn-danger rounded-3"
+                title="حذف">
+            <i class="fas fa-trash"></i>
+        </button>
+    </form>
+
+
+
+)
+

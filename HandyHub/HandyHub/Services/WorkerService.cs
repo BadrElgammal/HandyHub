@@ -76,5 +76,9 @@ namespace HandyHub.Services
         {
             return workerRepo.GetAllWorkersWithPortfolioWithUserWithReviews();
         }
+        public Worker GetAllWorkersWithPortfolioWithUserWithReviews(int id)
+        {
+            return workerRepo.GetAllWorkersWithPortfolioWithUserWithReviews(id);
+        }
     }
 }

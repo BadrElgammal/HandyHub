@@ -1,0 +1,61 @@
+﻿@using HandyHub.Models.Entities
+@model WorkerPortfolio
+
+@{
+    ViewData["Title"] = "إضافة عمل جديد";
+}
+
+<div class="container mt-5">
+    <h1 class="text-3xl font-bold mb-4">إضافة عمل جديد لسجل الأعمال (بدون رفع صور)</h1>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+
+            @* 🔑 تم إزالة enctype="multipart/form-data" حيث لن يتم رفع ملفات *@
+            <form asp-action="Create" method="post">
+                <input type="hidden" asp-for="@Model.WorkerId" />    
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <input type="hidden" asp-for="WorkerId" />
+
+                <div class="mb-3">
+                    <label asp-for="Area" class="form-label">عنوان العمل المنجز</label>
+                    <input asp-for="Area" class="form-control" placeholder="أدخل وصفاً قصيراً للعمل" />
+                    <span asp-validation-for="Area" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Bio" class="form-label">الوصف التفصيلي للعمل</label>
+                    <textarea asp-for="Bio" class="form-control" rows="5" placeholder="اذكر التفاصيل، الأدوات المستخدمة، والنتائج"></textarea>
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+                </div>
+
+                @* 🖼️ خيار بديل: حقل لإدخال رابط الصورة (URL) يدوياً إذا كان مطلوباً *@
+                <div class="mb-3">
+                    <label asp-for="ImageUrl" class="form-label">رابط الصورة (URL) (اختياري)</label>
+                    <input asp-for="ImageUrl" class="form-control" placeholder="أدخل رابط الصورة إذا أردت" />
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg" asp-action="Create">
+                        <i class="fas fa-save"></i> حفظ العمل
+                    </button>
+
+                    <a  asp-action="Profile" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-arrow-left"></i> إلغاء والرجوع
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
