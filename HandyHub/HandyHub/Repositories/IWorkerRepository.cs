@@ -10,6 +10,8 @@ namespace HandyHub.Repositories
         Worker? GetWorkerWithUserById(int id);
         List<Worker> GetAllWithUser();
         List<Worker> GetAllWorkersWithPortfolioWithUserWithReviews();
+        Worker? GetByid();
 
+       Worker GetAllWorkersWithPortfolioWithUserWithReviews(int id);
     }
 }

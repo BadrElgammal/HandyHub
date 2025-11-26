@@ -12,5 +12,6 @@ namespace HandyHub.Services
         void UpdateWorkerWithUser(Worker model);
         void DeleteWorkerWithUser(int id);
         List<Worker> GetAllWorkersWithPortfolioWithUserWithReviews();
+        Worker GetAllWorkersWithPortfolioWithUserWithReviews(int id);
     }
 }
