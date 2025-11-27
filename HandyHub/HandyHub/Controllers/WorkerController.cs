@@ -39,89 +39,89 @@ namespace HandyHub.Controllers
             return View(workers);
         }
         // GET: WorkerPortfolio/Create
-        [HttpGet]
-        public IActionResult Create(int id)
-        {
-            ViewBag["id"] = (int)id;
-            // 1. استخراج الـ WorkerId بالطريقة المتبعة في Profile()
-            var userIdClaim = User.FindFirst("UserId");
-            if (userIdClaim == null)
-            {
-                // إذا لم يكن هناك مستخدم مسجل دخوله
-                return RedirectToAction("Login", "Account"); // أو أي صفحة مناسبة
-            }
-            var userId = int.Parse(userIdClaim.Value);
+        //[HttpGet]
+        //public IActionResult Create(int id)
+        //{
+        //    ViewBag["id"] = (int)id;
+        //    // 1. استخراج الـ WorkerId بالطريقة المتبعة في Profile()
+        //    var userIdClaim = User.FindFirst("UserId");
+        //    if (userIdClaim == null)
+        //    {
+        //        // إذا لم يكن هناك مستخدم مسجل دخوله
+        //        return RedirectToAction("Login", "Account"); // أو أي صفحة مناسبة
+        //    }
+        //    var userId = int.Parse(userIdClaim.Value);
 
-            // 🚨 يجب التأكد من أن db موجود في هذا الـ Controller (وهو كذلك في السياق السابق)
-            var workerId = db.Workers.Where(c => c.UserId == userId).Select(c => c.Id).FirstOrDefault();
+        //    // 🚨 يجب التأكد من أن db موجود في هذا الـ Controller (وهو كذلك في السياق السابق)
+        //    var workerId = db.Workers.Where(c => c.UserId == userId).Select(c => c.Id).FirstOrDefault();
 
-            if (workerId == 0)
-            {
-                // إذا لم يتم العثور على Worker مرتبط
-                return NotFound();
-            }
+        //    if (workerId == 0)
+        //    {
+        //        // إذا لم يتم العثور على Worker مرتبط
+        //        return NotFound();
+        //    }
 
-            // 2. إرسال الكائن مع تعيين WorkerId مسبقاً
-            var newPortfolio = new WorkerPortfolio { WorkerId = workerId };
+        //    // 2. إرسال الكائن مع تعيين WorkerId مسبقاً
+        //    var newPortfolio = new WorkerPortfolio { WorkerId = workerId };
 
-            return View(newPortfolio);
-        }
-        // POST: WorkerPortfolio/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(WorkerPortfolio portfolio)
-        {
-            portfolio.WorkerId = ViewBag["id"];
-            // 1. استخراج الـ WorkerId من هوية المستخدم المسجل دخوله
-            try
-            {
-                var userIdClaim = User.FindFirst("UserId");
-                if (userIdClaim == null)
-                {
-                    ModelState.AddModelError("", "خطأ في الجلسة: لا يوجد عامل مسجل دخوله.");
-                    return View(portfolio);
-                }
+        //    return View(newPortfolio);
+        //}
+        //// POST: WorkerPortfolio/Create
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Create(WorkerPortfolio portfolio)
+        //{
+        //    portfolio.WorkerId = ViewBag["id"];
+        //    // 1. استخراج الـ WorkerId من هوية المستخدم المسجل دخوله
+        //    try
+        //    {
+        //        var userIdClaim = User.FindFirst("UserId");
+        //        if (userIdClaim == null)
+        //        {
+        //            ModelState.AddModelError("", "خطأ في الجلسة: لا يوجد عامل مسجل دخوله.");
+        //            return View(portfolio);
+        //        }
 
-                var userId = int.Parse(userIdClaim.Value);
+        //        var userId = int.Parse(userIdClaim.Value);
 
-                // 🚨 البحث عن الـ WorkerId في قاعدة البيانات
-                var workerId = db.Workers.Where(c => c.UserId == userId).Select(c => c.Id).FirstOrDefault();
+        //        // 🚨 البحث عن الـ WorkerId في قاعدة البيانات
+        //        var workerId = db.Workers.Where(c => c.UserId == userId).Select(c => c.Id).FirstOrDefault();
 
-                if (workerId == 0)
-                {
-                    ModelState.AddModelError("", "خطأ: لم يتم العثور على سجل العامل المرتبط.");
-                    return View(portfolio);
-                }
+        //        if (workerId == 0)
+        //        {
+        //            ModelState.AddModelError("", "خطأ: لم يتم العثور على سجل العامل المرتبط.");
+        //            return View(portfolio);
+        //        }
 
-                // 🎯 تعيين الـ WorkerId الصحيح لكائن الـ Portfolio
-                portfolio.WorkerId = workerId;
-            }
-            catch
-            {
-                ModelState.AddModelError("", "حدث خطأ أثناء تحديد هوية العامل.");
-                return View(portfolio);
-            }
+        //        // 🎯 تعيين الـ WorkerId الصحيح لكائن الـ Portfolio
+        //        portfolio.WorkerId = workerId;
+        //    }
+        //    catch
+        //    {
+        //        ModelState.AddModelError("", "حدث خطأ أثناء تحديد هوية العامل.");
+        //        return View(portfolio);
+        //    }
 
-            // 2. تعيين قيمة افتراضية للـ ImageUrl (إذا كان فارغاً، لتجنب خطأ [Required])
-            if (string.IsNullOrEmpty(portfolio.ImageUrl))
-            {
-                portfolio.ImageUrl = "/images/default_portfolio.png"; // أو أي رابط صورة افتراضية
-            }
+        //    // 2. تعيين قيمة افتراضية للـ ImageUrl (إذا كان فارغاً، لتجنب خطأ [Required])
+        //    if (string.IsNullOrEmpty(portfolio.ImageUrl))
+        //    {
+        //        portfolio.ImageUrl = "/images/default_portfolio.png"; // أو أي رابط صورة افتراضية
+        //    }
 
-            // الآن ModelState.IsValid من المرجح أن تكون صحيحة لأن WorkerId تم تعيينه
-            if (ModelState.IsValid)
-            {
-                // 3. حفظ الكائن في قاعدة البيانات
-                Workerprotfilio.Insert(portfolio);
-                TempData["success"] = "تم إضافة العمل بنجاح.";
+        //    // الآن ModelState.IsValid من المرجح أن تكون صحيحة لأن WorkerId تم تعيينه
+        //    if (ModelState.IsValid)
+        //    {
+        //        // 3. حفظ الكائن في قاعدة البيانات
+        //        Workerprotfilio.Insert(portfolio);
+        //        TempData["success"] = "تم إضافة العمل بنجاح.";
 
-                // 4. التوجيه
-                return RedirectToAction("Profile", "Worker", new { id = portfolio.WorkerId });
-            }
+        //        // 4. التوجيه
+        //        return RedirectToAction("Profile", "Worker", new { id = portfolio.WorkerId });
+        //    }
 
-            // إذا فشل التحقق (لأي سبب آخر غير WorkerId)، أعد الـ View
-            return View(portfolio);
-        }
+        //    // إذا فشل التحقق (لأي سبب آخر غير WorkerId)، أعد الـ View
+        //    return View(portfolio);
+        //}
         //[HttpPost]
         //public IActionResult Delete(int id)
         //{
