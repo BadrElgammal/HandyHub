@@ -1,8 +1,10 @@
 ﻿using HandyHub.Data;
 using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels;
+using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Security.Claims;
 
 namespace HandyHub.Controllers
@@ -14,14 +16,17 @@ namespace HandyHub.Controllers
         private readonly IWorkerService workerService;
         private readonly IService<Review> ReviewService;
         private readonly IService<Favorite> favoriteService;
+        GenericService<WorkerPortfolio> Workerprotfilio;
 
-        public ClientController(HandyHubDbContext context, ClientService _clientService, WorkerService _workerService, GenericService<Review> _ReviewService,GenericService<Favorite> _favoritService)
+
+        public ClientController(HandyHubDbContext context, ClientService _clientService, WorkerService _workerService, GenericService<Review> _ReviewService,GenericService<Favorite> _favoritService, GenericService<WorkerPortfolio> workerprotfilio)
         {
             db = context;
             clientService = _clientService;
             workerService = _workerService;
             ReviewService = _ReviewService;
             favoriteService = _favoritService;
+            Workerprotfilio = workerprotfilio;
         }
 
         public IActionResult Profile()
@@ -79,5 +84,65 @@ namespace HandyHub.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
-	}
+		// Seach
+		[HttpGet]
+		public IActionResult Search()
+		{
+			var workers = workerService.GetAllWorkersWithPortfolioWithUserWithReviews();
+
+			return View(workers);
+		}
+
+        // Worker Profile
+      
+        public IActionResult WorkerProfile(int id)
+        {
+            var worker = workerService.GetWorkerWithUserById(id);
+            if (worker == null)
+            {
+                TempData["msg"] = "العامل غير موجود.";
+                return RedirectToAction("Search");
+            }
+
+            var reviews = ReviewService.GetAll().Where(r => r.WorkerId == id).ToList();
+            var client = clientService.GetAllWithUser();
+            var vm = new WorkerEditViewModel
+            {
+                Worker = worker,
+                Review = reviews,
+                Portfolio = Workerprotfilio.GetAll().Where(p => p.WorkerId == id).ToList(),
+                Categories = worker.Category,
+                Clients = client
+            };
+
+            return View(vm);
+        }
+
+
+        [HttpPost]
+        public IActionResult AddReview(Review model)
+        {
+            var userId = int.Parse(User.FindFirst("UserId").Value);
+            var clientId = db.Clients.FirstOrDefault(c => c.UserId == userId)?.Id ?? 0;
+
+            model.ClientId = clientId;
+            model.CreatedAt = DateTime.Now;
+
+
+            if (!ModelState.IsValid)
+            {
+                TempData["msg"] = "الرجاء ملء جميع الحقول.";
+                return RedirectToAction("WorkerProfile", "Client", new { id = model.WorkerId });
+            }
+
+            ReviewService.Insert(model);
+            TempData["msg"] = "✅ تم إضافة التقييم بنجاح.";
+            return RedirectToAction("WorkerProfile", "Client", new { id = model.WorkerId });
+        }
+
+      
+
+
+
+    }
 }

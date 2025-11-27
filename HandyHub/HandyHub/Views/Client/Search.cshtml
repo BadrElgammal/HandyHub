@@ -1,0 +1,151 @@
+﻿@using HandyHub.Models.Entities
+@model List<Worker>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">City</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+        </tr>
+    </thead>
+    <tbody>
+
+      
+        @foreach (var item in Model)
+        {
+           
+            <tr>
+              
+                <td>
+
+                   @item.User.Name
+                     <a asp-action="WorkerProfile" asp-route-id="@item.Id" class="btn btn-primary">Profile</a>
+
+                  @*   <p>
+                        <a asp-controller="Client" asp-action="WorkerProfile" asp-route-id="@item.User.Id" class="link-underline-primary">
+                            @item.User.Name
+                        </a>
+                    </p>
+ *@
+
+                </td>
+
+                <td>@item.User.City</td>
+                <td>@item.User.Email</td>
+                <td>@item.User.Phone</td>
+             
+            </tr>
+        }
+
+        <tr>
+      
+    </tbody>
+</table>
+
+
+@*     
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-8 text-right">
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">ابحث عن العمّال المهرة</h1>
+        <p class="text-gray-600">تصفح وتواصل مع العمّال الموثوقين في منطقتك</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-xl shadow-sm p-6 sticky top-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">الفلاتر</h2>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">الفئة</label>
+                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent cursor-pointer pr-8">
+                        <option>كل الفئات</option>
+                        <option>سباكة</option>
+                        <option>كهرباء</option>
+                        <option>نجارة</option>
+                        <option>دهان</option>
+                        <option>تكييف</option>
+                        <option>تنظيف</option>
+                        <option>تنسيق الحدائق</option>
+                        <option>إصلاح الأجهزة المنزلية</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">المدينة</label>
+                    <input placeholder="أدخل اسم المدينة" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm" type="text" />
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">الحد الأدنى للتقييم</label>
+                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent cursor-pointer pr-8">
+                        <option>أي تقييم</option>
+                        <option>3+ نجوم</option>
+                        <option>4+ نجوم</option>
+                        <option>4.5+ نجوم</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="flex items-center space-x-2 space-x-reverse cursor-pointer">
+                        <input class="w-5 h-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500 cursor-pointer" type="checkbox" />
+                        <span class="text-sm text-gray-700">متاح الآن</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-3">
+
+            @foreach (var worker in Model)
+            {
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+
+                    <div class="worker-card bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden w-full">
+                        <div class="p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1 text-right">
+                                    <div class="flex items-center justify-end space-x-2 space-x-reverse mb-2">
+                                        <h3 class="text-lg font-semibold text-gray-900">@worker.User?.Name</h3>
+                                        <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full whitespace-nowrap">@worker.IsAvailable</span>
+                                    </div>
+                                    <p class="text-sm text-teal-600 font-medium">@worker.Category?.Name </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-end space-x-1 space-x-reverse mb-3">
+                                <i class="ri-star-fill text-yellow-400 text-sm"></i>
+                                <i class="ri-star-fill text-yellow-400 text-sm"></i>
+                                <i class="ri-star-fill text-yellow-400 text-sm"></i>
+                                <i class="ri-star-fill text-yellow-400 text-sm"></i>
+                                <i class="ri-star-line text-gray-300 text-sm"></i>
+
+                                @if (worker.Reviews != null && worker.Reviews.Any())
+                                {
+                                    <span class="text-sm text-gray-600 mr-2">
+                                        @worker.Reviews.Average(r => r.Rating).ToString("0.0") (@worker.Reviews.Count() تقييم)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-sm text-gray-400 mr-2">(لا يوجد تقييم)</span>
+                                }
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                                @worker.Bio
+                            </p>
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-100 text-sm text-gray-500">
+                                <div class="flex items-center space-x-1 space-x-reverse"><i class="ri-map-pin-line"></i><span>@worker.Area</span></div>
+
+                                <div class="flex items-center space-x-1 space-x-reverse"><i class="ri-phone-line"></i><span>@worker.User?.Phone </span></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div> *@
