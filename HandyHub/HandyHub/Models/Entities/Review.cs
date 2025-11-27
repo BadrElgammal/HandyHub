@@ -15,10 +15,10 @@ namespace HandyHub.Models.Entities
 
         [ForeignKey("Client")]
         public int ClientId { get; set; }
-        public Client Client { get; set; }
+        public Client? Client { get; set; }
 
         [ForeignKey("Worker")]
         public int WorkerId { get; set; }
-        public Worker Worker { get; set; }
+        public Worker? Worker { get; set; }
     }
 }
