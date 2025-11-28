@@ -32,10 +32,23 @@ namespace HandyHub.Controllers
             this.clientService = clientService;
         }
         [HttpGet]
-        public IActionResult Search()
+        [HttpGet]
+        public IActionResult Search(int? categoryId, string? city, double? rating, bool? available)
         {
             var workers = workerService.GetAllWorkersWithPortfolioWithUserWithReviews();
+            if (categoryId.HasValue)
+                workers = workers.Where(w => w.CategoryId == categoryId.Value).ToList();
 
+            if (!string.IsNullOrEmpty(city))
+                workers = workers.Where(w => w.User.City.Contains(city)).ToList();
+
+            if (rating.HasValue)
+                workers = workers.Where(w => w.Reviews.Any() && w.Reviews.Average(r => r.Rating) >= rating.Value).ToList();
+
+            if (available.HasValue && available.Value)
+                workers = workers.Where(w => w.IsAvailable).ToList();
+
+            ViewBag.caregories = catigoryService.GetAll();
             return View(workers);
         }
         // GET: WorkerPortfolio/Create

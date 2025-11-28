@@ -4,6 +4,7 @@ using HandyHub.Models.ViewModels;
 using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 using System;
 using System.Security.Claims;
 
@@ -17,9 +18,11 @@ namespace HandyHub.Controllers
         private readonly IService<Review> ReviewService;
         private readonly IService<Favorite> favoriteService;
         GenericService<WorkerPortfolio> Workerprotfilio;
+        private readonly IService<Category> categoryService;
 
 
-        public ClientController(HandyHubDbContext context, ClientService _clientService, WorkerService _workerService, GenericService<Review> _ReviewService,GenericService<Favorite> _favoritService, GenericService<WorkerPortfolio> workerprotfilio)
+
+        public ClientController(HandyHubDbContext context, ClientService _clientService, WorkerService _workerService,GenericService<Review> _ReviewService, GenericService<Favorite> _favoritService, GenericService<WorkerPortfolio> workerprotfilio , GenericService<Category> _categoryService)
         {
             db = context;
             clientService = _clientService;
@@ -27,6 +30,7 @@ namespace HandyHub.Controllers
             ReviewService = _ReviewService;
             favoriteService = _favoritService;
             Workerprotfilio = workerprotfilio;
+            categoryService = _categoryService;
         }
 
         public IActionResult Profile()
@@ -86,10 +90,22 @@ namespace HandyHub.Controllers
 
 		// Seach
 		[HttpGet]
-		public IActionResult Search()
+		public IActionResult Search(int? categoryId,string? city, double? rating, bool? available)
 		{
 			var workers = workerService.GetAllWorkersWithPortfolioWithUserWithReviews();
+            if(categoryId.HasValue)
+                workers = workers.Where(w => w.CategoryId ==categoryId.Value).ToList();
+            
+            if(!string.IsNullOrEmpty(city))
+                workers =workers.Where(w => w.User.City.Contains(city)).ToList();
 
+            if(rating.HasValue)
+                workers = workers.Where(w => w.Reviews.Any() && w.Reviews.Average(r => r.Rating) >= rating.Value).ToList();
+
+            if(available.HasValue && available.Value)
+                workers = workers.Where(w => w.IsAvailable).ToList();
+
+            ViewBag.caregories = categoryService.GetAll();
 			return View(workers);
 		}
 

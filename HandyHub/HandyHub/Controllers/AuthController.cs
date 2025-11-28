@@ -136,4 +136,9 @@ public class AuthController : Controller
         ViewBag.Message = "تم إنشاء الحساب بنجاح. يمكنك الآن تسجيل الدخول.";
         return RedirectToAction("Login");
     }
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("jwt");
+        return RedirectToAction("Index", "Home");
+    }
 }
