@@ -3,11 +3,13 @@ using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels;
 using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HandyHub.Controllers
 {
+    [Authorize(Roles = "Worker")]
     public class WorkerController : Controller
     {
         IWorkerService workerService;
