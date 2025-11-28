@@ -114,26 +114,43 @@
                         var image = worker.User?.ImageUrl ?? "/images/default-worker.png";
 
                         <a asp-action="WorkerProfile" asp-route-id="@worker.Id"
-                           class="block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden worker-card">
-                            <div class="p-6 text-right">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div class="flex-1">
-                                        <div class="flex items-center justify-end space-x-2 space-x-reverse mb-2">
-                                            <h3 class="text-lg font-semibold text-gray-900">@name</h3>
-                                            @if (worker.IsAvailable)
-                                            {
-                                                <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full whitespace-nowrap">متاح</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full whitespace-nowrap">غير متاح</span>
-                                            }
+                           class="group block bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-300
+                  hover:-translate-y-1 hover:shadow-lg hover:border-teal-300 overflow-hidden">
+
+                            <div class="p-5 flex flex-col space-y-4 text-right">
+
+                                <!-- الصورة والاسم والحالة -->
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="relative w-14 h-14 rounded-full overflow-hidden border border-gray-200">
+                                            <img src="@image" alt="@name"
+                                                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
                                         </div>
-                                        <p class="text-sm text-teal-600 font-medium">@category</p>
+                                        <div class="text-right">
+                                            <h3 class="text-lg font-semibold text-gray-900 leading-tight
+                                       transition-colors duration-300 group-hover:text-teal-600">
+                                                @name
+                                            </h3>
+                                            <p class="text-sm text-teal-600">@category</p>
+                                        </div>
                                     </div>
+
+                                    @if (worker.IsAvailable)
+                                    {
+                                        <span class="px-3 py-1 bg-green-50 text-green-600 text-xs font-medium rounded-full whitespace-nowrap">
+                                            🟢 متاح الآن
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-3 py-1 bg-red-50 text-red-600 text-xs font-medium rounded-full whitespace-nowrap">
+                                            🔴 غير متاح
+                                        </span>
+                                    }
                                 </div>
 
-                                <div class="flex justify-end items-center mb-3">
+                                <!-- ⭐ التقييم -->
+                                <div class="flex justify-end items-center">
                                     <div class="flex items-center space-x-1 space-x-reverse">
                                         @for (int i = 0; i < 5; i++)
                                         {
@@ -150,14 +167,23 @@
                                     </div>
                                 </div>
 
-                                <p class="text-gray-600 text-sm mb-4 line-clamp-2">@worker.Bio</p>
+                                <!-- 💬 النبذة -->
+                                @if (!string.IsNullOrWhiteSpace(worker.Bio))
+                                {
+                                    <p class="text-sm text-gray-600 leading-relaxed line-clamp-2 group-hover:text-gray-800 transition-colors duration-300">
+                                        @worker.Bio
+                                    </p>
+                                }
 
-                                <div class="flex justify-between pt-4 border-t border-gray-100 text-sm text-gray-500">
+                                <!-- 📍 المدينة والموبايل -->
+                                <div class="flex justify-between items-center pt-3 border-t border-gray-100 text-sm text-gray-500">
                                     <div class="flex items-center space-x-1 space-x-reverse">
-                                        <i class="ri-map-pin-line"></i><span>@city</span>
+                                        <i class="ri-map-pin-line text-teal-500"></i>
+                                        <span>@city</span>
                                     </div>
                                     <div class="flex items-center space-x-1 space-x-reverse">
-                                        <i class="ri-phone-line"></i><span>@phone</span>
+                                        <i class="ri-phone-line text-teal-500"></i>
+                                        <span>@phone</span>
                                     </div>
                                 </div>
                             </div>

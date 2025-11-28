@@ -3,6 +3,7 @@ using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels;
 using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
 using System;
@@ -10,6 +11,7 @@ using System.Security.Claims;
 
 namespace HandyHub.Controllers
 {
+    [Authorize(Roles = "Client")]
     public class ClientController : Controller
     {
         private readonly HandyHubDbContext db;
