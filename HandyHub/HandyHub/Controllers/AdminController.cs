@@ -283,7 +283,7 @@ namespace HandyHub.Controllers
         // =============================== Manage Reviews ===============================
         public IActionResult ManageReviews ()
         {
-            var reviews = _context.Reviews.Include(r => r.Client).Include(r => r.Worker).ToList();
+            var reviews = _context.Reviews.Include(r => r.Client).ThenInclude(c => c.User).Include(r => r.Worker).ThenInclude(w => w.User).ToList();
             return View(reviews);
         }
 
@@ -337,6 +337,12 @@ namespace HandyHub.Controllers
             return _context.Workers.Include(w => w.Category).FirstOrDefault(c => c.Id == id);
         }
 
+
+        public IActionResult logout()
+        {
+            Response.Cookies.Delete("jwt");
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
 
