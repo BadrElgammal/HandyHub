@@ -321,7 +321,28 @@ namespace HandyHub.Controllers
             };
             return View(vm);
         }
+        public IActionResult WorkerProfile(int id)
+        {
+            var worker = workerService.GetWorkerWithUserById(id);
+            if (worker == null)
+            {
+                TempData["msg"] = "العامل غير موجود.";
+                return RedirectToAction("Search");
+            }
 
+            var reviews = ReviewService.GetAll().Where(r => r.WorkerId == id).ToList();
+            var client = clientService.GetAllWithUser();
+            var vm = new WorkerEditViewModel
+            {
+                Worker = worker,
+                Review = reviews,
+                Portfolio = Workerprotfilio.GetAll().Where(p => p.WorkerId == id).ToList(),
+                Categories = worker.Category,
+                Clients = client
+            };
+
+            return View(vm);
+        }
 
     }
 }
