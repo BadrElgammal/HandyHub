@@ -1,92 +1,105 @@
 ﻿@model HandyHub.Models.ViewModels.WorkerWithCatigoryViewModel
-
 @{
-    Layout = "_AdminLayout";
+    Layout = "_Layout";
     ViewData["Title"] = "تعديل بيانات العامل";
 }
 
-@if (ViewBag.errorMessage != null)
-{
-    <div class="alert alert-danger">
-        @ViewBag.errorMessage
-    </div>
-}
-@if (TempData["msg"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["msg"]
-    </div>
-}
+<div class="min-h-screen bg-gray-50 py-12 text-right" dir="rtl">
 
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <main class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 lg:p-10 border border-gray-100">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+            <i class="ri-user-settings-line text-teal-600"></i> تعديل بياناتي الشخصية
+        </h1>
+        <p class="text-gray-600 mb-8 border-b pb-4">يرجى تحديث بيانات حسابك لتبقى دقيقة.</p>
 
-<div class="container py-5">
-    <h3 class="fw-bold mb-4 text-warning">تعديل بيانات العامل</h3>
+        <form asp-action="EditWorker" method="post" class="space-y-6">
 
-    <form asp-action="EditWorker" method="post" class="bg-white p-4 shadow rounded-3">
-        <input asp-for="Worker.Id" type="hidden" />
-        <input asp-for="Worker.UserId" type="hidden" />
+            <input type="hidden" asp-for="Worker.Id" />
+            <input type="hidden" asp-for="Worker.UserId" />
 
-        <!-- بيانات المستخدم العامة -->
-        <div class="mb-3">
-            <label class="form-label">الاسم</label>
-            <input asp-for="Worker.User.Name" class="form-control" />
-            <span asp-validation-for="Worker.User.Name" class="text-danger"></span>
-        </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
+                <input asp-for="Worker.User.Name"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
+                <span asp-validation-for="Worker.User.Name" class="text-red-600 text-sm"></span>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">البريد الإلكتروني</label>
-            <input asp-for="Worker.User.Email" class="form-control" />
-            <span asp-validation-for="Worker.User.Email" class="text-danger"></span>
-        </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
+                <input asp-for="Worker.User.Email"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
+                <span asp-validation-for="Worker.User.Email" class="text-red-600 text-sm"></span>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">رقم الهاتف</label>
-            <input asp-for="Worker.User.Phone" class="form-control" />
-            <span asp-validation-for="Worker.User.Phone" class="text-danger"></span>
-        </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف</label>
+                <input asp-for="Worker.User.Phone"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
+                <span asp-validation-for="Worker.User.Phone" class="text-red-600 text-sm"></span>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">المدينة</label>
-            <input asp-for="Worker.User.City" class="form-control" />
-            <span asp-validation-for="Worker.User.City" class="text-danger"></span>
-        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">المدينة</label>
+                    <input asp-for="Worker.User.City"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
+                </div>
 
-        <!-- بيانات خاصة بالعامل -->
-        <div class="mb-3">
-            <label class="form-label">المنطقة</label>
-            <input asp-for="Worker.Area" class="form-control" />
-            <span asp-validation-for="Worker.Area" class="text-danger"></span>
-        </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">المنطقة</label>
+                    <input asp-for="Worker.Area"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
+                </div>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">نبذة عنك</label>
-            <textarea asp-for="Worker.Bio" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="Worker.Bio" class="text-danger"></span>
-        </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">الفئة (المهنة)</label>
+                <select asp-for="Worker.CategoryId"
+                        asp-items="@(new SelectList(Model.Categorys, "Id", "Name"))"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm cursor-pointer">
+                    <option value="">اختر المهنة</option>
+                </select>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">الفئة</label>
-            <select class="form-select" asp-for="Worker.CategoryId">
-                <option value="">-- اختر الفئة --</option>
-                @foreach (var item in Model.Categorys)
-                {
-                    <option value="@item.Id" selected="@(item.Id == Model.Worker.CategoryId)">
-                        @item.Name
-                    </option>
-                }
-            </select>
-            <span asp-validation-for="Worker.CategoryId" class="text-danger"></span>
-        </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">النبذة الشخصية وخبراتك</label>
+                <textarea asp-for="Worker.Bio" rows="5"
+                          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm resize-none"></textarea>
+            </div>
 
-        <!-- كلمة المرور -->
-        <div class="mb-3">
-            <label class="form-label">كلمة المرور</label>
-            <input asp-for="Worker.User.PasswordHash" class="form-control" type="password" />
-            <span asp-validation-for="Worker.User.PasswordHash" class="text-danger"></span>
-        </div>
+            <div class="border-t border-gray-100 pt-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">تغيير كلمة المرور (اختياري)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور الجديدة</label>
+                        <input asp-for="Worker.User.PasswordHash" type="password"
+                               class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+                    </div>
 
-        <button type="submit" class="btn btn-warning text-white">تحديث</button>
-        <a asp-action="profile" class="btn btn-secondary">رجوع</a>
-    </form>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">تأكيد كلمة المرور</label>
+                        <input type="password"
+                               class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-8">
+                <a href="@Url.Action("Profile", "Worker")"
+                   class="text-gray-600 hover:text-teal-600 font-medium flex items-center transition-colors">
+                    <i class="ri-arrow-go-back-line ml-1"></i> إلغاء والرجوع
+                </a>
+
+                <button type="submit"
+                        class="px-8 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold flex items-center transition-colors shadow-lg shadow-teal-500/30">
+                    <i class="ri-save-line ml-1"></i> حفظ التعديلات
+                </button>
+            </div>
+
+        </form>
+    </main>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

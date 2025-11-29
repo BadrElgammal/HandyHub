@@ -1,8 +1,6 @@
 ﻿@using HandyHub.Models.ViewModels.WorkerVM
 @model WorkerEditViewModel
-@{
-    ViewData["Title"] = "الملف الشخصي للعمّال";
-}
+
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Worker Dashboard";
@@ -11,34 +9,41 @@
 <div class="min-h-screen bg-gray-50 py-8" dir="rtl">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
+        <!-- Profile Header -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8 relative">
 
-            <div class="h-32 bg-gradient-to-l from-blue-600 to-blue-400 w-full"></div>
+            <div class="h-32 bg-gradient-to-br from-teal-600 to-blue-600 w-full"></div>
 
             <div class="px-6 pb-6">
                 <div class="flex flex-col md:flex-row items-center md:items-end -mt-12 gap-6">
 
+                    <!-- Profile Image -->
                     <div class="relative">
-                        <img src="/Images/plumber.jpeg" class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" alt="Profile Picture" />
-                        <div class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-2 border-white rounded-full" title="متاح للعمل"></div>
+                        <img src="@Model.Worker.User.ImageUrl" class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" />
+                        <div class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
                     </div>
 
+                    <!-- Name & Info -->
                     <div class="flex-1 text-center md:text-right mt-2 md:mt-0">
                         <h2 class="text-3xl font-bold text-gray-800">@Model.Worker.User.Name</h2>
                         <p class="text-gray-500 font-medium">@Model.Worker.Bio</p>
 
                         <div class="flex flex-wrap justify-center md:justify-start gap-4 mt-3 text-sm text-gray-600">
                             <span class="flex items-center gap-1"><i class="ri-map-pin-line"></i>@Model.Worker.User.City</span>
-                            <span class="flex items-center gap-1"><i class="ri-phone-line"></i>@Model.Worker.User.Phone </span>
-                            <span class="flex items-center gap-1"><i class="ri-mail-line"></i> @Model.Worker.User.Email</span>
+                            <span class="flex items-center gap-1"><i class="ri-phone-line"></i>@Model.Worker.User.Phone</span>
+                            <span class="flex items-center gap-1"><i class="ri-mail-line"></i>@Model.Worker.User.Email</span>
                         </div>
                     </div>
 
+                    <!-- Buttons -->
                     <div class="flex gap-3 mt-4 md:mt-0">
-                        <a asp-action="EditWorker" asp-route-id="@Model.Worker.Id" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:text-blue-600 transition shadow-sm">
+                        <a asp-action="EditWorker" asp-route-id="@Model.Worker.Id"
+                           class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:text-blue-600 transition shadow-sm">
                             <i class="ri-edit-box-line ml-1"></i> تعديل
                         </a>
-                        <a asp-action="DeleteWorker" asp-route-id="@Model.Worker.Id" class="px-5 py-2.5 bg-red-50 border border-red-100 text-red-600 font-medium rounded-lg hover:bg-red-100 transition shadow-sm">
+
+                        <a asp-action="DeleteWorker" asp-route-id="@Model.Worker.Id"
+                           class="px-5 py-2.5 bg-red-50 border border-red-100 text-red-600 font-medium rounded-lg hover:bg-red-100 transition shadow-sm">
                             <i class="ri-delete-bin-line ml-1"></i> حذف الحساب
                         </a>
                     </div>
@@ -46,10 +51,13 @@
             </div>
         </div>
 
+        <!-- Stats Boxes -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+            <!-- Orders Count -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition">
                 <div>
-                    <p class="text-gray-500 text-sm font-medium"> عدد الطلبات</p>
+                    <p class="text-gray-500 text-sm font-medium">عدد الطلبات</p>
                     <h3 class="text-3xl font-bold text-gray-800 mt-1">@Model.Worker.Reviews.Count()</h3>
                 </div>
                 <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-2xl">
@@ -57,29 +65,28 @@
                 </div>
             </div>
 
+            <!-- Rating -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition">
                 <div>
                     <p class="text-gray-500 text-sm font-medium">التقييم العام</p>
-                    @foreach (var item in Model.Worker.Reviews)
-                    {
-                        <h3 class="text-3xl font-bold text-gray-800 mt-1">@item.Rating</h3>
-                    }
-                    
-                   
+                    <h3 class="text-3xl font-bold text-gray-800 mt-1">
+                        @(
+                                                Model.Worker.Reviews.Any()
+                                                ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
+                                                : "0"
+                                                )
+                    </h3>
                 </div>
                 <div class="w-12 h-12 bg-yellow-50 text-yellow-500 rounded-lg flex items-center justify-center text-2xl">
                     <i class="ri-star-fill"></i>
                 </div>
             </div>
 
+            <!-- Reviews Count -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition">
                 <div>
                     <p class="text-gray-500 text-sm font-medium">آراء العملاء</p>
-                    @foreach (var item in Model.Worker.Reviews)
-                    {
-                         <h3 class="text-3xl font-bold text-gray-800 mt-1">@item.Worker.Reviews.Count()</h3>
-                    }
-                  
+                    <h3 class="text-3xl font-bold text-gray-800 mt-1">@Model.Worker.Reviews.Count()</h3>
                 </div>
                 <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center text-2xl">
                     <i class="ri-chat-1-line"></i>
@@ -87,67 +94,79 @@
             </div>
         </div>
 
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                <i class="ri-gallery-line text-blue-600"></i> معرض الأعمال
-            </h2>
-          
-            <a href="#" class="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg shadow-lg shadow-blue-200 transition flex items-center gap-2">
-                <i class="ri-add-circle-line text-xl"></i> إضافة عمل جديد
-            </a>
+        <!-- Portfolio Section -->
+        <div class="mb-12">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <i class="ri-gallery-line text-blue-600"></i> معرض الأعمال
+                </h2>
 
-            @foreach (var item in Model.Worker.Portfolio)
+                <a href="#" class="mt-4 md:mt-0 bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-lg shadow-lg shadow-blue-200 transition flex items-center gap-2">
+                    <i class="ri-add-circle-line text-xl"></i> إضافة عمل جديد
+                </a>
+            </div>
+
+            <!-- Portfolio Cards -->
+            @if (Model.Worker.Portfolio == null || !Model.Worker.Portfolio.Any())
             {
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                    <div class="group bg-white rounded-xl shadow border border-gray-100 overflow-hidden hover:shadow-lg transition cursor-pointer">
-                        <div class="relative overflow-hidden">
-                            <img src="/Images/puzz.jpg" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300" />
-                            <div class="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-0 transition"></div>
-                        </div>
-                        <div class="p-5">
-                            <h3 class="font-bold text-gray-800 text-lg">@item.Bio</h3>
-                            <p class="text-gray-500 text-sm mt-2 line-clamp-2">تم تنفيذ شبكة صرف صحي كاملة باستخدام خامات عالية الجودة...</p>
-                        </div>
-                    </div>
-
-                    <div class="group bg-white rounded-xl shadow border border-gray-100 overflow-hidden hover:shadow-lg transition cursor-pointer">
-                        <div class="relative overflow-hidden">
-                            <img src="/Images/kitchen.jpeg" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300" />
-                        </div>
-                        <div class="p-5">
-                            <h3 class="font-bold text-gray-800 text-lg">@item.Bio</h3>
-                            <p class="text-gray-500 text-sm mt-2 line-clamp-2">تصميم وتركيب مطبخ عصري مع مراعاة مساحات التخزين...</p>
-                        </div>
-                    </div>
+                <div class="text-center py-10 bg-gray-50 rounded-xl border border-gray-200">
+                    <i class="ri-folder-warning-line text-5xl text-gray-400"></i>
+                    <p class="text-gray-600 text-lg font-semibold mt-3">لا يوجد أعمال لهذا العامل</p>
                 </div>
             }
+            else
+            {
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach (var item in Model.Worker.Portfolio)
+                    {
+                        <div class="group bg-white rounded-xl shadow border border-gray-100 overflow-hidden hover:shadow-lg transition cursor-pointer">
+                            <div class="relative overflow-hidden">
+                                <img src="@item.ImageUrl" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300" />
+                            </div>
 
+                            <div class="p-5">
+                                <h3 class="font-bold text-gray-800 text-lg">@item.Bio</h3>
+                                <p class="text-gray-500 text-sm mt-2 line-clamp-2">@item.Area</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
         </div>
-        @foreach(var item in Model.Worker.Reviews)
-        {
-             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+
+
+        <!-- Reviews Section -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
             <h2 class="text-xl font-bold text-gray-800 mb-6 border-b pb-4">أحدث التقييمات</h2>
 
             <div class="space-y-6">
-                <div class="flex gap-4">
-                    <img src="https://picsum.photos/60" class="w-12 h-12 rounded-full object-cover" />
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h4 class="font-bold text-gray-900">@item.Client.User.Name</h4>
-                            <span class="text-xs text-gray-400">• منذ يومين</span>
+
+                @foreach (var item in Model.Worker.Reviews)
+                {
+                    <div class="flex gap-4">
+                        <img src="https://picsum.photos/60" class="w-12 h-12 rounded-full object-cover" />
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-bold text-gray-900">@item.Client.User.Name</h4>
+                                <span class="text-xs text-gray-400">• منذ يومين</span>
+                            </div>
+                            <div class="flex items-center mb-3 space-x-1 space-x-reverse">
+                                @* ⭐ عرض النجوم بناءً على التقييم (review.Rating) *@
+                                @for (int i = 0; i < @item.Rating; i++)
+                                {
+                                    <i class="ri-star-fill text-yellow-400"></i>
+                                }
+                            </div>
+
+                            <p class="text-gray-600 text-sm leading-relaxed bg-gray-50 p-3 rounded-lg rounded-tr-none mt-1 inline-block">
+                                @item.Comment
+                            </p>
                         </div>
-                        <div class="text-yellow-400 text-sm my-1">★★★★★</div>
-                        <p class="text-gray-600 text-sm leading-relaxed bg-gray-50 p-3 rounded-lg rounded-tr-none mt-1 inline-block">
-                            شغل ممتاز وصراحة شخص محترم جداً ومتعاون، أنصح بالتعامل معه.
-                        </p>
                     </div>
-                </div>
+                }
+
             </div>
         </div>
 
-        }
-
     </div>
 </div>
-       
