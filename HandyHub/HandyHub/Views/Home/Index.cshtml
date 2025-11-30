@@ -1,5 +1,7 @@
-﻿@{
+﻿@using System.Security.Claims
+@{
     ViewData["Title"] = "الرئيسية";
+    var userRole = User?.FindFirst(ClaimTypes.Role)?.Value ?? "";
 }
 
 <!-- ✅ Hero Section -->
@@ -33,9 +35,30 @@
                                    placeholder="أدخل مدينتك أو منطقتك"
                                    class="w-full pr-12 pl-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-base" />
                         </div>
-                        <button class="w-full bg-teal-600 text-white py-4 rounded-xl hover:bg-teal-700 font-semibold text-lg transition-colors">
-                            ابحث عن العمّال
-                        </button>
+                        @if(userRole=="Client")
+                        {
+                            <a href="~/Client/Search" class="btn w-full bg-teal-600 text-white py-4 rounded-xl hover:bg-teal-700 font-semibold text-lg transition-colors">
+                                ابحث عن العمّال
+                            </a>
+                        }
+                        else if(userRole=="Worker")
+                        {
+                            <a href="~/Worker/Search" class="btn w-full bg-teal-600 text-white py-4 rounded-xl hover:bg-teal-700 font-semibold text-lg transition-colors">
+                                ابحث عن العمّال
+                            </a>
+                        }
+                        else if(userRole=="Admin")
+                        {
+                            <a href="~/Admin/ManageWorkers" class="btn w-full bg-teal-600 text-white py-4 rounded-xl hover:bg-teal-700 font-semibold text-lg transition-colors">
+                                ابحث عن العمّال
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="~/Auth/Login" class="btn w-full bg-teal-600 text-white py-4 rounded-xl hover:bg-teal-700 font-semibold text-lg transition-colors">
+                                ابحث عن العمّال
+                            </a>
+                        }
                     </div>
                 </div>
 
@@ -229,12 +252,12 @@
                         فإن HandyHub هي المنصة المثالية لك.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button class="px-8 py-4 bg-white text-teal-600 rounded-xl hover:bg-gray-50 font-semibold text-lg transition-colors">
+                        <a href="~/Auth/Register" class="btn px-8 py-4 bg-white text-teal-600 rounded-xl hover:bg-gray-50 font-semibold text-lg transition-colors">
                             سجل كعميل
-                        </button>
-                        <button class="px-8 py-4 bg-teal-700 text-white rounded-xl hover:bg-teal-800 font-semibold text-lg transition-colors border-2 border-white/20">
+                        </a>
+                        <a href="~/Auth/Register" class="btn px-8 py-4 bg-teal-700 text-white rounded-xl hover:bg-teal-800 font-semibold text-lg transition-colors border-2 border-white/20">
                             سجل كعامل
-                        </button>
+                        </a>
                     </div>
                 </div>
 
