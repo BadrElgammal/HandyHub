@@ -1,4 +1,6 @@
-﻿<footer class="bg-gray-900 text-gray-300">
+﻿@using System.Security.Claims
+@{var userRole = User?.FindFirst(ClaimTypes.Role)?.Value ?? "";}
+<footer class="bg-gray-700 text-gray-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid md:grid-cols-4 gap-8 mb-8 text-right">
             <div>
@@ -14,7 +16,24 @@
             <div>
                 <h4 class="text-white font-semibold mb-4">للعملاء</h4>
                 <ul class="space-y-2">
-                    <li><a href="#categories" class="hover:text-white transition-colors">ابحث عن عمّال</a></li>
+                    <li>
+                        @if (userRole == "Client")
+                        {
+                            <a href="~/Client/Search" class="hover:text-white transition-colors">ابحث عن العمّال</a>
+                        }
+                        else if (userRole == "Worker")
+                        {
+                            <a href="~/Worker/Search" class="hover:text-white transition-colors">ابحث عن العمّال</a>
+                        }
+                        else if (userRole == "Admin")
+                        {
+                            <a href="~/Admin/ManageWorkers" class="hover:text-white transition-colors">ابحث عن العمّال</a>
+                        }
+                        else
+                        {
+                            <a href="~/Auth/Login" class="hover:text-white transition-colors">ابحث عن العمّال</a>
+                        }
+                    </li>
                     <li><a href="~/Auth/Register" class="hover:text-white transition-colors">سجّل الآن</a></li>
                     <li><a href="#how-it-works" class="hover:text-white transition-colors">كيف يعمل</a></li>
                 </ul>
@@ -23,7 +42,7 @@
             <div>
                 <h4 class="text-white font-semibold mb-4">للعمّال</h4>
                 <ul class="space-y-2">
-                    <li><a href="~/Worker/Register" class="hover:text-white transition-colors">التسجيل كعامل</a></li>
+                    <li><a href="~/Auth/Register" class="hover:text-white transition-colors">التسجيل كعامل</a></li>
                     <li><a href="~/Auth/Login" class="hover:text-white transition-colors">تسجيل الدخول</a></li>
                     <li><a href="#features" class="hover:text-white transition-colors">المميزات</a></li>
                 </ul>

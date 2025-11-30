@@ -1,67 +1,60 @@
 ﻿@using System.Security.Claims
 @{
     bool isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
-
     var userName = User?.FindFirst(ClaimTypes.Name)?.Value ?? "مستخدم";
     var userRole = User?.FindFirst(ClaimTypes.Role)?.Value ?? "";
     var profileImage = User?.FindFirst("ProfileImage")?.Value ?? "/images/OIP.jpeg";
 }
 
-<header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-md">
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
 
             <!-- ✅ الشعار -->
             <a href="~/" class="flex items-center space-x-2 space-x-reverse">
-                <div class="w-10 h-10 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg flex items-center justify-center">
-                    <i class="ri-tools-fill text-white text-xl"></i>
+                <div class="w-9 h-9 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg flex items-center justify-center">
+                    <i class="ri-tools-fill text-white text-lg"></i>
                 </div>
-                <span class="text-2xl font-bold text-gray-900" style="font-family: 'Pacifico', serif;">HandyHub</span>
+                <span class="text-xl font-bold text-gray-900" style="font-family: 'Pacifico', serif;">HandyHub</span>
             </a>
 
-            <!-- ✅ الروابط -->
+            <!-- ✅ زر القائمة للموبايل -->
+            <button id="menu-toggle" class="md:hidden text-gray-700 text-2xl focus:outline-none">
+                <i class="ri-menu-line"></i>
+            </button>
+
+            <!-- ✅ الروابط (للكبير فقط) -->
             <div class="hidden md:flex items-center space-x-8 space-x-reverse">
-                <a href="~/" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">الرئيسية</a>
+                <a href="~/" class="text-gray-700 hover:text-teal-600 font-medium">الرئيسية</a>
+                <a href="~/Home/Index#how-it-works" class="text-gray-700 hover:text-teal-600 font-medium">كيف يعمل</a>
+                <a href="~/Home/Index#features" class="text-gray-700 hover:text-teal-600 font-medium">المميزات</a>
                 @if (userRole == "Client")
                 {
-                    <a href="~/Client/Search" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">ابحث عن عمّال</a>
+                    <a href="~/Client/Search" class="text-gray-700 hover:text-teal-600 font-medium">ابحث عن عمّال</a>
                 }
-                else if(userRole == "Worker")
+                else if (userRole == "Worker")
                 {
-                    <a href="~/Worker/Search" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">ابحث عن عمّال</a>
+                    <a href="~/Worker/Search" class="text-gray-700 hover:text-teal-600 font-medium">ابحث عن عمّال</a>
                 }
-                <a href="~/Home/Index#how-it-works" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">كيف يعمل</a>
-                <a href="~/Home/Index#features" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">المميزات</a>
             </div>
 
-            <!-- ✅ قسم المستخدم -->
-            <div class="flex items-center space-x-4 space-x-reverse">
-
+            <!-- ✅ المستخدم (كبير فقط) -->
+            <div class="hidden md:flex items-center space-x-4 space-x-reverse">
                 @if (!isAuthenticated)
                 {
-                    <!-- مستخدم غير مسجل -->
-                    <a href="~/Auth/Login" class="px-4 py-2 text-teal-600 hover:text-teal-700 font-medium transition-colors">
-                        تسجيل الدخول
-                    </a>
-                    <a href="~/Auth/Register" class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-colors">
-                        إنشاء حساب
-                    </a>
+                    <a href="~/Auth/Login" class="px-4 py-2 text-teal-600 hover:text-teal-700 font-medium">تسجيل الدخول</a>
+                    <a href="~/Auth/Register" class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium">إنشاء حساب</a>
                 }
                 else
                 {
-                    <!-- مستخدم مسجل -->
                     <div class="relative group">
                         <button class="flex items-center space-x-2 space-x-reverse focus:outline-none">
-                            <img src="@profileImage" alt="@userName" class="w-10 h-10 rounded-full border-2 border-teal-500 object-cover">
+                            <img src="@profileImage" alt="@userName" class="w-9 h-9 rounded-full border-2 border-teal-500 object-cover">
                             <span class="font-medium text-gray-800">@userName</span>
                             <i class="ri-arrow-down-s-line text-gray-500"></i>
                         </button>
-
-                        <!-- ✅ القائمة المنسدلة -->
-                        <div class="absolute hidden group-hover:block hover:block bg-white shadow-lg rounded-lg  right-0 w-52 border border-gray-100 z-50 text-right">
-
-                            @* 🎯 القوائم حسب الدور *@
-
+                        <!-- ✅ القائمة المنسدلة للديسك توب -->
+                        <div class="absolute hidden group-hover:block bg-white rounded-lg shadow-lg right-0 w-52 border border-gray-100 mt-2 text-right">
                             @if (userRole == "Admin")
                             {
                                 <a href="~/Admin" class="block px-4 py-2 hover:bg-gray-50 text-gray-700">
@@ -83,7 +76,6 @@
                                     <i class="ri-user-line ml-1 text-teal-600"></i> الملف الشخصي
                                 </a>
                             }
-
                             <hr class="my-1">
                             <a href="~/Auth/Logout" class="block px-4 py-2 text-red-500 font-semibold hover:bg-gray-50">
                                 <i class="ri-logout-box-line ml-1"></i> تسجيل الخروج
@@ -92,7 +84,67 @@
                     </div>
                 }
             </div>
-
         </div>
     </nav>
+
+    <!-- ✅ قائمة الموبايل (كاملة العرض + slide down) -->
+    <div id="mobile-menu" class="hidden bg-white border-t border-gray-200 shadow-md absolute top-16 right-0 w-full overflow-hidden transition-all duration-300 ease-in-out max-h-0">
+        <div class="flex flex-col text-right py-3 px-6 space-y-2">
+            <a href="~/" class="text-gray-700 hover:text-teal-600 font-medium py-2">الرئيسية</a>
+            <a href="~/Home/Index#how-it-works" class="text-gray-700 hover:text-teal-600 font-medium py-2">كيف يعمل</a>
+            <a href="~/Home/Index#features" class="text-gray-700 hover:text-teal-600 font-medium py-2">المميزات</a>
+            @if (userRole == "Client")
+            {
+                <a href="~/Client/Search" class="text-gray-700 hover:text-teal-600 font-medium py-2">ابحث عن عمّال</a>
+            }
+            else if (userRole == "Worker")
+            {
+                <a href="~/Worker/Search" class="text-gray-700 hover:text-teal-600 font-medium py-2">ابحث عن عمّال</a>
+            }
+
+            <hr class="my-2">
+
+            @if (!isAuthenticated)
+            {
+                <a href="~/Auth/Login" class="text-teal-600 font-medium py-2">تسجيل الدخول</a>
+                <a href="~/Auth/Register" class="bg-teal-600 text-white py-2 rounded-md text-center font-medium">إنشاء حساب</a>
+            }
+            else // مستخدم مسجل دخول
+            {
+                @if (userRole == "Admin")
+                {
+                    <a href="~/Admin" class="text-gray-700 hover:text-teal-600 font-medium py-2">لوحة التحكم</a>
+                    <a href="~/Admin/ManageClients" class="text-gray-700 hover:text-teal-600 font-medium py-2">إدارة المستخدمين</a>
+                }
+                else if (userRole == "Client")
+                {
+                    <a href="~/Client/Profile" class="text-gray-700 hover:text-teal-600 font-medium py-2">الملف الشخصي</a>
+                }
+                else if (userRole == "Worker")
+                {
+                    <a href="~/Worker/Profile" class="text-gray-700 hover:text-teal-600 font-medium py-2">الملف الشخصي</a>
+                }
+                <hr class="my-2">
+                <a href="~/Auth/Logout" class="text-red-500 font-semibold py-2">تسجيل الخروج</a>
+            }
+        </div>
+    </div>
 </header>
+
+<!-- ✅ سكربت التحكم بالانيميشن -->
+<script>
+    const btn = document.getElementById("menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+
+    btn?.addEventListener("click", () => {
+        if (menu.classList.contains("hidden")) {
+            menu.classList.remove("hidden");
+            requestAnimationFrame(() => {
+                menu.style.maxHeight = menu.scrollHeight + "px";
+            });
+        } else {
+            menu.style.maxHeight = "0px";
+            setTimeout(() => menu.classList.add("hidden"), 300);
+        }
+    });
+</script>
