@@ -1,8 +1,308 @@
-﻿@using HandyHub.Models.ViewModels.WorkerVM
-@model WorkerEditViewModel
+﻿@model HandyHub.Models.ViewModels.WorkerVM.WorkerEditViewModel
+
 @{
-    ViewData["Title"] = "HandyHub - ملف العامل";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "_Layout";
+    ViewData["Title"] = "ملف العامل";
 }
 
-<h1> Profile  </h1>
+<div class="w-full bg-gray-50 min-h-screen pb-12" dir="rtl">
+
+    <!-- الهيدر -->
+    <div class="h-48 bg-gradient-to-l from-teal-700 to-teal-500 w-full relative">
+        <div class="absolute inset-0 bg-black opacity-10"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-10">
+
+        <!-- صندوق بيانات العامل -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
+
+            <div class="flex flex-col lg:flex-row items-start gap-6">
+
+                <!-- صورة العامل -->
+                <div class="relative group">
+                    <div class="w-36 h-36 rounded-2xl p-1 bg-white shadow-md">
+                        <img src="@Model.Worker.User.ImageUrl"
+                             onerror="this.src='https://img.freepik.com/free-photo/plumber-with-his-arms-crossed_1368-517.jpg'"
+                             class="w-full h-full object-cover rounded-xl" />
+                    </div>
+                </div>
+
+                <!-- بيانات العامل -->
+                <div class="flex-1 w-full pt-2">
+
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                @Model.Worker.User.Name
+                            </h1>
+
+                            <p class="text-lg text-gray-600 font-medium mb-3">
+                                @Model.Worker.Bio
+                            </p>
+
+                            <div class="flex flex-wrap gap-4 text-sm text-gray-500">
+
+                                <span class="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded">
+                                    <i class="ri-map-pin-line text-teal-600"></i>
+                                    @Model.Worker.Area
+                                </span>
+
+
+
+                                <span class="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded">
+                                    <i class="ri-star-fill text-yellow-400"></i>
+                                    <span class="text-gray-900 font-bold">
+                                        @(
+                                            Model.Worker.Reviews.Any()
+                                            ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
+                                            : "0"
+                                            )
+                                    </span>
+                                    ( @Model.Review.Count تقييم )
+                                </span>
+
+                            </div>
+                        </div>
+
+                        <!-- أزرار الاتصال -->
+                        <div class="flex flex-wrap gap-3 mt-4 md:mt-0">
+                            <a href="tel:@Model.Worker.User.Phone"
+                               class="flex gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-lg font-bold shadow transition">
+                                <i class="ri-phone-fill"></i> اتصال
+                            </a>
+
+                            <a href="https://wa.me/@Model.Worker.User.Phone" target="_blank"
+                               class="flex gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg font-bold shadow transition">
+                                <i class="ri-whatsapp-line text-xl"></i> واتساب
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- نبذة عن العامل -->
+                    <div class="mt-6 pt-6 border-t border-gray-100">
+                        <h3 class="font-bold text-gray-900 mb-2">نبذة عني</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            @Model.Worker.Bio
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- معرض الأعمال -->
+            <div class="lg:col-span-2 space-y-6">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <i class="ri-image-2-line text-teal-600"></i> معرض الأعمال
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    @foreach (var item in Model.Portfolio)
+                    {
+                        <div class="group bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="@item.ImageUrl"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+
+                            <div class="p-4">
+                                <h3 class="font-bold text-gray-800">@item.Bio</h3>
+                                <p class="text-sm text-gray-500 mt-1">@item.Area</p>
+                            </div>
+                        </div>
+                    }
+
+                    @if (!Model.Portfolio.Any())
+                    {
+                        <p class="text-gray-500 text-sm">لا يوجد أعمال مضافة بعد.</p>
+                    }
+
+                </div>
+            </div>
+
+
+                    <!-- قسم التقييمات -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="bg-white rounded-xl shadow-sm border p-6">
+
+                            <h2 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="ri-discuss-line text-teal-600"></i> آراء العملاء
+                            </h2>
+
+                            <!-- ملخص التقييم -->
+                            <div class="text-center p-4 bg-gray-50 rounded-lg mb-6">
+                                <span class="block text-4xl font-bold text-gray-800">
+                                    @(Model.Worker.Reviews.Any()
+                                        ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
+                                        : "0")
+                                </span>
+
+                                <div class="text-yellow-400 text-lg my-1">
+                                    @{
+                                        double avg = Model.Worker.Reviews.Any()
+                                        ? Model.Worker.Reviews.Average(r => r.Rating)
+                                        : 0;
+                                    }
+
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= Math.Round(avg))
+                                        {
+                                            <i class="ri-star-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="ri-star-line"></i>
+                                        }
+                                    }
+                                </div>
+
+                                <span class="text-xs text-gray-500">
+                                    من إجمالي @Model.Review.Count تقييم
+                                </span>
+                            </div>
+
+                            <!-- السكروول -->
+                            <div class="max-h-80 overflow-y-auto pr-3 space-y-5 scrollbar">
+
+                                @foreach (var r in Model.Review)
+                                {
+                                    <div class="border-b pb-4">
+                                        <div class="flex items-center gap-2 mb-2">
+
+                                            <img src="https://ui-avatars.com/api/?name=@r.Client.User.Name"
+                                                 class="w-8 h-8 rounded-full">
+
+                                            <div>
+                                                <h4 class="font-bold text-sm text-gray-900">
+                                                    @r.Client.User.Name
+                                                </h4>
+
+                                                <div class="text-yellow-400 text-xs flex">
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        if (i <= r.Rating)
+                                                        {
+                                                            <i class="ri-star-fill"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="ri-star-line"></i>
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            <span class="text-xs text-gray-400 mr-auto">
+                                                @r.CreatedAt.ToShortDateString()
+                                            </span>
+                                        </div>
+
+                                        <p class="text-gray-600 text-sm">@r.Comment</p>
+                                    </div>
+                                }
+
+                                @if (!Model.Review.Any())
+                                {
+                                    <p class="text-gray-500 text-sm">لا توجد تقييمات بعد.</p>
+                                }
+
+                            </div>
+                        </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="font-bold text-gray-900 mb-3 text-sm">أضف تقييمك</h3>
+                    <form asp-controller="Client" asp-action="AddReview" method="post">
+                        <input type="hidden" name="WorkerId" value="@Model.Worker.Id" />
+                        <input type="hidden" name="ClientId" value="@Model.Clients.FirstOrDefault(c => c.UserId == int.Parse(User.FindFirst("UserId").Value)).Id" />
+
+                        <input type="hidden" id="ratingInput" name="Rating" value="0" /> <!-- ✅ أضف السطر ده -->
+                        <div class="mb-3">
+                            <div class="flex gap-1 text-2xl text-gray-300 cursor-pointer justify-center py-2" id="rating-stars">
+                                <i class="ri-star-fill hover:text-yellow-400 transition duration-200" data-value="1"></i>
+                                <i class="ri-star-fill hover:text-yellow-400 transition duration-200" data-value="2"></i>
+                                <i class="ri-star-fill hover:text-yellow-400 transition duration-200" data-value="3"></i>
+                                <i class="ri-star-fill hover:text-yellow-400 transition duration-200" data-value="4"></i>
+                                <i class="ri-star-fill hover:text-yellow-400 transition duration-200" data-value="5"></i>
+                            </div>
+                            
+                        </div>
+
+                        <textarea name="Comment" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none resize-none mb-3" rows="3" placeholder="اكتب تعليقك هنا..." required></textarea>
+                        <button type="submit" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 rounded-lg transition text-sm shadow-md">
+                            نشر التقييم
+                        </button>
+                    </form>
+                </div>
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">أضف تقييمك</h3>
+                    <form asp-controller="Client" asp-action="AddReview" method="post" class="space-y-4">
+
+                        <input type="hidden" name="WorkerId" value="@Model.Worker.Id" />
+                        <input type="hidden" name="ClientId" value="@Model.Clients.FirstOrDefault(c => c.UserId == int.Parse(User.FindFirst("UserId").Value)).Id" />
+
+                        <input type="hidden" id="ratingInput" name="Rating" value="0" /> <!-- ✅ أضف السطر ده -->
+                        <!-- ⭐ جزء التقييم -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">التقييم</label>
+                            <div class="flex items-center space-x-1 space-x-reverse" id="rating-stars">
+                                <i class="ri-star-line text-2xl text-gray-400 cursor-pointer" data-value="1"></i>
+                                <i class="ri-star-line text-2xl text-gray-400 cursor-pointer" data-value="2"></i>
+                                <i class="ri-star-line text-2xl text-gray-400 cursor-pointer" data-value="3"></i>
+                                <i class="ri-star-line text-2xl text-gray-400 cursor-pointer" data-value="4"></i>
+                                <i class="ri-star-line text-2xl text-gray-400 cursor-pointer" data-value="5"></i>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">تعليقك</label>
+                            <textarea name="Comment" required placeholder="اكتب رأيك هنا..."
+                                      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm h-28"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-teal-600 text-white rounded-lg py-3 font-semibold hover:bg-teal-700 transition-colors">
+                            إرسال التقييم
+                        </button>
+
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    const stars = document.querySelectorAll('#rating-stars i');
+    const ratingInput = document.getElementById('ratingInput');
+    let selectedRating = 0;
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            selectedRating = parseInt(star.dataset.value);
+            ratingInput.value = selectedRating; // ✅ يحدّث قيمة الـ hidden input
+
+            // ⭐ تحديث مظهر النجوم
+            stars.forEach((s, i) => {
+                if (i < selectedRating) {
+                    s.classList.remove('ri-star-line', 'text-gray-400');
+                    s.classList.add('ri-star-fill', 'text-yellow-400');
+                } else {
+                    s.classList.remove('ri-star-fill', 'text-yellow-400');
+                    s.classList.add('ri-star-line', 'text-gray-400');
+                }
+            });
+        });
+    });
+
+
+</script>
