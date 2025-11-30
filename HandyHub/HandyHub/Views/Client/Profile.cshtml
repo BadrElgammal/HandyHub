@@ -1,50 +1,64 @@
-@using HandyHub.Models.ViewModels
-@model ClientDashboardVM
-
+@model HandyHub.Models.ViewModels.ClientDashboardVM
 @{
-    ViewData["Title"] = "لوحة تحكم العميل";
+    ViewData["Title"] = "HandyHub - لوحة العميل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="min-h-screen py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-            @if (Model.Client != null && Model.Client.User != null)
-            {
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                    <div class="flex items-center space-x-4 space-x-reverse mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center">
-                            @* 💡 يمكن استخدام صورة المستخدم مباشرة هنا *@
-                            <img src="@Model.Client.User.ImageUrl" alt="@Model.Client.User.Name" class="w-full h-full rounded-full object-cover" onerror="this.onerror=null; this.src='/images/default-avatar-admin.png';" />
-                        </div>
-                        <div class="text-right">
-                            <h2 class="text-2xl font-bold text-gray-900 mb-1">@Model.Client.User.Name</h2>
-                            <p class="text-gray-600"><i class="ri-mail-line ml-1"></i>@Model.Client.User.Email</p>
-                            <p class="text-gray-600"><i class="ri-map-pin-line ml-1"></i> @Model.Client.User.City</p>
-                            <p class="text-gray-600"><i class="ri-phone-line ml-1"></i>@Model.Client.User.Phone</p>
+
+        <!-- 🧍 بيانات العميل -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8 relative">
+
+            <div class="h-32 bg-gradient-to-br from-teal-600 to-blue-600 w-full"></div>
+
+            <div class="px-6 pb-6">
+                <div class="flex flex-col md:flex-row items-center md:items-end -mt-12 gap-6">
+
+                    <!-- Profile Image -->
+                    <div class="relative">
+                        <img src="@Model.Client.User?.ImageUrl" class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" />
+                        <div class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
+                    </div>
+
+                    <!-- Name & Info -->
+                    <div class="flex-1  md:text-right mt-2 md:mt-0">
+                        <h2 class="text-3xl font-bold text-gray-800">@Model.Client.User.Name</h2>
+
+                        <div class="flex flex-wrap justify-center md:justify-start gap-4 mt-3 text-sm text-gray-600">
+                            <span class="flex items-center gap-1"><i class="ri-map-pin-line"></i>@Model.Client.User.City</span>
+                            <span class="flex items-center gap-1"><i class="ri-phone-line"></i>@Model.Client.User.Phone</span>
+                            <span class="flex items-center gap-1"><i class="ri-mail-line"></i>@Model.Client.User.Email</span>
                         </div>
                     </div>
 
-                    <div class="flex space-x-2 space-x-reverse">
-                        <a asp-action="EditClient" asp-route-id="@Model.Client.Id" class="btn px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium flex items-center space-x-2 space-x-reverse">
-                            <i class="ri-edit-line ml-1"></i> تعديل البيانات
+                    <!-- Buttons -->
+                    <div class="flex gap-3 mt-4 md:mt-0">
+                        <a asp-action="EditClient" asp-route-id="@Model.Client.Id"
+                           class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:text-blue-600 transition shadow-sm">
+                            <i class="ri-edit-box-line ml-1"></i> تعديل
                         </a>
-                        <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium flex items-center space-x-2 space-x-reverse"
-                                onclick="document.getElementById('deleteForm').submit();">
-                            <i class="ri-delete-bin-line ml-1"></i> حذف الحساب
-                        </button>
-                        <form id="deleteForm" asp-action="DeleteClient" asp-route-id="@Model.Client.Id" method="post" style="display:none;"></form>
+
+
+                        <form asp-action="DeleteWorker" asp-route-id="@Model.Client.Id" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');">
+
+                            <button type="submit" class="px-5 py-2.5 bg-red-50 border border-red-100 text-red-600 font-medium rounded-lg hover:bg-red-100 transition shadow-sm">
+
+                                <i class="ri-delete-bin-line ml-1"></i> حذف الحساب
+                            </button>
+                        </form>
                     </div>
                 </div>
-            }
+            </div>
         </div>
-
+        <!-- 🟨 البطاقات الإحصائية -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 text-right">
             <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-600 text-sm mb-1">إجمالي الحجوزات</p>
-                        <p class="text-3xl font-bold text-gray-900">@Model.Client.TotalContacts</p>
+                        <p class="text-3xl font-bold text-gray-900">0</p>
                     </div>
                     <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
                         <i class="ri-calendar-check-line text-teal-600 text-2xl"></i>
@@ -56,7 +70,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-600 text-sm mb-1">المفضلة</p>
-                        <p class="text-3xl font-bold text-gray-900">@Model.Client.Favorites?.Count()</p>
+                        <p class="text-3xl font-bold text-gray-900">@Model.Favorites.Count()</p>
                     </div>
                     <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
                         <i class="ri-heart-fill text-pink-600 text-2xl"></i>
@@ -68,7 +82,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-600 text-sm mb-1">التقييمات المقدّمة</p>
-                        <p class="text-3xl font-bold text-gray-900">@Model.Client.Reviews?.Count()</p>
+                        <p class="text-3xl font-bold text-gray-900">@Model.Reviews.Count()</p>
                     </div>
                     <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
                         <i class="ri-star-fill text-yellow-600 text-2xl"></i>
@@ -80,7 +94,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-600 text-sm mb-1">إجمالي الإنفاق</p>
-                        <p class="text-3xl font-bold text-gray-900">0</p>
+                        <p class="text-3xl font-bold text-gray-900">—</p>
                     </div>
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <i class="ri-money-dollar-circle-line text-blue-600 text-2xl"></i>
@@ -89,108 +103,79 @@
             </div>
         </div>
 
+        <!-- 🔹 Tabs -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="border-b border-gray-200 flex">
-                <button id="tab-bookings" class="tab-button flex-1 px-6 py-4 text-center font-medium cursor-pointer text-teal-600 border-b-2 border-teal-600 bg-teal-50" data-target="content-bookings">
-                    <i class="ri-calendar-line ml-2"></i> حجوزاتي
-                </button>
-                <button id="tab-favorites" class="tab-button flex-1 px-6 py-4 text-center font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50" data-target="content-favorites">
+                <button id="tab-favorites" class="flex-1 px-6 py-4 text-center font-medium cursor-pointer text-teal-600 border-b-2 border-teal-600 bg-teal-50">
                     <i class="ri-heart-line ml-2"></i> العمّال المفضلون
                 </button>
-                <button id="tab-reviews" class="tab-button flex-1 px-6 py-4 text-center font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50" data-target="content-reviews">
+                <button id="tab-reviews" class="flex-1 px-6 py-4 text-center font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50">
                     <i class="ri-star-line ml-2"></i> تقييماتي
                 </button>
             </div>
 
-            <div class="max-h-[600px] overflow-y-auto p-6">
+            <div id="tabs-container" class="max-h-[600px] overflow-y-auto p-6">
 
-                <div id="content-bookings" class="tab-content">
-                    @if (Model.Workers != null && Model.Workers.Any())
-                    {
-                        @foreach (var item in Model.Workers)
+                <!-- 💖 المفضلون -->
+                <div id="content-favorites">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-right">
+                        @foreach (var fav in Model.Favorites)
                         {
-                            <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 mb-4">
-                                <div class="flex items-start space-x-4 space-x-reverse">
-                                    <img class="w-16 h-16 rounded-lg object-cover" src="https://public.readdy.ai/ai/img_res/6718a0df99945274129782913f9ad481.jpg" alt="@item.User?.Name" />
-                                    <div class="flex-1">
-                                        <div class="flex justify-between mb-2">
-                                            <a href="/worker/@item.Id" class="text-lg font-semibold text-gray-900 hover:text-teal-600">@item.User?.Name</a>
-                                            <span class="px-3 py-1 rounded-full text-sm font-medium @(item.IsAvailable ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")">
-                                                @(item.IsAvailable ? "متاح" : "غير متاح")
-                                            </span>
-                                        </div>
-                                        <p class="text-gray-600 mb-1"><i class="ri-tools-line ml-2"></i>@item.Category?.Name</p>
-                                        <p class="text-gray-700 font-medium mb-2">@item.Bio</p>
-                                        <div class="flex items-center space-x-4 space-x-reverse text-sm text-gray-600">
-                                            <span><i class="ri-calendar-line ml-1"></i>@item.CreatedAt.ToShortDateString()</span>
-                                            <span><i class="ri-money-dollar-circle-line ml-1"></i>350 ج.م</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <p class="text-gray-500">لا توجد حجوزات (سجلات اتصال بعمّال) حاليًا.</p>
-                    }
-                </div>
-
-
-                <div id="content-favorites" class="tab-content hidden">
-                    @if (Model.Favorites != null && Model.Favorites.Any())
-                    {
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-right">
-                            @foreach (var item in Model.Favorites)
+                            var worker = Model.Workers.FirstOrDefault(w => w.Id == fav.WorkerId);
+                            if (worker != null)
                             {
                                 <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
-                                    <img alt="@item.Worker.User?.Name" class="w-full h-48 object-cover object-top"
-                                         src="@item.Worker?.User?.ImageUrl" />
+                                    <img alt="@worker.User.Name" class="w-full h-60 object-cover object-top" src="@worker.User.ImageUrl" />
                                     <div class="p-4">
                                         <div class="flex items-center justify-between mb-2">
-                                            <h3 class="text-lg font-semibold text-gray-900">@item.Worker.User?.Name</h3>
-                                            <button class="w-8 h-8 flex items-center justify-center text-pink-600 hover:bg-pink-50 rounded-full cursor-pointer" title="إزالة من المفضلة">
-                                                <i class="ri-heart-fill text-xl"></i>
-                                            </button>
+                                            <h3 class="text-lg font-semibold text-gray-900">@worker.User.Name</h3>
+                                            <form method="post" asp-controller="Favorites" asp-action="Remove" asp-route-id="@fav.Id">
+                                                <button class="w-8 h-8 flex items-center justify-center text-pink-600 hover:bg-pink-50 rounded-full" title="إزالة">
+                                                    <i class="ri-heart-fill text-xl"></i>
+                                                </button>
+                                            </form>
                                         </div>
-                                        <p class="text-gray-600 mb-2">@item.Worker.Category?.Name</p>
+                                        <p class="text-gray-600 mb-2">@worker.Category?.Name</p>
                                         <div class="flex items-center justify-between mb-4 text-sm">
                                             <div class="flex items-center space-x-1 space-x-reverse">
                                                 <i class="ri-star-fill text-yellow-400"></i>
-                                                @* 💡 قيمة تقييم افتراضية/محسوبة *@
-                                                <span class="font-semibold text-gray-900">4.5</span>
+                                                <span class="font-semibold text-gray-900">@Model.Reviews.Where(r => r.WorkerId == worker.Id && r.ClientId == Model.Client.Id).FirstOrDefault().Rating</span>
                                             </div>
-                                            <span class="text-gray-600"><i class="ri-map-pin-line ml-1"></i>@item.Worker.User?.City</span>
+                                            <span class="text-gray-600"><i class="ri-map-pin-line ml-1"></i> @worker.User.City</span>
                                         </div>
-                                        <a href="/worker/@item.Worker.Id" class="block w-full px-4 py-2 bg-teal-600 text-white text-center rounded-lg hover:bg-teal-700 font-medium">عرض الملف الشخصي</a>
+                                        <a href="~/Client/WorkerProfile/@worker.Id"
+                                           class="block w-full px-4 py-2 bg-teal-600 text-white text-center rounded-lg hover:bg-teal-700 font-medium">
+                                            عرض الملف الشخصي
+                                        </a>
                                     </div>
                                 </div>
                             }
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-gray-500">لا يوجد عمال مفضلون حاليًا.</p>
-                    }
+                        }
+
+                        @if (!Model.Favorites.Any())
+                        {
+                            <p class="text-gray-500">لا توجد عناصر مفضلة حالياً.</p>
+                        }
+                    </div>
                 </div>
 
-
-                <div id="content-reviews" class="tab-content hidden space-y-4">
-                    @if (Model.Client.Reviews != null && Model.Client.Reviews.Any())
+                <!-- ⭐ التقييمات -->
+                <div id="content-reviews" class="hidden space-y-4">
+                    @foreach (var review in Model.Reviews)
                     {
-                        @foreach (var review in Model.Client.Reviews)
+                        var worker = Model.Workers.FirstOrDefault(w => w.Id == review.WorkerId);
+                        if (worker != null)
                         {
                             <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
                                 <div class="flex items-start space-x-4 space-x-reverse">
-                                    @* 💡 استخدام صورة العامل الذي تم تقييمه *@
-                                    <img class="w-16 h-16 rounded-lg object-cover" src="@review.Worker?.User?.ImageUrl" alt="@review.Worker?.User?.Name" onerror="this.onerror=null; this.src='https://readdy.ai/api/search-image?query=Professional%20Egyptian%20worker';" />
+                                    <img class="w-16 h-16 rounded-lg object-cover" src="@worker.User.ImageUrl" alt="@worker.User.Name" />
                                     <div class="flex-1">
                                         <div class="flex justify-between mb-2">
-                                            <a href="/worker/@review.WorkerId" class="text-lg font-semibold text-gray-900 hover:text-teal-600">@review.Worker?.User?.Name</a>
+                                            <a href="/Worker/Profile/@worker.Id"
+                                               class="text-lg font-semibold text-gray-900 hover:text-teal-600">@worker.User.Name</a>
                                             <span class="text-sm text-gray-600">@review.CreatedAt.ToShortDateString()</span>
                                         </div>
                                         <div class="flex items-center mb-3 space-x-1 space-x-reverse">
-                                            @* ⭐ عرض النجوم بناءً على التقييم (review.Rating) *@
                                             @for (int i = 0; i < review.Rating; i++)
                                             {
                                                 <i class="ri-star-fill text-yellow-400"></i>
@@ -202,22 +187,23 @@
                             </div>
                         }
                     }
-                    else
+
+                    @if (!Model.Reviews.Any())
                     {
-                        <p class="text-gray-500">لم تقم بتقديم أي تقييمات بعد.</p>
+                        <p class="text-gray-500">لا توجد تقييمات بعد.</p>
                     }
                 </div>
+
             </div>
         </div>
-
-
+        <!-- قسم CTA -->
         <div class="mt-8 bg-gradient-to-r from-teal-600 to-teal-700 rounded-xl p-8 text-white text-right">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div>
                     <h2 class="text-2xl font-bold mb-2">هل تحتاج إلى خدمة؟</h2>
                     <p class="text-teal-100">تصفح العمال المهرة واحجز خدمتك القادمة بسهولة</p>
                 </div>
-                <a href="/search" class="px-6 py-3 bg-white text-teal-600 rounded-lg hover:bg-gray-100 font-medium">
+                <a asp-action="search" class="px-6 py-3 bg-white text-teal-600 rounded-lg hover:bg-gray-100 font-medium">
                     <i class="ri-search-line ml-2"></i> ابحث عن عمّال
                 </a>
             </div>
@@ -225,39 +211,30 @@
     </div>
 </div>
 
+
+
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const tabs = document.querySelectorAll('.tab-button');
-            const contents = document.querySelectorAll('.tab-content');
+        const tabs = {
+            favorites: document.getElementById('content-favorites'),
+            reviews: document.getElementById('content-reviews')
+        };
+        const buttons = {
+            favorites: document.getElementById('tab-favorites'),
+            reviews: document.getElementById('tab-reviews')
+        };
 
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const targetId = tab.getAttribute('data-target');
-
-                    // 1. إزالة التنسيق النشط من جميع الأزرار والمحتويات
-                    tabs.forEach(t => {
-                        t.classList.remove('text-teal-600', 'border-b-2', 'border-teal-600', 'bg-teal-50');
-                        t.classList.add('text-gray-600');
-                    });
-                    contents.forEach(c => c.classList.add('hidden'));
-
-                    // 2. إضافة التنسيق النشط للزر والمحتوى المستهدف
-                    tab.classList.add('text-teal-600', 'border-b-2', 'border-teal-600', 'bg-teal-50');
-                    tab.classList.remove('text-gray-600');
-
-                    const targetContent = document.getElementById(targetId);
-                    if (targetContent) {
-                        targetContent.classList.remove('hidden');
-                    }
+        Object.keys(buttons).forEach(key => {
+            buttons[key].addEventListener('click', () => {
+                Object.keys(tabs).forEach(k => {
+                    tabs[k].classList.add('hidden');
+                    buttons[k].classList.remove('text-teal-600', 'border-b-2', 'border-teal-600', 'bg-teal-50');
+                    buttons[k].classList.add('text-gray-600');
                 });
+                tabs[key].classList.remove('hidden');
+                buttons[key].classList.remove('text-gray-600');
+                buttons[key].classList.add('text-teal-600', 'border-b-2', 'border-teal-600', 'bg-teal-50');
             });
-
-            // تفعيل التبويب الأول عند التحميل
-            const initialTab = document.querySelector('[data-target="content-bookings"]');
-            if (initialTab) {
-                initialTab.click();
-            }
         });
     </script>
 }
