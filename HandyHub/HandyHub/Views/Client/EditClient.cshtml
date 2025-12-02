@@ -1,4 +1,4 @@
-﻿@model HandyHub.Models.Entities.Client
+﻿@model HandyHub.Models.ViewModels.ClientVM.EditClientVM
 @{
     ViewData["Title"] = "تعديل بياناتي | HandyHub";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,29 +18,29 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
-                <input asp-for="@Model.User.Name"
+                <input asp-for="@Model.Name"
                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
-                <span asp-validation-for="@Model.User.Name" class="text-red-600 text-sm"></span>
+                <span asp-validation-for="@Model.Name" class="text-red-600 text-sm"></span>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
-                <input asp-for="@Model.User.Email"
+                <input asp-for="@Model.Email"
                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
-                <span asp-validation-for="@Model.User.Email" class="text-red-600 text-sm"></span>
+                <span asp-validation-for="@Model.Email" class="text-red-600 text-sm"></span>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف</label>
-                <input asp-for="@Model.User.Phone"
+                <input asp-for="@Model.Phone"
                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
-                <span asp-validation-for="@Model.User.Phone" class="text-red-600 text-sm"></span>
+                <span asp-validation-for="@Model.Phone" class="text-red-600 text-sm"></span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">المدينة</label>
-                    <input asp-for="@Model.User.City"
+                    <input asp-for="@Model.City"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
                 </div>
 
@@ -54,13 +54,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور الجديدة</label>
-                        <input asp-for="@Model.User.PasswordHash" type="password"
+                        <input asp-for="@Model.Password" type="password"
                                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">تأكيد كلمة المرور</label>
-                        <input type="password"
+                        <input asp-for="@Model.ConfirmPassword" type="password"
                                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
                     </div>
                 </div>

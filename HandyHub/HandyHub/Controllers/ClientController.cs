@@ -1,6 +1,7 @@
 ﻿using HandyHub.Data;
 using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels;
+using HandyHub.Models.ViewModels.ClientVM;
 using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -44,7 +45,7 @@ namespace HandyHub.Controllers
             var favorits = favoriteService.GetAll().Where(f => f.ClientId == id).ToList();
             var workers = workerService.GetAllWithUser();
 
-            var vm = new ClientDashboardVM
+            var vm = new Models.ViewModels.ClientDashboardVM
             {
                 Client = client,
                 Reviews = reviews,
@@ -56,30 +57,66 @@ namespace HandyHub.Controllers
 		[HttpGet]
 		public IActionResult EditClient(int id)
 		{
-			if (id == null)
-				return BadRequest();
-			var client = clientService.GetClientWithUserById(id);
-			if (client == null)
-				return NotFound();
-			return View(client);
-		}
+            var client = clientService.GetClientWithUserById(id);
+            if (client == null)
+                return NotFound();
+
+            var vm = new EditClientVM
+            {
+                Id = client.Id,
+                UserId = (int)client.UserId,
+                Name = client.User.Name,
+                Email = client.User.Email,
+                Phone = client.User.Phone,
+                City = client.User.City
+            };
+
+            return View(vm);
+        }
 
 		[HttpPost]
-		public IActionResult EditClient(Client model)
+		public IActionResult EditClient(EditClientVM model)
 		{
-			var exist = clientService.IsEmailExist(model.User.Email, model.UserId);
-			if (exist)
-			{
-				ModelState.AddModelError("", "email already exists");
-			}
-			if (!ModelState.IsValid)
-			{
-				return View(model);
-			}
-			model.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.User.PasswordHash);
-			clientService.UpdateClientWithUser(model);
-			TempData["msg"] = "Update successfully";
-			return RedirectToAction("Profile");
+            var exist = clientService.IsEmailExist(model.Email, model.UserId);
+            if (exist)
+            {
+                ModelState.AddModelError("", "email already exists");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var client = clientService.GetClientWithUserById(model.Id);
+            if (client == null)
+                return NotFound();
+            if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
+            {
+                if (string.IsNullOrWhiteSpace(model.Password) ||
+                    string.IsNullOrWhiteSpace(model.ConfirmPassword))
+                {
+                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا.");
+                    return View(model);
+                }
+
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين.");
+                    return View(model);
+                }
+
+
+                client.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            }
+
+            client.User.Name = model.Name;
+            client.User.Email = model.Email;
+            client.User.Phone = model.Phone;
+            client.User.City = model.City;
+
+            clientService.UpdateClientWithUser(client);  
+
+            TempData["msg"] = "تم تحديث بيانات العميل بنجاح.";
+            return RedirectToAction("Profile");
 		}
 		[HttpPost]
 		public IActionResult DeleteClient(int id)

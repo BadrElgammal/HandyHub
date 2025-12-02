@@ -7,7 +7,17 @@
     --light: #f8f9fa;
     --dark: #212529;
 }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* يمنع الاسكرول الأفقي لو فيه عنصر واسع زيادة */
+}
 body {
     font-family: 'Cairo', sans-serif;
     background-color: var(--light);
