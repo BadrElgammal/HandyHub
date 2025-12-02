@@ -1,8 +1,10 @@
 ﻿using HandyHub.Data;
 using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels;
+using HandyHub.Models.ViewModels.ClientVM;
 using HandyHub.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -99,18 +101,27 @@ namespace HandyHub.Controllers
         [HttpGet]
         public IActionResult EditClient ( int id )
         {
-            if (id == null)
-                return BadRequest();
             var client = clientService.GetClientWithUserById(id);
             if (client == null)
                 return NotFound();
-            return View(client);
+
+            var vm = new EditClientVM
+            {
+                Id = client.Id,
+                UserId = (int)client.UserId,
+                Name = client.User.Name,
+                Email = client.User.Email,
+                Phone = client.User.Phone,
+                City = client.User.City
+            };
+
+            return View(vm);
         }
 
         [HttpPost]
-        public IActionResult EditClient ( Client model )
+        public IActionResult EditClient ( EditClientVM model )
         {
-            var exist = clientService.IsEmailExist(model.User.Email,model.UserId);
+            var exist = clientService.IsEmailExist(model.Email,model.UserId);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
@@ -119,9 +130,38 @@ namespace HandyHub.Controllers
             {
                 return View(model);
             }
-            model.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.User.PasswordHash);
-            clientService.UpdateClientWithUser(model);
-            TempData["msg"] = "Update successfully";
+            var client = clientService.GetClientWithUserById(model.Id);
+            if (client == null)
+                return NotFound();
+            if (!string.IsNullOrWhiteSpace(model.Password) ||!string.IsNullOrWhiteSpace(model.ConfirmPassword))
+            {
+                if (string.IsNullOrWhiteSpace(model.Password) ||
+                    string.IsNullOrWhiteSpace(model.ConfirmPassword))
+                {
+                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا.");
+                    return View(model);
+                }
+
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين.");
+                    return View(model);
+                }
+
+                // هنا تعمل هاش للباسورد وتحطه مكان PasswordHash
+                // حسب طريقة الحفظ عندك
+                client.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            }
+
+            // تحديث باقى البيانات
+            client.User.Name = model.Name;
+            client.User.Email = model.Email;
+            client.User.Phone = model.Phone;
+            client.User.City = model.City;
+
+            clientService.UpdateClientWithUser(client);  // أو _context.SaveChanges()
+
+            TempData["msg"] = "تم تحديث بيانات العميل بنجاح.";
             return RedirectToAction("ManageClients");
         }
 
