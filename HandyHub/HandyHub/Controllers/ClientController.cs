@@ -1,14 +1,11 @@
 ﻿using HandyHub.Data;
+using HandyHub.Helper; // تأكد من الـ namespace الصحيح لكلاس Upload
 using HandyHub.Models.Entities;
-using HandyHub.Models.ViewModels;
 using HandyHub.Models.ViewModels.ClientVM;
 using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol;
-using System;
-using System.Security.Claims;
 
 namespace HandyHub.Controllers
 {
@@ -18,45 +15,57 @@ namespace HandyHub.Controllers
         private readonly HandyHubDbContext db;
         private readonly IClientService clientService;
         private readonly IWorkerService workerService;
-        private readonly IService<Review> ReviewService;
+        private readonly IService<Review> reviewService;
         private readonly IService<Favorite> favoriteService;
-        GenericService<WorkerPortfolio> Workerprotfilio;
+        private readonly GenericService<WorkerPortfolio> workerPortfolioService;
         private readonly IService<Category> categoryService;
 
-
-
-        public ClientController(HandyHubDbContext context, ClientService _clientService, WorkerService _workerService,GenericService<Review> _ReviewService, GenericService<Favorite> _favoritService, GenericService<WorkerPortfolio> workerprotfilio , GenericService<Category> _categoryService)
+        public ClientController (
+            HandyHubDbContext context,
+            ClientService _clientService,
+            WorkerService _workerService,
+            GenericService<Review> _reviewService,
+            GenericService<Favorite> _favoriteService,
+            GenericService<WorkerPortfolio> workerPortfolioService,
+            GenericService<Category> _categoryService )
         {
             db = context;
             clientService = _clientService;
             workerService = _workerService;
-            ReviewService = _ReviewService;
-            favoriteService = _favoritService;
-            Workerprotfilio = workerprotfilio;
+            reviewService = _reviewService;
+            favoriteService = _favoriteService;
+            this.workerPortfolioService = workerPortfolioService;
             categoryService = _categoryService;
         }
 
-        public IActionResult Profile()
+        public IActionResult Profile ()
         {
             var userId = int.Parse(User.FindFirst("UserId").Value);
-            int id = db.Clients.Where(c => c.UserId == userId).Select(c => c.Id).First();
+
+            int id = db.Clients
+                       .Where(c => c.UserId == userId)
+                       .Select(c => c.Id)
+                       .First();
+
             var client = clientService.GetClientWithUserById(id);
-            var reviews = ReviewService.GetAll().Where(r => r.ClientId == id).ToList();
-            var favorits = favoriteService.GetAll().Where(f => f.ClientId == id).ToList();
+            var reviews = reviewService.GetAll().Where(r => r.ClientId == id).ToList();
+            var favorites = favoriteService.GetAll().Where(f => f.ClientId == id).ToList();
             var workers = workerService.GetAllWithUser();
 
             var vm = new Models.ViewModels.ClientDashboardVM
             {
                 Client = client,
                 Reviews = reviews,
-                Favorites = favorits,
+                Favorites = favorites,
                 Workers = workers
             };
+
             return View(vm);
         }
-		[HttpGet]
-		public IActionResult EditClient(int id)
-		{
+
+        [HttpGet]
+        public IActionResult EditClient ( int id )
+        {
             var client = clientService.GetClientWithUserById(id);
             if (client == null)
                 return NotFound();
@@ -68,27 +77,43 @@ namespace HandyHub.Controllers
                 Name = client.User.Name,
                 Email = client.User.Email,
                 Phone = client.User.Phone,
-                City = client.User.City
+                City = client.User.City,
+                ExistingProfileImagePath = client.ProfileImagePath
             };
 
             return View(vm);
         }
 
-		[HttpPost]
-		public IActionResult EditClient(EditClientVM model)
-		{
+        [HttpPost]
+        public IActionResult EditClient ( EditClientVM model )
+        {
             var exist = clientService.IsEmailExist(model.Email, model.UserId);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
             }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
+
             var client = clientService.GetClientWithUserById(model.Id);
             if (client == null)
                 return NotFound();
+
+            if (model.ProfileImage != null)
+            {
+                if (!string.IsNullOrEmpty(client.ProfileImagePath))
+                {
+                    Upload.RemoveProfileImage("ProfileImages", client.ProfileImagePath);
+                }
+
+                var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
+                client.ProfileImagePath = fileName;
+            }
+
+            // معالجة الباسورد
             if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
             {
                 if (string.IsNullOrWhiteSpace(model.Password) ||
@@ -104,7 +129,6 @@ namespace HandyHub.Controllers
                     return View(model);
                 }
 
-
                 client.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
             }
 
@@ -113,44 +137,47 @@ namespace HandyHub.Controllers
             client.User.Phone = model.Phone;
             client.User.City = model.City;
 
-            clientService.UpdateClientWithUser(client);  
+            clientService.UpdateClientWithUser(client);
 
             TempData["msg"] = "تم تحديث بيانات العميل بنجاح.";
             return RedirectToAction("Profile");
-		}
-		[HttpPost]
-		public IActionResult DeleteClient(int id)
-		{
-			clientService.DeleteClientWithUser(id);
-			TempData["msg"] = "تم حذف المستخدم بنجاح.";
-			Response.Cookies.Delete("jwt");
-			return RedirectToAction("Index", "Home");
-		}
+        }
 
-		// Seach
-		[HttpGet]
-		public IActionResult Search(int? categoryId,string? city, double? rating, bool? available)
-		{
-			var workers = workerService.GetAllWorkersWithPortfolioWithUserWithReviews();
-            if(categoryId.HasValue)
-                workers = workers.Where(w => w.CategoryId ==categoryId.Value).ToList();
-            
-            if(!string.IsNullOrEmpty(city))
-                workers =workers.Where(w => w.User.City.Contains(city)).ToList();
+        [HttpPost]
+        public IActionResult DeleteClient ( int id )
+        {
+            clientService.DeleteClientWithUser(id);
+            TempData["msg"] = "تم حذف المستخدم بنجاح.";
+            Response.Cookies.Delete("jwt");
+            return RedirectToAction("Index", "Home");
+        }
 
-            if(rating.HasValue)
-                workers = workers.Where(w => w.Reviews.Any() && w.Reviews.Average(r => r.Rating) >= rating.Value).ToList();
+        // Search
+        [HttpGet]
+        public IActionResult Search ( int? categoryId, string? city, double? rating, bool? available )
+        {
+            var workers = workerService.GetAllWorkersWithPortfolioWithUserWithReviews();
 
-            if(available.HasValue && available.Value)
+            if (categoryId.HasValue)
+                workers = workers.Where(w => w.CategoryId == categoryId.Value).ToList();
+
+            if (!string.IsNullOrEmpty(city))
+                workers = workers.Where(w => w.User.City.Contains(city)).ToList();
+
+            if (rating.HasValue)
+                workers = workers.Where(w => w.Reviews.Any() &&
+                                             w.Reviews.Average(r => r.Rating) >= rating.Value)
+                                 .ToList();
+
+            if (available.HasValue && available.Value)
                 workers = workers.Where(w => w.IsAvailable).ToList();
 
             ViewBag.caregories = categoryService.GetAll();
-			return View(workers);
-		}
+            return View(workers);
+        }
 
         // Worker Profile
-      
-        public IActionResult WorkerProfile(int id)
+        public IActionResult WorkerProfile ( int id )
         {
             var worker = workerService.GetWorkerWithUserById(id);
             if (worker == null)
@@ -159,23 +186,23 @@ namespace HandyHub.Controllers
                 return RedirectToAction("Search");
             }
 
-            var reviews = ReviewService.GetAll().Where(r => r.WorkerId == id).ToList();
-            var client = clientService.GetAllWithUser();
+            var reviews = reviewService.GetAll().Where(r => r.WorkerId == id).ToList();
+            var clients = clientService.GetAllWithUser();
+
             var vm = new WorkerEditViewModel
             {
                 Worker = worker,
                 Review = reviews,
-                Portfolio = Workerprotfilio.GetAll().Where(p => p.WorkerId == id).ToList(),
+                Portfolio = workerPortfolioService.GetAll().Where(p => p.WorkerId == id).ToList(),
                 Categories = worker.Category,
-                Clients = client
+                Clients = clients
             };
 
             return View(vm);
         }
 
-
         [HttpPost]
-        public IActionResult AddReview(Review model)
+        public IActionResult AddReview ( Review model )
         {
             var userId = int.Parse(User.FindFirst("UserId").Value);
             var clientId = db.Clients.FirstOrDefault(c => c.UserId == userId)?.Id ?? 0;
@@ -183,21 +210,19 @@ namespace HandyHub.Controllers
             model.ClientId = clientId;
             model.CreatedAt = DateTime.Now;
 
-
             if (!ModelState.IsValid)
             {
                 TempData["msg"] = "الرجاء ملء جميع الحقول.";
                 return RedirectToAction("WorkerProfile", "Client", new { id = model.WorkerId });
             }
 
-            ReviewService.Insert(model);
+            reviewService.Insert(model);
             TempData["msg"] = "✅ تم إضافة التقييم بنجاح.";
             return RedirectToAction("WorkerProfile", "Client", new { id = model.WorkerId });
         }
 
-
         [HttpPost]
-        public IActionResult AddToFavorite(int workerId)
+        public IActionResult AddToFavorite ( int workerId )
         {
             var userId = int.Parse(User.FindFirst("UserId").Value);
             var clientId = db.Clients.FirstOrDefault(c => c.UserId == userId)?.Id ?? 0;
@@ -208,19 +233,16 @@ namespace HandyHub.Controllers
                 return RedirectToAction("Search");
             }
 
-            // البحث عن العامل في المفضلة
             var favorite = favoriteService.GetAll()
                 .FirstOrDefault(f => f.ClientId == clientId && f.WorkerId == workerId);
 
             if (favorite != null)
             {
-                // لو موجود، نحذفه
                 favoriteService.Delete(favorite.Id);
                 TempData["msg"] = "✅ تم إزالة العامل من المفضلة.";
             }
             else
             {
-                // لو مش موجود، نضيفه
                 var newFavorite = new Favorite
                 {
                     ClientId = clientId,
@@ -233,11 +255,5 @@ namespace HandyHub.Controllers
 
             return RedirectToAction("WorkerProfile", new { id = workerId });
         }
-
-
-
     }
 }
-
-
-

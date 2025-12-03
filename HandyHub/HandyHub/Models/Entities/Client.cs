@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewEngines;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HandyHub.Models.Entities
@@ -12,6 +11,8 @@ namespace HandyHub.Models.Entities
 
         public int TotalSearches { get; set; }
         public int TotalContacts { get; set; }
+
+        public string? ProfileImagePath { get; set; }
 
         public ICollection<Review>? Reviews { get; set; }
         public ICollection<Favorite>? Favorites { get; set; }

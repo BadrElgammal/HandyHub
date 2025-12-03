@@ -18,6 +18,8 @@ namespace HandyHub.Models.ViewModels.ClientVM
         [DataType(DataType.Password)]
         public string? ConfirmPassword { get; set; }
 
- 
+        public string? ExistingProfileImagePath { get; set; }
+
+        public IFormFile? ProfileImage { get; set; }
     }
 }
