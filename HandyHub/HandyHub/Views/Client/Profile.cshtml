@@ -1,13 +1,24 @@
+@using HandyHub.Models.ViewModels
+@model ClientDashboardVM
 @model HandyHub.Models.ViewModels.ClientDashboardVM
 @{
     ViewData["Title"] = "HandyHub - لوحة العميل";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<h1>@Model.Client.Id</h1>
+<h1>@Model.Client.User.Name</h1>
+<h1>@Model.Client.User.City</h1>
+<h1>@Model.Client.User.Email</h1>
 <div class="min-h-screen py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+<h1>@Model.Reviews.Count</h1>
+<h1>@Model.Favorites.Count</h1>
 
+@foreach(var item in Model.Reviews)
+{
+	@foreach(var i in Model.Workers)
         <!-- 🧍 بيانات العميل -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8 relative">
 
@@ -120,10 +131,12 @@
                 <div id="content-favorites">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-right">
                         @foreach (var fav in Model.Favorites)
-                        {
+	{
+		if (i.Id == @item.WorkerId)
                             var worker = Model.Workers.FirstOrDefault(w => w.Id == fav.WorkerId);
                             if (worker != null)
-                            {
+		{
+			<h1>@i.User.Name</h1>
                                 <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
                                     <img alt="@worker.User.Name" class="w-full h-60 object-cover object-top" src="@worker.User.ImageUrl" />
                                     <div class="p-4">
@@ -149,23 +162,28 @@
                                         </a>
                                     </div>
                                 </div>
-                            }
-                        }
+		}
+	}
+	<h1>@item.Rating</h1>
+	<h1>@item.Comment</h1>
 
                         @if (!Model.Favorites.Any())
                         {
                             <p class="text-gray-500">لا توجد عناصر مفضلة حالياً.</p>
-                        }
+}
                     </div>
                 </div>
 
+@foreach (var item in Model.Favorites)
                 <!-- ⭐ التقييمات -->
                 <div id="content-reviews" class="hidden space-y-4">
                     @foreach (var review in Model.Reviews)
-                    {
+{
+	@foreach (var i in Model.Workers)
                         var worker = Model.Workers.FirstOrDefault(w => w.Id == review.WorkerId);
                         if (worker != null)
-                        {
+	{
+		if (i.Id == @item.WorkerId)
                             <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
                                 <div class="flex items-start space-x-4 space-x-reverse">
                                     <img class="w-16 h-16 rounded-lg object-cover" src="@worker.User.ImageUrl" alt="@worker.User.Name" />
@@ -177,7 +195,8 @@
                                         </div>
                                         <div class="flex items-center mb-3 space-x-1 space-x-reverse">
                                             @for (int i = 0; i < review.Rating; i++)
-                                            {
+		{
+			<h1>@i.User.Name</h1>
                                                 <i class="ri-star-fill text-yellow-400"></i>
                                             }
                                         </div>
@@ -185,13 +204,14 @@
                                     </div>
                                 </div>
                             </div>
-                        }
-                    }
+		}
+	}
+	<h1>@item.CreatedAt</h1>
 
                     @if (!Model.Reviews.Any())
                     {
                         <p class="text-gray-500">لا توجد تقييمات بعد.</p>
-                    }
+}
                 </div>
 
             </div>
@@ -213,6 +233,18 @@
 
 
 
+<a class="btn btn-warning" asp-action="EditClient" asp-route-id="@Model.Client.Id">Edite</a>
+<form asp-action="DeleteClient"
+	  method="post"
+	  onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');"
+	  style="display:inline-block;">
+	<input type="hidden" name="id" value="@Model.Client.Id" />
+	<button type="submit"
+			class="btn btn-sm btn-danger rounded-3"
+			title="حذف">
+		<i class="fas fa-trash"></i>
+	</button>
+</form>
 @section Scripts {
     <script>
         const tabs = {
