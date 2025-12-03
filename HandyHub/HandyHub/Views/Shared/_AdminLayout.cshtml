@@ -1,4 +1,5 @@
 ﻿@using System.Security.Claims
+g@using System.Security.Claims
 @{
     var userEmail = User?.FindFirst(ClaimTypes.Email)?.Value ?? "email@example.com";
     var userRole = User?.FindFirst(ClaimTypes.Role)?.Value ?? "Admin";
