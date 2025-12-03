@@ -169,7 +169,7 @@
                                 </span>
 
                                 <div class="text-yellow-400 text-lg my-1">
-                                    @{
+@{
                                         double avg = Model.Worker.Reviews.Any()
                                         ? Model.Worker.Reviews.Average(r => r.Rating)
                                         : 0;
@@ -292,7 +292,7 @@
                 } else {
                     s.classList.remove('ri-star-fill', 'text-yellow-400');
                     s.classList.add('ri-star-line', 'text-gray-400');
-                }
+}
             });
         });
     });

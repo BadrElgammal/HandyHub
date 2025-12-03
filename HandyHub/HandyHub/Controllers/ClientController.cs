@@ -57,9 +57,11 @@ namespace HandyHub.Controllers
 		[HttpGet]
 		public IActionResult EditClient(int id)
 		{
-            var client = clientService.GetClientWithUserById(id);
-            if (client == null)
-                return NotFound();
+			if (id == null)
+				return BadRequest();
+			var client = clientService.GetClientWithUserById(id);
+			if (client == null)
+				return NotFound();
 
             var vm = new EditClientVM
             {
@@ -72,20 +74,20 @@ namespace HandyHub.Controllers
             };
 
             return View(vm);
-        }
+		}
 
 		[HttpPost]
 		public IActionResult EditClient(EditClientVM model)
 		{
             var exist = clientService.IsEmailExist(model.Email, model.UserId);
-            if (exist)
-            {
-                ModelState.AddModelError("", "email already exists");
-            }
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+			if (exist)
+			{
+				ModelState.AddModelError("", "email already exists");
+			}
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
             var client = clientService.GetClientWithUserById(model.Id);
             if (client == null)
                 return NotFound();
@@ -116,7 +118,7 @@ namespace HandyHub.Controllers
             clientService.UpdateClientWithUser(client);  
 
             TempData["msg"] = "تم تحديث بيانات العميل بنجاح.";
-            return RedirectToAction("Profile");
+			return RedirectToAction("Profile");
 		}
 		[HttpPost]
 		public IActionResult DeleteClient(int id)
@@ -230,7 +232,7 @@ namespace HandyHub.Controllers
                 favoriteService.Insert(newFavorite);
                 TempData["msg"] = "✅ تم إضافة العامل إلى المفضلة.";
             }
-
+      
             return RedirectToAction("WorkerProfile", new { id = workerId });
         }
 

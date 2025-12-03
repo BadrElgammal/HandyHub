@@ -104,8 +104,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 @if (Model.Any())
                 {
-                    @foreach (var worker in Model)
-                    {
+            @foreach (var worker in Model)
+            {
                         var avgRating = worker.Reviews?.Any() == true ? worker.Reviews.Average(r => r.Rating) : 0;
                         var city = worker.User?.City ?? "-";
                         var name = worker.User?.Name ?? "عامل مجهول";
@@ -125,15 +125,21 @@
                                         <div class="relative w-14 h-14 rounded-full overflow-hidden border border-gray-200">
                                             <img src="@image" alt="@name"
                                                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                                        </div>
+                                    </div>
                                         <div class="text-right">
                                             <h3 class="text-lg font-semibold text-gray-900 leading-tight
                                                transition-colors duration-300 group-hover:text-teal-600">
                                                 @name
                                             </h3>
                                             <p class="text-sm text-teal-600">@category</p>
-                                        </div>
-                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-end space-x-1 space-x-reverse mb-3">
+                                <i class="ri-star-fill text-yellow-400 text-sm"></i>
+                                <i class="ri-star-fill text-yellow-400 text-sm"></i>
+                                <i class="ri-star-fill text-yellow-400 text-sm"></i>
+                                <i class="ri-star-fill text-yellow-400 text-sm"></i>
+                                <i class="ri-star-line text-gray-300 text-sm"></i>
 
                                     @if (worker.IsAvailable)
                                     {
@@ -142,11 +148,11 @@
                                         </span>
                                     }
                                     else
-                                    {
+                                {
                                         <span class="px-3 py-1 bg-red-50 text-red-600 text-xs font-medium rounded-full whitespace-nowrap">
                                             🔴 غير متاح
-                                        </span>
-                                    }
+                                    </span>
+                                }
                                 </div>
 
                                 <!-- ⭐ التقييم -->
@@ -158,21 +164,21 @@
                                             {
                                                 <i class="ri-star-fill text-yellow-400 text-sm"></i>
                                             }
-                                            else
-                                            {
+                                else
+                                {
                                                 <i class="ri-star-line text-gray-300 text-sm"></i>
                                             }
-                                        }
+                                }
                                         <span class="text-sm text-gray-600 mr-2">@avgRating.ToString("0.0")</span>
                                     </div>
-                                </div>
+                            </div>
 
                                 <!-- 💬 النبذة -->
                                 @if (!string.IsNullOrWhiteSpace(worker.Bio))
                                 {
                                     <p class="text-sm text-gray-600 leading-relaxed line-clamp-2 group-hover:text-gray-800 transition-colors duration-300">
-                                        @worker.Bio
-                                    </p>
+                                @worker.Bio
+                            </p>
                                 }
 
                                 <!-- 📍 المدينة والموبايل -->
@@ -180,22 +186,22 @@
                                     <div class="flex items-center space-x-1 space-x-reverse">
                                         <i class="ri-map-pin-line text-teal-500"></i>
                                         <span>@city</span>
-                                    </div>
+                            </div>
                                     <div class="flex items-center space-x-1 space-x-reverse">
                                         <i class="ri-phone-line text-teal-500"></i>
                                         <span>@phone</span>
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
+                </div>
                         </a>
                     }
                 }
                 else
                 {
                     <p class="text-gray-500 text-center col-span-2">لم يتم العثور على أي عمّال يطابقون معايير البحث.</p>
-                }
-            </div>
+            }
         </div>
+    </div>
     </form>
 </div>
 
