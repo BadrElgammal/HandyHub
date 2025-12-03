@@ -66,6 +66,7 @@
                             </div>
                         </div>
 
+
                         <!-- أزرار الاتصال -->
                         <div class="flex flex-wrap gap-3 mt-4 md:mt-0">
                             <a href="tel:@Model.Worker.User.Phone"
@@ -76,9 +77,33 @@
                             <a href="https://wa.me/@Model.Worker.User.Phone" target="_blank"
                                class="flex gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg font-bold shadow transition">
                                 <i class="ri-whatsapp-line text-xl"></i> واتساب
+                            
+                            
                             </a>
+
+
+                            <!-- زر إضافة إلى المفضلة -->
+                         
+                            <form asp-action="AddToFavorite" method="post" class="d-inline">
+                                <input type="hidden" name="workerId" value="@Model.Worker.Id" />
+                                <button type="submit" class="btn btn-danger btn-lg rounded-pill">
+									إضافة إلى المفضلة❤️
+								</button>
+                            </form>
+
+                            <!-- عرض رسالة TempData لو موجودة -->
+                            @if (TempData["msg"] != null)
+                            {
+                                <div class="alert alert-info mt-2">
+                                    @TempData["msg"]
+                                </div>
+                            }
+                        
+
                         </div>
+
                     </div>
+
 
                     <!-- نبذة عن العامل -->
                     <div class="mt-6 pt-6 border-t border-gray-100">

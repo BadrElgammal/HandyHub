@@ -195,9 +195,49 @@ namespace HandyHub.Controllers
             return RedirectToAction("WorkerProfile", "Client", new { id = model.WorkerId });
         }
 
-      
+
+        [HttpPost]
+        public IActionResult AddToFavorite(int workerId)
+        {
+            var userId = int.Parse(User.FindFirst("UserId").Value);
+            var clientId = db.Clients.FirstOrDefault(c => c.UserId == userId)?.Id ?? 0;
+
+            if (clientId == 0)
+            {
+                TempData["msg"] = "خطأ: العميل غير موجود.";
+                return RedirectToAction("Search");
+            }
+
+            // البحث عن العامل في المفضلة
+            var favorite = favoriteService.GetAll()
+                .FirstOrDefault(f => f.ClientId == clientId && f.WorkerId == workerId);
+
+            if (favorite != null)
+            {
+                // لو موجود، نحذفه
+                favoriteService.Delete(favorite.Id);
+                TempData["msg"] = "✅ تم إزالة العامل من المفضلة.";
+            }
+            else
+            {
+                // لو مش موجود، نضيفه
+                var newFavorite = new Favorite
+                {
+                    ClientId = clientId,
+                    WorkerId = workerId,
+                    CreatedAt = DateTime.Now
+                };
+                favoriteService.Insert(newFavorite);
+                TempData["msg"] = "✅ تم إضافة العامل إلى المفضلة.";
+            }
+
+            return RedirectToAction("WorkerProfile", new { id = workerId });
+        }
 
 
 
     }
 }
+
+
+
