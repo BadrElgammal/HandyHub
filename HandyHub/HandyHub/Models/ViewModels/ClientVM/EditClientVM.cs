@@ -17,5 +17,7 @@ namespace HandyHub.Models.ViewModels.ClientVM
 
         [DataType(DataType.Password)]
         public string? ConfirmPassword { get; set; }
+
+ 
     }
 }
