@@ -1,0 +1,63 @@
+﻿@using HandyHub.Models.Entities
+@model WorkerPortfolio
+
+@{
+    ViewData["Title"] = "AddProfile";
+}
+
+<!-- 🧾 نموذج إضافة العمل -->
+<main class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm p-8 my-12">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">إضافة عمل جديد</h1>
+    <p class="text-gray-600 mb-8">أدخل تفاصيل العمل الجديد ليظهر في معرض أعمالك على HandyHub</p>
+
+    <form method="post" asp-action="AddProfile" asp-route-id="@Model.WorkerId">
+        <input type="hidden" name="id" value="@Model.WorkerId" />
+        <input type="hidden" asp-for="WorkerId" />
+
+        <!-- عنوان العمل -->
+        <div>
+            <label asp-for="Bio" class="block text-sm font-medium text-gray-700 mb-1">عنوان العمل</label>
+            <input asp-for="Bio" type="text"
+                  
+                   placeholder="مثال: تركيب مطبخ حديث"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                   />
+        </div>
+
+        <!-- النبذة -->
+        <div>
+            <label asp-for="Area" class="block text-sm font-medium text-gray-700 mb-1">نبذة عن العمل</label>
+            <textarea asp-for="Area"
+                      placeholder="اكتب وصفًا مختصرًا عن تفاصيل هذا العمل..."
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm h-32"
+                      required></textarea>
+        </div>
+
+        <!-- رفع الصورة -->
+        <div>
+            <label asp-for="ImageUrl" class="block text-sm font-medium text-gray-700 mb-1">صورة العمل</label>
+            <label asp-for="ImageUrl"
+                   class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 cursor-pointer hover:border-teal-500 hover:bg-teal-50 transition">
+                <i class="ri-image-add-line text-3xl text-teal-600 mb-2"></i>
+                <span class="text-gray-600 text-sm">انقر هنا لاختيار صورة</span>
+                <input id="image" name="image" type="file" accept="image/*" class="hidden" required />
+            </label>
+        </div>
+
+        <!-- أزرار -->
+        <div class="flex justify-between items-center pt-4">
+            <a asp-action="profile" class="text-gray-600 hover:text-teal-600 font-medium flex items-center">
+                <i class="ri-arrow-go-back-line ml-1"></i> الرجوع للوحة العامل
+            </a>
+
+            <button type="submit"
+                    class="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold flex items-center space-x-1 space-x-reverse">
+                <i class="ri-save-line ml-1"></i> حفظ العمل
+            </button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

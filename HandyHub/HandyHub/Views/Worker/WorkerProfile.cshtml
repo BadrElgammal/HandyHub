@@ -55,9 +55,9 @@
                                     <i class="ri-star-fill text-yellow-400"></i>
                                     <span class="text-gray-900 font-bold">
                                         @(
-                                                                                Model.Worker.Reviews.Any()
-                                                                                ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
-                                                                              : "0"
+                                         Model.Worker.Reviews.Any()
+                                        ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
+                                           : "0"
                                                                               )
                                     </span>
                                     ( @Model.Review.Count تقييم )

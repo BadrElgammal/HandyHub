@@ -343,6 +343,46 @@ namespace HandyHub.Controllers
 
             return View(vm);
         }
+        [HttpGet]
+        public IActionResult AddProfile(int id) 
+        {
+            var portfolio = new WorkerPortfolio
+            {
+                WorkerId = id 
+            };
+
+           
+           
+
+            return View(portfolio);
+        }
+        [HttpPost]
+        public IActionResult AddProfile(WorkerPortfolio portfolio)
+        {
+            if (ModelState.IsValid) 
+            {
+                int workerId = portfolio.WorkerId;
+                var worker = workerService.GetById(workerId);
+                if (worker == null)
+                {
+                    TempData["msg"] = "عذراً، لم يتم العثور على بيانات العامل.";
+                    // التوجيه باستخدام workerId
+                    return RedirectToAction("Profile", new { id = workerId });
+                }
+                var newPortfolioItem = new WorkerPortfolio
+                {
+                    WorkerId = workerId,
+                    Bio = portfolio.Bio,
+                    Area = portfolio.Area,
+                    ImageUrl = portfolio.ImageUrl
+                };
+                Workerprotfilio.Insert(newPortfolioItem);
+
+                TempData["msg"] = "تم إضافة العمل الجديد بنجاح.";
+                return RedirectToAction("Profile", new { id = workerId });
+            }
+            return View(portfolio);
+        }
 
     }
 }
