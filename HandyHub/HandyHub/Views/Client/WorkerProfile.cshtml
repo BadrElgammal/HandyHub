@@ -55,10 +55,10 @@
                                     <i class="ri-star-fill text-yellow-400"></i>
                                     <span class="text-gray-900 font-bold">
                                         @(
-                                            Model.Worker.Reviews.Any()
-                                            ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
-                                            : "0"
-                                            )
+                                                                                Model.Worker.Reviews.Any()
+                                                                                ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
+                                                                                : "0"
+                                                                                )
                                     </span>
                                     ( @Model.Review.Count تقييم )
                                 </span>
@@ -77,18 +77,18 @@
                             <a href="https://wa.me/@Model.Worker.User.Phone" target="_blank"
                                class="flex gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg font-bold shadow transition">
                                 <i class="ri-whatsapp-line text-xl"></i> واتساب
-                            
-                            
+
+
                             </a>
 
 
                             <!-- زر إضافة إلى المفضلة -->
-                         
+
                             <form asp-action="AddToFavorite" method="post" class="d-inline">
                                 <input type="hidden" name="workerId" value="@Model.Worker.Id" />
                                 <button type="submit" class="btn btn-danger btn-lg rounded-pill">
-									إضافة إلى المفضلة❤️
-								</button>
+                                    إضافة إلى المفضلة❤️
+                                </button>
                             </form>
 
                             <!-- عرض رسالة TempData لو موجودة -->
@@ -98,7 +98,7 @@
                                     @TempData["msg"]
                                 </div>
                             }
-                        
+
 
                         </div>
 
@@ -152,94 +152,94 @@
             </div>
 
 
-                    <!-- قسم التقييمات -->
-                    <div class="lg:col-span-1 space-y-6">
-                        <div class="bg-white rounded-xl shadow-sm border p-6">
+            <!-- قسم التقييمات -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border p-6">
 
-                            <h2 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                <i class="ri-discuss-line text-teal-600"></i> آراء العملاء
-                            </h2>
+                    <h2 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="ri-discuss-line text-teal-600"></i> آراء العملاء
+                    </h2>
 
-                            <!-- ملخص التقييم -->
-                            <div class="text-center p-4 bg-gray-50 rounded-lg mb-6">
-                                <span class="block text-4xl font-bold text-gray-800">
-                                    @(Model.Worker.Reviews.Any()
-                                        ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
-                                        : "0")
-                                </span>
+                    <!-- ملخص التقييم -->
+                    <div class="text-center p-4 bg-gray-50 rounded-lg mb-6">
+                        <span class="block text-4xl font-bold text-gray-800">
+                            @(Model.Worker.Reviews.Any()
+                                                        ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
+                                                        : "0")
+                        </span>
 
-                                <div class="text-yellow-400 text-lg my-1">
-                                    @{
-                                        double avg = Model.Worker.Reviews.Any()
-                                        ? Model.Worker.Reviews.Average(r => r.Rating)
-                                        : 0;
-                                    }
+                        <div class="text-yellow-400 text-lg my-1">
+                            @{
+                                double avg = Model.Worker.Reviews.Any()
+                                ? Model.Worker.Reviews.Average(r => r.Rating)
+                                : 0;
+                            }
 
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        if (i <= Math.Round(avg))
-                                        {
-                                            <i class="ri-star-fill"></i>
-                                        }
-                                        else
-                                        {
-                                            <i class="ri-star-line"></i>
-                                        }
-                                    }
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= Math.Round(avg))
+                                {
+                                    <i class="ri-star-fill"></i>
+                                }
+                                else
+                                {
+                                    <i class="ri-star-line"></i>
+                                }
+                            }
+                        </div>
+
+                        <span class="text-xs text-gray-500">
+                            من إجمالي @Model.Review.Count تقييم
+                        </span>
+                    </div>
+
+                    <!-- السكروول -->
+                    <div class="max-h-80 overflow-y-auto pr-3 space-y-5 scrollbar">
+
+                        @foreach (var r in Model.Review)
+                        {
+                            <div class="border-b pb-4">
+                                <div class="flex items-center gap-2 mb-2">
+
+                                    <img src="https://ui-avatars.com/api/?name=@r.Client.User.Name"
+                                         class="w-8 h-8 rounded-full">
+
+                                    <div>
+                                        <h4 class="font-bold text-sm text-gray-900">
+                                            @r.Client.User.Name
+                                        </h4>
+
+                                        <div class="text-yellow-400 text-xs flex">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= r.Rating)
+                                                {
+                                                    <i class="ri-star-fill"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="ri-star-line"></i>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <span class="text-xs text-gray-400 mr-auto">
+                                        @r.CreatedAt.ToShortDateString()
+                                    </span>
                                 </div>
 
-                                <span class="text-xs text-gray-500">
-                                    من إجمالي @Model.Review.Count تقييم
-                                </span>
+                                <p class="text-gray-600 text-sm">@r.Comment</p>
                             </div>
+                        }
 
-                            <!-- السكروول -->
-                            <div class="max-h-80 overflow-y-auto pr-3 space-y-5 scrollbar">
+                        @if (!Model.Review.Any())
+                        {
+                            <p class="text-gray-500 text-sm">لا توجد تقييمات بعد.</p>
+                        }
 
-                                @foreach (var r in Model.Review)
-                                {
-                                    <div class="border-b pb-4">
-                                        <div class="flex items-center gap-2 mb-2">
-
-                                            <img src="https://ui-avatars.com/api/?name=@r.Client.User.Name"
-                                                 class="w-8 h-8 rounded-full">
-
-                                            <div>
-                                                <h4 class="font-bold text-sm text-gray-900">
-                                                    @r.Client.User.Name
-                                                </h4>
-
-                                                <div class="text-yellow-400 text-xs flex">
-                                                    @for (int i = 1; i <= 5; i++)
-                                                    {
-                                                        if (i <= r.Rating)
-                                                        {
-                                                            <i class="ri-star-fill"></i>
-                                                        }
-                                                        else
-                                                        {
-                                                            <i class="ri-star-line"></i>
-                                                        }
-                                                    }
-                                                </div>
-                                            </div>
-
-                                            <span class="text-xs text-gray-400 mr-auto">
-                                                @r.CreatedAt.ToShortDateString()
-                                            </span>
-                                        </div>
-
-                                        <p class="text-gray-600 text-sm">@r.Comment</p>
-                                    </div>
-                                }
-
-                                @if (!Model.Review.Any())
-                                {
-                                    <p class="text-gray-500 text-sm">لا توجد تقييمات بعد.</p>
-                                }
-
-                            </div>
-                        </div>
+                    </div>
+                </div>
 
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h3 class="font-bold text-gray-900 mb-3 text-sm">أضف تقييمك</h3>
@@ -256,7 +256,7 @@
                                 <i class="ri-star-fill hover:text-yellow-400 transition duration-200" data-value="4"></i>
                                 <i class="ri-star-fill hover:text-yellow-400 transition duration-200" data-value="5"></i>
                             </div>
-                            
+
                         </div>
 
                         <textarea name="Comment" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none resize-none mb-3" rows="3" placeholder="اكتب تعليقك هنا..." required></textarea>
@@ -265,7 +265,7 @@
                         </button>
                     </form>
                 </div>
-                
+
             </div>
 
         </div>
