@@ -307,15 +307,15 @@ namespace HandyHub.Controllers
                 worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
             }
 
-            //worker.Area = model.Worker.Area;
-            //worker.Bio = model.Worker.Bio;
-            //worker.IsAvailable = model.Worker.IsAvailable;
-            //worker.CategoryId = model.Worker.CategoryId;
+            worker.Area = model.Worker.Area;
+            worker.Bio = model.Worker.Bio;
+            worker.IsAvailable = model.Worker.IsAvailable;
+            worker.CategoryId = model.Worker.CategoryId;
 
-            //worker.User.Name = model.Worker.User.Name;
-            //worker.User.Email = model.Worker.User.Email;
-            //worker.User.Phone = model.Worker.User.Phone;
-            //worker.User.City = model.Worker.User.City;
+            worker.User.Name = model.Worker.User.Name;
+            worker.User.Email = model.Worker.User.Email;
+            worker.User.Phone = model.Worker.User.Phone;
+            worker.User.City = model.Worker.User.City;
 
 
 

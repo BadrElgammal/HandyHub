@@ -5,7 +5,7 @@
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAq+jRC742sEag8DMT9tCtkQAAAAACAAAAAAAQZgAAAAEAACAAAAC79YhDccwsDUh2JxqMtOusOFDwX6k/e13uApMRaNWPywAAAAAOgAAAAAIAACAAAAAPY3Cyp3+Jy4utUv1KW12QJGAdoApeEkhzHQyKIVJE5CAAAACGkU1zkKDDIlDH6bQVuAu2+Mlm0Pf4h9CKJXltBvNX1UAAAABZSUx/585Y+rFnFxCOaeAaPZa0THgcG/FqiPuBI2i7LCTKV+dnbPypgIjxORMBjnhtwqYvfChZFtMOyzOb13II</EncryptedPassword>
     <_PublishTargetUrl>ftp://handyhub.runasp.net/wwwroot</_PublishTargetUrl>
-    <History>True|2025-12-04T15:17:16.7414732Z||;True|2025-11-30T20:26:10.9815282+02:00||;False|2025-11-30T20:20:27.3182968+02:00||;False|2025-11-30T20:08:27.5903290+02:00||;False|2025-11-30T19:36:40.8619665+02:00||;False|2025-11-28T22:17:52.8313216+02:00||;False|2025-11-28T21:49:18.3138156+02:00||;</History>
+    <History>True|2025-12-04T16:31:27.9705732Z||;True|2025-12-04T17:17:16.7414732+02:00||;True|2025-11-30T20:26:10.9815282+02:00||;False|2025-11-30T20:20:27.3182968+02:00||;False|2025-11-30T20:08:27.5903290+02:00||;False|2025-11-30T19:36:40.8619665+02:00||;False|2025-11-28T22:17:52.8313216+02:00||;False|2025-11-28T21:49:18.3138156+02:00||;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -157,16 +157,16 @@
       <publishTime>11/08/2023 19:52:00</publishTime>
     </File>
     <File Include="HandyHub.deps.json">
-      <publishTime>12/04/2025 17:14:11</publishTime>
+      <publishTime>12/04/2025 18:28:26</publishTime>
     </File>
     <File Include="HandyHub.dll">
-      <publishTime>12/04/2025 17:13:02</publishTime>
+      <publishTime>12/04/2025 18:27:12</publishTime>
     </File>
     <File Include="HandyHub.exe">
-      <publishTime>12/04/2025 17:13:02</publishTime>
+      <publishTime>12/04/2025 18:27:12</publishTime>
     </File>
     <File Include="HandyHub.pdb">
-      <publishTime>12/04/2025 17:13:02</publishTime>
+      <publishTime>12/04/2025 18:27:12</publishTime>
     </File>
     <File Include="HandyHub.runtimeconfig.json">
       <publishTime>12/04/2025 17:13:04</publishTime>
@@ -697,7 +697,7 @@
       <publishTime>01/29/2022 17:04:12</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>12/04/2025 17:14:12</publishTime>
+      <publishTime>12/04/2025 18:28:26</publishTime>
     </File>
     <File Include="wwwroot/css/bootstrap-override.css">
       <publishTime>11/04/2025 22:47:12</publishTime>

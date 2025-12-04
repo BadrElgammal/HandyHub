@@ -41,7 +41,7 @@
                         </a>
 
 
-                        <form asp-action="DeleteWorker" asp-route-id="@Model.Client.Id" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');">
+                        <form asp-action="DeleteClient" asp-route-id="@Model.Client.Id" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');">
 
                             <button type="submit" class="px-5 py-2.5 bg-red-50 border border-red-100 text-red-600 font-medium rounded-lg hover:bg-red-100 transition shadow-sm">
 
@@ -172,7 +172,7 @@
                         {
                             <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
                                 <div class="flex items-start space-x-4 space-x-reverse">
-                                    <img class="w-16 h-16 rounded-lg object-cover" src="@worker.User.ImageUrl" alt="@worker.User.Name" />
+                                    <img class="w-16 h-16 rounded-lg object-cover" src="~/ProfileImages/@(string.IsNullOrEmpty(worker.User?.ImageUrl) ? "default-avatar-admin.png" : worker.User?.ImageUrl)" alt="@worker.User.Name" />
                                     <div class="flex-1">
                                         <div class="flex justify-between mb-2">
                                             <a href="/Worker/Profile/@worker.Id"
