@@ -19,7 +19,7 @@
 
                     <!-- Profile Image -->
                     <div class="relative">
-                        <img src="@Model.Worker.User.ImageUrl" class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" />
+                        <img src="~/ProfileImages/@(string.IsNullOrEmpty(Model.Worker.User?.ImageUrl) ? "default-avatar-admin.png" : Model.Worker.User?.ImageUrl)" class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" />
                         <div class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
                     </div>
 

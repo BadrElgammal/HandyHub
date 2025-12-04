@@ -51,13 +51,15 @@ namespace HandyHub.Controllers
             var reviews = reviewService.GetAll().Where(r => r.ClientId == id).ToList();
             var favorites = favoriteService.GetAll().Where(f => f.ClientId == id).ToList();
             var workers = workerService.GetAllWithUser();
+            var category = categoryService.GetAll();
 
             var vm = new Models.ViewModels.ClientDashboardVM
             {
                 Client = client,
                 Reviews = reviews,
                 Favorites = favorites,
-                Workers = workers
+                Workers = workers,
+                Categories = category
             };
 
             return View(vm);
@@ -78,7 +80,7 @@ namespace HandyHub.Controllers
                 Email = client.User.Email,
                 Phone = client.User.Phone,
                 City = client.User.City,
-                ExistingProfileImagePath = client.ProfileImagePath
+                ExistingProfileImagePath = client.User.ImageUrl
             };
 
             return View(vm);
@@ -104,13 +106,13 @@ namespace HandyHub.Controllers
 
             if (model.ProfileImage != null)
             {
-                if (!string.IsNullOrEmpty(client.ProfileImagePath))
+                if (!string.IsNullOrEmpty(client.User.ImageUrl))
                 {
-                    Upload.RemoveProfileImage("ProfileImages", client.ProfileImagePath);
+                    Upload.RemoveProfileImage("ProfileImages", client.User.ImageUrl);
                 }
 
                 var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
-                client.ProfileImagePath = fileName;
+                client.User.ImageUrl = fileName;
             }
 
             // معالجة الباسورد
@@ -188,6 +190,7 @@ namespace HandyHub.Controllers
 
             var reviews = reviewService.GetAll().Where(r => r.WorkerId == id).ToList();
             var clients = clientService.GetAllWithUser();
+            var favorites= favoriteService.GetAll();
 
             var vm = new WorkerEditViewModel
             {
@@ -195,7 +198,8 @@ namespace HandyHub.Controllers
                 Review = reviews,
                 Portfolio = workerPortfolioService.GetAll().Where(p => p.WorkerId == id).ToList(),
                 Categories = worker.Category,
-                Clients = clients
+                Clients = clients,
+                Favorites = favorites
             };
 
             return View(vm);

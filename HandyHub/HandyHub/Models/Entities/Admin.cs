@@ -11,8 +11,6 @@ namespace HandyHub.Models.Entities
         public bool IsSuperAdmin { get; set; } = false;
         public bool IsActive { get; set; } = true;
 
-        public string? ProfileImagePath { get; set; }
-
         [ForeignKey("User")]
         public int? UserId { get; set; }
 

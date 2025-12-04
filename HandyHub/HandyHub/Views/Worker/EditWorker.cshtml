@@ -1,21 +1,39 @@
-﻿@model HandyHub.Models.ViewModels.WorkerWithCatigoryViewModel
+﻿@model HandyHub.Models.ViewModels.WorkerVM.EditWorkerVM
 @{
     Layout = "_Layout";
     ViewData["Title"] = "تعديل بيانات العامل";
 }
 
-<div class="min-h-screen bg-gray-50 py-12 text-right" dir="rtl">
 
+<div class="min-h-screen bg-gray-50 py-12 text-right" dir="rtl">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <main class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 lg:p-10 border border-gray-100">
         <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
             <i class="ri-user-settings-line text-teal-600"></i> تعديل بياناتي الشخصية
         </h1>
         <p class="text-gray-600 mb-8 border-b pb-4">يرجى تحديث بيانات حسابك لتبقى دقيقة.</p>
 
-        <form asp-action="EditWorker" method="post" class="space-y-6">
+        <form asp-action="EditWorker" method="post" enctype="multipart/form-data" class="space-y-6">
 
             <input type="hidden" asp-for="Worker.Id" />
             <input type="hidden" asp-for="Worker.UserId" />
+            <!-- تعديل الصورة -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">الصورة الشخصية</label>
+
+                <div class="flex items-center gap-4">
+                    <img src="~/ProfileImages/@(string.IsNullOrEmpty(Model.ExistingProfileImagePath) ? "default-avatar-admin.png" : Model.ExistingProfileImagePath)"
+                         alt="Profile"
+                         class="w-20 h-20 rounded-full border object-cover" />
+
+                    <input asp-for="@Model.ProfileImage"
+                           type="file"
+                           accept="image/*"
+                           class="text-sm text-gray-700" />
+                </div>
+
+                <span asp-validation-for="@Model.ProfileImage" class="text-red-600 text-sm"></span>
+            </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
@@ -72,14 +90,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور الجديدة</label>
-                        <input asp-for="Worker.User.PasswordHash" type="password"
+                        <input asp-for="@Model.Password" type="password"
                                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">تأكيد كلمة المرور</label>
-                        <input type="password"
+                        <input asp-for="@Model.ConfirmPassword" type="password"
                                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+                        <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
                     </div>
                 </div>
             </div>

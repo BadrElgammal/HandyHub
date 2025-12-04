@@ -22,7 +22,7 @@
                 <!-- صورة العامل -->
                 <div class="relative group">
                     <div class="w-36 h-36 rounded-2xl p-1 bg-white shadow-md">
-                        <img src="@Model.Worker.User.ImageUrl"
+                        <img src="~/ProfileImages/@(string.IsNullOrEmpty(Model.Worker.User?.ImageUrl) ? "default-avatar-admin.png" : Model.Worker.User?.ImageUrl)"
                              onerror="this.src='https://img.freepik.com/free-photo/plumber-with-his-arms-crossed_1368-517.jpg'"
                              class="w-full h-full object-cover rounded-xl" />
                     </div>
@@ -35,10 +35,20 @@
 
                         <div>
                             <h1 class="text-3xl font-bold text-gray-900 mb-1 flex items-center gap-2">
-                                @Model.Worker.User.Name 
+                                @Model.Worker.User.Name
                             </h1>
 
-                            <p class="text-lg text-gray-600 font-medium mb-3">
+                            <!-- الفئة (Category) -->
+                            @if (Model.Worker.Category != null)
+                            {
+                                <span class="inline-flex items-center gap-1
+                                        bg-teal-50 text-teal-700 px-3 py-1 rounded-lg text-sm font-medium border border-teal-200">
+                                    <i class="ri-tools-line"></i>
+                                    @Model.Worker.Category.Name
+                                </span>
+                            }
+
+                            <p class="text-lg text-gray-600 font-medium mb-3 mt-3">
                                 @Model.Worker.Bio
                             </p>
 
@@ -49,16 +59,12 @@
                                     @Model.Worker.Area
                                 </span>
 
-                               
-
                                 <span class="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded">
                                     <i class="ri-star-fill text-yellow-400"></i>
                                     <span class="text-gray-900 font-bold">
-                                        @(
-                                                                                Model.Worker.Reviews.Any()
+                                        @(Model.Worker.Reviews.Any()
                                                                                 ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
-                                                                              : "0"
-                                                                              )
+                                                                                : "0")
                                     </span>
                                     ( @Model.Review.Count تقييم )
                                 </span>
@@ -66,21 +72,43 @@
                             </div>
                         </div>
 
-                        <!-- أزرار الاتصال -->
+                        <!-- أزرار الاتصال + المفضلة -->
                         <div class="flex flex-wrap gap-3 mt-4 md:mt-0">
+
+                            <!-- زر الاتصال -->
                             <a href="tel:@Model.Worker.User.Phone"
                                class="flex gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-lg font-bold shadow transition">
                                 <i class="ri-phone-fill"></i> اتصال
                             </a>
 
+                            <!-- زر واتساب -->
                             <a href="https://wa.me/@Model.Worker.User.Phone" target="_blank"
                                class="flex gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg font-bold shadow transition">
                                 <i class="ri-whatsapp-line text-xl"></i> واتساب
                             </a>
+
+                            <!-- زر المفضلة -->
+                            @{
+                                bool isFav = Model.Favorites != null &&
+                                Model.Favorites.Any(f => f.WorkerId == Model.Worker.Id);
+                            }
+
+                            <form method="post" asp-controller="Client" asp-action="AddToFavorite">
+                                <input type="hidden" name="workerId" value="@Model.Worker.Id" />
+
+                                <button type="submit"
+                                        class="flex gap-2 px-6 py-2.5 rounded-lg font-bold shadow transition
+                                          @(isFav ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700")">
+
+                                    <i class="@(isFav ? "ri-heart-fill text-white" : "ri-heart-add-line text-pink-600")"></i>
+                                    @(isFav ? "إزالة من المفضلة" : "إضافة إلى المفضلة")
+                                </button>
+                            </form>
+
                         </div>
                     </div>
 
-                    <!-- نبذة عن العامل -->
+                    <!-- نبذة -->
                     <div class="mt-6 pt-6 border-t border-gray-100">
                         <h3 class="font-bold text-gray-900 mb-2">نبذة عني</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
@@ -134,16 +162,12 @@
                         <i class="ri-discuss-line text-teal-600"></i> آراء العملاء
                     </h2>
 
-
                     <div class="text-center p-4 bg-gray-50 rounded-lg mb-6">
 
-                        <!-- المتوسط -->
                         <span class="block text-4xl font-bold text-gray-800">
-                            @(
-                                                        Model.Worker.Reviews.Any()
+                            @(Model.Worker.Reviews.Any()
                                                         ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
-                                                        : "0"
-                                                        )
+                                                        : "0")
                         </span>
 
                         <!-- النجوم -->
@@ -172,7 +196,6 @@
                         </span>
                     </div>
 
-
                     <div class="space-y-5 max-h-[500px] overflow-y-auto pr-2">
 
                         @foreach (var r in Model.Review)
@@ -185,7 +208,7 @@
 
                                     <div>
                                         <h4 class="font-bold text-sm text-gray-900">
-                                            @r.Client.User.Name 
+                                            @r.Client.User.Name
                                         </h4>
 
                                         <div class="text-yellow-400 text-xs flex">

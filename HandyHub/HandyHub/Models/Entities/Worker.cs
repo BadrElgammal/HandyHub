@@ -13,7 +13,6 @@ namespace HandyHub.Models.Entities
         public bool IsAvailable { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public string? ProfileImagePath { get; set; }
 
 
         [ForeignKey("Category")]

@@ -3,6 +3,7 @@ using HandyHub.Helper;
 using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels;
 using HandyHub.Models.ViewModels.ClientVM;
+using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -112,7 +113,7 @@ namespace HandyHub.Controllers
                 Email = client.User.Email,
                 Phone = client.User.Phone,
                 City = client.User.City,
-                ExistingProfileImagePath = client.ProfileImagePath   // جديد
+                ExistingProfileImagePath = client.User.ImageUrl   // جديد
             };
 
             return View(vm);
@@ -138,13 +139,13 @@ namespace HandyHub.Controllers
 
             if (model.ProfileImage != null)
             {
-                if (!string.IsNullOrEmpty(client.ProfileImagePath))
+                if (!string.IsNullOrEmpty(client.User.ImageUrl))
                 {
-                    Upload.RemoveProfileImage("ProfileImages", client.ProfileImagePath);
+                    Upload.RemoveProfileImage("ProfileImages", client.User.ImageUrl);
                 }
 
                 var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
-                client.ProfileImagePath = fileName;
+                client.User.ImageUrl = fileName;
             }
 
             if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
@@ -245,7 +246,7 @@ namespace HandyHub.Controllers
             if (vm.ProfileImage != null)
             {
                 var fileName = Upload.UploadProfileImage("ProfileImages", vm.ProfileImage);
-                vm.Worker.ProfileImagePath = fileName;
+                vm.Worker.User.ImageUrl = fileName;
             }
 
             vm.Worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(vm.Worker.User.PasswordHash);
@@ -276,7 +277,7 @@ namespace HandyHub.Controllers
             if (worker == null)
                 return NotFound();
 
-            var vm = new WorkerWithCatigoryViewModel
+            var vm = new EditWorkerVM
             {
                 Worker = worker,
                 Categorys = catigoryService.GetAll()
@@ -286,13 +287,14 @@ namespace HandyHub.Controllers
 
 
         [HttpPost]
-        public IActionResult EditWorker ( WorkerWithCatigoryViewModel model )
+        public IActionResult EditWorker ( EditWorkerVM model )
         {
             var exist = workerService.IsEmailExist(model.Worker.User.Email, model.Worker.UserId);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
             }
+
             if (!ModelState.IsValid)
             {
                 model.Categorys = catigoryService.GetAll();
@@ -302,32 +304,50 @@ namespace HandyHub.Controllers
             var worker = workerService.GetWorkerWithUserById(model.Worker.Id);
             if (worker == null)
                 return NotFound();
-
-            worker.Area = model.Worker.Area;
-            worker.Bio = model.Worker.Bio;
-            worker.IsAvailable = model.Worker.IsAvailable;
-            worker.CategoryId = model.Worker.CategoryId;
-
-            worker.User.Name = model.Worker.User.Name;
-            worker.User.Email = model.Worker.User.Email;
-            worker.User.Phone = model.Worker.User.Phone;
-            worker.User.City = model.Worker.User.City;
-
-            worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Worker.User.PasswordHash);
-
-            if (model.ProfileImage != null)
+            if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
             {
-                if (!string.IsNullOrEmpty(worker.ProfileImagePath))
+                if (string.IsNullOrWhiteSpace(model.Password) ||
+                    string.IsNullOrWhiteSpace(model.ConfirmPassword))
                 {
-                    Upload.RemoveProfileImage("ProfileImages", worker.ProfileImagePath);
+                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا.");
+                    return View(model);
                 }
 
-                var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
-                worker.ProfileImagePath = fileName;
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين.");
+                    return View(model);
+                }
+
+                worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
             }
 
+            //worker.Area = model.Worker.Area;
+            //worker.Bio = model.Worker.Bio;
+            //worker.IsAvailable = model.Worker.IsAvailable;
+            //worker.CategoryId = model.Worker.CategoryId;
+
+            //worker.User.Name = model.Worker.User.Name;
+            //worker.User.Email = model.Worker.User.Email;
+            //worker.User.Phone = model.Worker.User.Phone;
+            //worker.User.City = model.Worker.User.City;
+
+
+
+            //if (model.ProfileImage != null)
+            //{
+            //    if (!string.IsNullOrEmpty(worker.ProfileImagePath))
+            //    {
+            //        Upload.RemoveProfileImage("ProfileImages", worker.User.ImageUrl);
+            //    }
+
+            //    var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
+            //    worker.User.ImageUrl = fileName;
+            //}
+
             workerService.UpdateWorkerWithUser(worker);
-            TempData["msg"] = "Update successfully";
+
+            TempData["msg"] = "تم تحديث بيانات العامل بنجاح.";
             return RedirectToAction("ManageWorkers");
         }
 

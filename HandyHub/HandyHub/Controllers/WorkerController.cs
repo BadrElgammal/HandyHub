@@ -260,17 +260,19 @@ namespace HandyHub.Controllers
             if (worker == null)
                 return NotFound();
 
-            var vm = new WorkerWithCatigoryViewModel
+            var vm = new EditWorkerVM
             {
                 Worker = worker,
-                Categorys = catigoryService.GetAll()
+                Categorys = catigoryService.GetAll(),
+                ExistingProfileImagePath = worker.User.ImageUrl
             };
+
 
             return View(vm);
         }
 
         [HttpPost]
-        public IActionResult EditWorker ( WorkerWithCatigoryViewModel model )
+        public IActionResult EditWorker ( EditWorkerVM model )
         {
             var exist = workerService.IsEmailExist(model.Worker.User.Email, model.Worker.UserId);
             if (exist)
@@ -287,27 +289,45 @@ namespace HandyHub.Controllers
             var worker = workerService.GetWorkerWithUserById(model.Worker.Id);
             if (worker == null)
                 return NotFound();
+            if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
+            {
+                if (string.IsNullOrWhiteSpace(model.Password) ||
+                    string.IsNullOrWhiteSpace(model.ConfirmPassword))
+                {
+                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا.");
+                    return View(model);
+                }
 
-            worker.Area = model.Worker.Area;
-            worker.Bio = model.Worker.Bio;
-            worker.IsAvailable = model.Worker.IsAvailable;
-            worker.CategoryId = model.Worker.CategoryId;
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين.");
+                    return View(model);
+                }
 
-            worker.User.Name = model.Worker.User.Name;
-            worker.User.Email = model.Worker.User.Email;
-            worker.User.Phone = model.Worker.User.Phone;
-            worker.User.City = model.Worker.User.City;
+                worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            }
+
+            //worker.Area = model.Worker.Area;
+            //worker.Bio = model.Worker.Bio;
+            //worker.IsAvailable = model.Worker.IsAvailable;
+            //worker.CategoryId = model.Worker.CategoryId;
+
+            //worker.User.Name = model.Worker.User.Name;
+            //worker.User.Email = model.Worker.User.Email;
+            //worker.User.Phone = model.Worker.User.Phone;
+            //worker.User.City = model.Worker.User.City;
+
 
 
             if (model.ProfileImage != null)
             {
-                if (!string.IsNullOrEmpty(worker.ProfileImagePath))
+                if (!string.IsNullOrEmpty(worker.User.ImageUrl))
                 {
-                    Upload.RemoveProfileImage("ProfileImages", worker.ProfileImagePath);
+                    Upload.RemoveProfileImage("ProfileImages", worker.User.ImageUrl);
                 }
 
                 var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
-                worker.ProfileImagePath = fileName;
+                worker.User.ImageUrl = fileName;
             }
 
             workerService.UpdateWorkerWithUser(worker);

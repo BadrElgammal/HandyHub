@@ -9,7 +9,7 @@ namespace HandyHub.Models.ViewModels.WorkerVM
         public List<Review>? Review { get; set; }
         public List<WorkerPortfolio>? Portfolio { get; set; }
         public Category Categories { get; set; }
-
+        public List<Favorite> Favorites { get; set; }
         public IFormFile? ProfileImage { get; set; }
     }
 }

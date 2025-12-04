@@ -19,5 +19,6 @@ namespace HandyHub.Models.ViewModels
         public List<Review> Reviews { get; set; }
         public List<Favorite> Favorites { get; set; }
         public List<Worker> Workers { get; set; }
+        public List<Category> Categories { get; set; }
     }
 }
