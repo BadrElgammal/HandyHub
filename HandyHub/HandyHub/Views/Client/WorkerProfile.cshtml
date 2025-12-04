@@ -22,7 +22,7 @@
                 <!-- صورة العامل -->
                 <div class="relative group">
                     <div class="w-36 h-36 rounded-2xl p-1 bg-white shadow-md">
-                        <img src="@Model.Worker.User.ImageUrl"
+                        <img src="~/ProfileImages/@(string.IsNullOrEmpty(Model.Worker.User?.ImageUrl) ? "default-avatar-admin.png" : Model.Worker.User?.ImageUrl)"
                              onerror="this.src='https://img.freepik.com/free-photo/plumber-with-his-arms-crossed_1368-517.jpg'"
                              class="w-full h-full object-cover rounded-xl" />
                     </div>

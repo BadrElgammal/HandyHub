@@ -18,7 +18,7 @@
 
                     <!-- Profile Image -->
                     <div class="relative">
-                        <img src="@Model.Client.User?.ImageUrl" class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" />
+                        <img src="~/ProfileImages/@(string.IsNullOrEmpty(Model.Client.User?.ImageUrl) ? "default-avatar-admin.png": Model.Client.User?.ImageUrl)" class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" />
                         <div class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
                     </div>
 
@@ -125,21 +125,25 @@
                             if (worker != null)
                             {
                                 <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
-                                    <img alt="@worker.User.Name" class="w-full h-60 object-cover object-top" src="@worker.User.ImageUrl" />
+                                    <img alt="@worker.User.Name" class="w-full h-60 object-cover object-top" src="~/ProfileImages/@(string.IsNullOrEmpty(worker.User?.ImageUrl) ? "default-avatar-admin.png" : worker.User?.ImageUrl)" />
                                     <div class="p-4">
                                         <div class="flex items-center justify-between mb-2">
                                             <h3 class="text-lg font-semibold text-gray-900">@worker.User.Name</h3>
-                                            <form method="post" asp-controller="Favorites" asp-action="Remove" asp-route-id="@fav.Id">
+                                            <form  >
                                                 <button class="w-8 h-8 flex items-center justify-center text-pink-600 hover:bg-pink-50 rounded-full" title="إزالة">
                                                     <i class="ri-heart-fill text-xl"></i>
                                                 </button>
                                             </form>
                                         </div>
-                                        <p class="text-gray-600 mb-2">@worker.Category?.Name</p>
+                                        <p class="text-gray-600 mb-2">@Model.Categories.Where(c => c.Id == worker.CategoryId).FirstOrDefault()?.Name</p>
                                         <div class="flex items-center justify-between mb-4 text-sm">
                                             <div class="flex items-center space-x-1 space-x-reverse">
                                                 <i class="ri-star-fill text-yellow-400"></i>
-                                                <span class="font-semibold text-gray-900">@Model.Reviews.Where(r => r.WorkerId == worker.Id && r.ClientId == Model.Client.Id).FirstOrDefault().Rating</span>
+                                                <span class="font-semibold text-gray-900">
+                                                    @(Model.Reviews
+                                                                                                .Where(r => r.WorkerId == worker.Id && r.ClientId == Model.Client.Id)
+                                                                                                .FirstOrDefault()?.Rating ?? 0)
+                                        </span>
                                             </div>
                                             <span class="text-gray-600"><i class="ri-map-pin-line ml-1"></i> @worker.User.City</span>
                                         </div>
