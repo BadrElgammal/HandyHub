@@ -39,6 +39,9 @@ namespace HandyHub.Migrations
                     b.Property<bool>("IsSuperAdmin")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfileImagePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
@@ -85,6 +88,9 @@ namespace HandyHub.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ProfileImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TotalContacts")
                         .HasColumnType("int");
@@ -223,6 +229,9 @@ namespace HandyHub.Migrations
 
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfileImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");

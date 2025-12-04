@@ -1,11 +1,12 @@
 ﻿using HandyHub.Data;
+using HandyHub.Helper;
 using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels;
 using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace HandyHub.Controllers
 {
@@ -17,14 +18,14 @@ namespace HandyHub.Controllers
         GenericService<Review> ReviewService;
         GenericService<WorkerPortfolio> Workerprotfilio;
         IClientService clientService;
-         // افتراضًا اسم الخدمة
+        // افتراضًا اسم الخدمة
         private readonly IWebHostEnvironment _webHostEnvironment;
 
 
         private readonly HandyHubDbContext db;
 
 
-        public WorkerController(IWorkerService workerService, GenericService<Category> catigoryService,HandyHubDbContext context, GenericService<Review> reviewService, GenericService<WorkerPortfolio> workerprotfilio,IClientService clientService)
+        public WorkerController ( IWorkerService workerService, GenericService<Category> catigoryService, HandyHubDbContext context, GenericService<Review> reviewService, GenericService<WorkerPortfolio> workerprotfilio, IClientService clientService )
         {
             db = context;
             this.workerService = workerService;
@@ -35,7 +36,7 @@ namespace HandyHub.Controllers
         }
         [HttpGet]
         [HttpGet]
-        public IActionResult Search(int? categoryId, string? city, double? rating, bool? available)
+        public IActionResult Search ( int? categoryId, string? city, double? rating, bool? available )
         {
             var workers = workerService.GetAllWorkersWithPortfolioWithUserWithReviews();
             if (categoryId.HasValue)
@@ -150,15 +151,15 @@ namespace HandyHub.Controllers
         //    return RedirectToAction("Index", "Home");
         //}
         [HttpPost]
-        public IActionResult DeleteWorker(int id)
+        public IActionResult DeleteWorker ( int id )
         {
             workerService.DeleteWorkerWithUser(id);
             Response.Cookies.Delete("jwt");
             TempData["msg"] = "تم حذف العامل بنجاح.";
-            return RedirectToAction("index","Home");
+            return RedirectToAction("index", "Home");
         }
         [HttpPost]
-        public IActionResult logout()
+        public IActionResult logout ()
         {
             Response.Cookies.Delete("jwt");
             return RedirectToAction("Index", "Home");
@@ -250,41 +251,73 @@ namespace HandyHub.Controllers
 
         // **ملاحظة:** يجب أن تتأكد أيضاً من تعديل الـ [HttpPost] Action بنفس الطريقة
         [HttpGet]
-        public IActionResult EditWorker(int? id)
+        public IActionResult EditWorker ( int? id )
         {
             if (id == null)
                 return BadRequest();
+
             var worker = workerService.GetWorkerWithUserById(id.Value);
-            if (worker == null) return NotFound();
+            if (worker == null)
+                return NotFound();
 
             var vm = new WorkerWithCatigoryViewModel
             {
                 Worker = worker,
                 Categorys = catigoryService.GetAll()
             };
+
             return View(vm);
         }
 
         [HttpPost]
-        public IActionResult EditWorker(WorkerWithCatigoryViewModel model)
+        public IActionResult EditWorker ( WorkerWithCatigoryViewModel model )
         {
             var exist = workerService.IsEmailExist(model.Worker.User.Email, model.Worker.UserId);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
             }
+
             if (!ModelState.IsValid)
             {
+                model.Categorys = catigoryService.GetAll();
                 return View(model);
             }
-            model.Worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Worker.User.PasswordHash);
-            workerService.UpdateWorkerWithUser(model.Worker);
-            TempData["msg"] = "Update successfully";
-            return RedirectToAction("profile");
+
+            var worker = workerService.GetWorkerWithUserById(model.Worker.Id);
+            if (worker == null)
+                return NotFound();
+
+            worker.Area = model.Worker.Area;
+            worker.Bio = model.Worker.Bio;
+            worker.IsAvailable = model.Worker.IsAvailable;
+            worker.CategoryId = model.Worker.CategoryId;
+
+            worker.User.Name = model.Worker.User.Name;
+            worker.User.Email = model.Worker.User.Email;
+            worker.User.Phone = model.Worker.User.Phone;
+            worker.User.City = model.Worker.User.City;
+
+
+            if (model.ProfileImage != null)
+            {
+                if (!string.IsNullOrEmpty(worker.ProfileImagePath))
+                {
+                    Upload.RemoveProfileImage("ProfileImages", worker.ProfileImagePath);
+                }
+
+                var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
+                worker.ProfileImagePath = fileName;
+            }
+
+            workerService.UpdateWorkerWithUser(worker);
+
+            TempData["msg"] = "تم تحديث بيانات العامل بنجاح.";
+            return RedirectToAction("Profile");
         }
 
         [HttpPost]
-        public IActionResult SuspendWorker(int id)
+        public IActionResult SuspendWorker ( int id )
         {
             var worker = workerService.GetWorkerWithUserById(id);
             if (worker == null)
@@ -297,15 +330,15 @@ namespace HandyHub.Controllers
             return RedirectToAction("ManageWorkers");
         }
 
-        public IActionResult Profile()
+        public IActionResult Profile ()
         {
 
 
-            
+
             var userId = int.Parse(User.FindFirst("UserId").Value);
             int id = db.Workers.Where(c => c.UserId == userId).Select(c => c.Id).First();
             var worker = workerService.GetWorkerWithUserById(id);
-            
+
             var reviews = ReviewService.GetAll().Where(r => r.WorkerId == id).ToList();
             var client = clientService.GetAllWithUser();
 
@@ -315,13 +348,13 @@ namespace HandyHub.Controllers
                 Worker = worker,
                 Review = reviews,
                 Portfolio = Workerprotfilio.GetAll().Where(p => p.WorkerId == id).ToList(),
-              Categories  = worker.Category,
-              Clients= client
+                Categories = worker.Category,
+                Clients = client
 
             };
             return View(vm);
         }
-        public IActionResult WorkerProfile(int id)
+        public IActionResult WorkerProfile ( int id )
         {
             var worker = workerService.GetWorkerWithUserById(id);
             if (worker == null)
