@@ -24,17 +24,30 @@
             <div class="h-32 bg-gradient-to-br from-teal-600 to-blue-600 w-full"></div>
 
             <div class="px-6 pb-6">
-                <div class="flex flex-col md:flex-row items-center md:items-end -mt-12 gap-6">
+
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
 
                     <!-- Profile Image -->
-                    <div class="relative">
-                        <img src="@Model.Worker.User.ImageUrl" class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" />
+                    <div class="relative -mt-12">
+                        <img src="~/ProfileImages/@(string.IsNullOrEmpty(Model.Worker.User?.ImageUrl) ? "default-avatar-admin.png" : Model.Worker.User?.ImageUrl)"
+                             class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" />
                         <div class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
                     </div>
 
                     <!-- Name & Info -->
-                    <div class="flex-1 text-center md:text-right mt-2 md:mt-0">
+                    <div class="flex-1 md:text-right">
+
                         <h2 class="text-3xl font-bold text-gray-800">@Model.Worker.User.Name</h2>
+
+                        @if (Model.Worker.Category != null)
+                        {
+                            <span class="inline-flex items-center gap-1
+                        bg-teal-50 text-teal-700 px-3 py-1 rounded-lg text-sm font-medium border border-teal-200">
+                                <i class="ri-tools-line"></i>
+                                @Model.Worker.Category.Name
+                            </span>
+                        }
+
                         <p class="text-gray-500 font-medium">@Model.Worker.Bio</p>
 
                         <div class="flex flex-wrap justify-center md:justify-start gap-4 mt-3 text-sm text-gray-600">
@@ -42,20 +55,28 @@
                             <span class="flex items-center gap-1"><i class="ri-phone-line"></i>@Model.Worker.User.Phone</span>
                             <span class="flex items-center gap-1"><i class="ri-mail-line"></i>@Model.Worker.User.Email</span>
                         </div>
+
                     </div>
 
                     <!-- Buttons -->
-                    <div class="flex gap-3 mt-4 md:mt-0">
+                    <div class="flex gap-3">
+
                         <a asp-action="EditWorker" asp-route-id="@Model.Worker.Id"
                            class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:text-blue-600 transition shadow-sm">
                             <i class="ri-edit-box-line ml-1"></i> تعديل
                         </a>
 
-                        <a asp-action="DeleteWorker" asp-route-id="@Model.Worker.Id"
-                           class="px-5 py-2.5 bg-red-50 border border-red-100 text-red-600 font-medium rounded-lg hover:bg-red-100 transition shadow-sm">
-                            <i class="ri-delete-bin-line ml-1"></i> حذف الحساب
-                        </a>
+                        <form asp-action="DeleteWorker" asp-route-id="@Model.Worker.Id" method="post"
+                              onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');">
+
+                            <button type="submit"
+                                    class="px-5 py-2.5 bg-red-50 border border-red-100 text-red-600 font-medium rounded-lg hover:bg-red-100 transition shadow-sm">
+                                <i class="ri-delete-bin-line ml-1"></i> حذف الحساب
+                            </button>
+
+                        </form>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -153,11 +174,11 @@
                 @foreach (var item in Model.Worker.Reviews)
                 {
                     <div class="flex gap-4">
-                        <img src="https://picsum.photos/60" class="w-12 h-12 rounded-full object-cover" />
+                        <img src="~/ProfileImages/@(string.IsNullOrEmpty(item.Client.User?.ImageUrl) ? "default-avatar-admin.png" : item.Client.User?.ImageUrl)" class="w-12 h-12 rounded-full object-cover" />
                         <div>
                             <div class="flex items-center gap-2">
                                 <h4 class="font-bold text-gray-900">@item.Client.User.Name</h4>
-                                <span class="text-xs text-gray-400">• منذ يومين</span>
+                                <span class="text-xs text-gray-400">@item.CreatedAt</span>
                             </div>
                             <div class="flex items-center mb-3 space-x-1 space-x-reverse">
                                 @* ⭐ عرض النجوم بناءً على التقييم (review.Rating) *@

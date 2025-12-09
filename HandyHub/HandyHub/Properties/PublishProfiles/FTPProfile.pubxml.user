@@ -5,7 +5,7 @@
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAq+jRC742sEag8DMT9tCtkQAAAAACAAAAAAAQZgAAAAEAACAAAAC79YhDccwsDUh2JxqMtOusOFDwX6k/e13uApMRaNWPywAAAAAOgAAAAAIAACAAAAAPY3Cyp3+Jy4utUv1KW12QJGAdoApeEkhzHQyKIVJE5CAAAACGkU1zkKDDIlDH6bQVuAu2+Mlm0Pf4h9CKJXltBvNX1UAAAABZSUx/585Y+rFnFxCOaeAaPZa0THgcG/FqiPuBI2i7LCTKV+dnbPypgIjxORMBjnhtwqYvfChZFtMOyzOb13II</EncryptedPassword>
     <_PublishTargetUrl>ftp://handyhub.runasp.net/wwwroot</_PublishTargetUrl>
-    <History>True|2025-11-30T18:26:10.9815282Z||;False|2025-11-30T20:20:27.3182968+02:00||;False|2025-11-30T20:08:27.5903290+02:00||;False|2025-11-30T19:36:40.8619665+02:00||;False|2025-11-28T22:17:52.8313216+02:00||;False|2025-11-28T21:49:18.3138156+02:00||;</History>
+    <History>True|2025-12-04T17:39:54.5151817Z||;True|2025-12-04T18:31:27.9705732+02:00||;True|2025-12-04T17:17:16.7414732+02:00||;True|2025-11-30T20:26:10.9815282+02:00||;False|2025-11-30T20:20:27.3182968+02:00||;False|2025-11-30T20:08:27.5903290+02:00||;False|2025-11-30T19:36:40.8619665+02:00||;False|2025-11-28T22:17:52.8313216+02:00||;False|2025-11-28T21:49:18.3138156+02:00||;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -157,22 +157,22 @@
       <publishTime>11/08/2023 19:52:00</publishTime>
     </File>
     <File Include="HandyHub.deps.json">
-      <publishTime>11/30/2025 20:33:14</publishTime>
+      <publishTime>12/04/2025 19:39:01</publishTime>
     </File>
     <File Include="HandyHub.dll">
-      <publishTime>11/30/2025 20:33:03</publishTime>
+      <publishTime>12/04/2025 19:38:21</publishTime>
     </File>
     <File Include="HandyHub.exe">
-      <publishTime>11/30/2025 20:33:03</publishTime>
+      <publishTime>12/04/2025 19:38:22</publishTime>
     </File>
     <File Include="HandyHub.pdb">
-      <publishTime>11/30/2025 20:33:03</publishTime>
+      <publishTime>12/04/2025 19:38:21</publishTime>
     </File>
     <File Include="HandyHub.runtimeconfig.json">
-      <publishTime>11/28/2025 21:17:16</publishTime>
+      <publishTime>12/04/2025 17:13:04</publishTime>
     </File>
     <File Include="HandyHub.staticwebassets.endpoints.json">
-      <publishTime>11/30/2025 19:35:50</publishTime>
+      <publishTime>12/04/2025 17:14:11</publishTime>
     </File>
     <File Include="he/Humanizer.resources.dll">
       <publishTime>01/29/2022 17:04:08</publishTime>
@@ -697,13 +697,13 @@
       <publishTime>01/29/2022 17:04:12</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>11/30/2025 20:33:15</publishTime>
+      <publishTime>12/04/2025 19:39:02</publishTime>
     </File>
     <File Include="wwwroot/css/bootstrap-override.css">
       <publishTime>11/04/2025 22:47:12</publishTime>
     </File>
     <File Include="wwwroot/css/main.css">
-      <publishTime>11/30/2025 19:22:45</publishTime>
+      <publishTime>12/02/2025 20:53:07</publishTime>
     </File>
     <File Include="wwwroot/css/site.css">
       <publishTime>11/04/2025 23:46:07</publishTime>
@@ -712,7 +712,7 @@
       <publishTime>10/27/2025 18:05:19</publishTime>
     </File>
     <File Include="wwwroot/HandyHub.styles.css">
-      <publishTime>11/28/2025 21:17:12</publishTime>
+      <publishTime>12/04/2025 17:13:02</publishTime>
     </File>
     <File Include="wwwroot/images/default-avatar-admin.png">
       <publishTime>11/30/2025 18:23:16</publishTime>
@@ -902,6 +902,24 @@
     </File>
     <File Include="wwwroot/lib/jquery/LICENSE.txt">
       <publishTime>11/04/2025 23:46:07</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/362d81d5-318b-4d93-944f-155d34d9cd5f.png">
+      <publishTime>12/04/2025 07:16:23</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/4f2d2030-78a7-4d97-8bc5-0ed4dac43ccd.jpeg">
+      <publishTime>12/04/2025 07:12:12</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/5b120d09-5551-4d20-8950-eb9632f66ce0.jpeg">
+      <publishTime>12/04/2025 07:19:50</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/c3d741c6-87d0-4efd-9589-92abd41743d4.jpeg">
+      <publishTime>12/04/2025 13:02:31</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/dcf43896-36a8-48ce-a281-990f9b352106.jpeg">
+      <publishTime>12/04/2025 14:20:26</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/default-avatar-admin.png">
+      <publishTime>11/30/2025 18:23:16</publishTime>
     </File>
     <File Include="zh-CN/Humanizer.resources.dll">
       <publishTime>01/29/2022 17:04:12</publishTime>

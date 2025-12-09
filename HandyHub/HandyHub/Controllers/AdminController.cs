@@ -1,10 +1,11 @@
 ﻿using HandyHub.Data;
+using HandyHub.Helper;
 using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels;
 using HandyHub.Models.ViewModels.ClientVM;
+using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -75,17 +76,16 @@ namespace HandyHub.Controllers
             {
                 ModelState.AddModelError("", "email already exists");
             }
-            if (ModelState.IsValid == false)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
+
             model.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.User.PasswordHash);
             clientService.CreateClientWithUser(model);
             TempData["msg"] = "created successfully";
             return RedirectToAction("ManageClients");
-
         }
-
 
 
         public IActionResult ClientDetails ( int id )
@@ -112,16 +112,18 @@ namespace HandyHub.Controllers
                 Name = client.User.Name,
                 Email = client.User.Email,
                 Phone = client.User.Phone,
-                City = client.User.City
+                City = client.User.City,
+                ExistingProfileImagePath = client.User.ImageUrl   // جديد
             };
 
             return View(vm);
         }
 
+
         [HttpPost]
         public IActionResult EditClient ( EditClientVM model )
         {
-            var exist = clientService.IsEmailExist(model.Email,model.UserId);
+            var exist = clientService.IsEmailExist(model.Email, model.UserId);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
@@ -130,10 +132,23 @@ namespace HandyHub.Controllers
             {
                 return View(model);
             }
+
             var client = clientService.GetClientWithUserById(model.Id);
             if (client == null)
                 return NotFound();
-            if (!string.IsNullOrWhiteSpace(model.Password) ||!string.IsNullOrWhiteSpace(model.ConfirmPassword))
+
+            if (model.ProfileImage != null)
+            {
+                if (!string.IsNullOrEmpty(client.User.ImageUrl))
+                {
+                    Upload.RemoveProfileImage("ProfileImages", client.User.ImageUrl);
+                }
+
+                var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
+                client.User.ImageUrl = fileName;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
             {
                 if (string.IsNullOrWhiteSpace(model.Password) ||
                     string.IsNullOrWhiteSpace(model.ConfirmPassword))
@@ -148,18 +163,15 @@ namespace HandyHub.Controllers
                     return View(model);
                 }
 
-                // هنا تعمل هاش للباسورد وتحطه مكان PasswordHash
-                // حسب طريقة الحفظ عندك
                 client.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
             }
 
-            // تحديث باقى البيانات
             client.User.Name = model.Name;
             client.User.Email = model.Email;
             client.User.Phone = model.Phone;
             client.User.City = model.City;
 
-            clientService.UpdateClientWithUser(client);  // أو _context.SaveChanges()
+            clientService.UpdateClientWithUser(client);
 
             TempData["msg"] = "تم تحديث بيانات العميل بنجاح.";
             return RedirectToAction("ManageClients");
@@ -224,16 +236,25 @@ namespace HandyHub.Controllers
             {
                 ModelState.AddModelError("", "email already exists");
             }
-            if (ModelState.IsValid == false)
+            if (!ModelState.IsValid)
             {
                 vm.Categorys = catigoryService.GetAll();
                 return View(vm);
             }
+
+
+            if (vm.ProfileImage != null)
+            {
+                var fileName = Upload.UploadProfileImage("ProfileImages", vm.ProfileImage);
+                vm.Worker.User.ImageUrl = fileName;
+            }
+
             vm.Worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(vm.Worker.User.PasswordHash);
             workerService.CreateWorkerWithUser(vm.Worker);
             TempData["msg"] = "created successfully";
             return RedirectToAction("ManageWorkers");
         }
+
 
         public IActionResult WorkerDetails ( int? id )
         {
@@ -251,10 +272,12 @@ namespace HandyHub.Controllers
         {
             if (id == null)
                 return BadRequest();
-            var worker = workerService.GetWorkerWithUserById(id.Value);
-            if (worker == null) return NotFound();
 
-            var vm = new WorkerWithCatigoryViewModel
+            var worker = workerService.GetWorkerWithUserById(id.Value);
+            if (worker == null)
+                return NotFound();
+
+            var vm = new EditWorkerVM
             {
                 Worker = worker,
                 Categorys = catigoryService.GetAll()
@@ -262,23 +285,72 @@ namespace HandyHub.Controllers
             return View(vm);
         }
 
+
         [HttpPost]
-        public IActionResult EditWorker ( WorkerWithCatigoryViewModel model )
+        public IActionResult EditWorker ( EditWorkerVM model )
         {
             var exist = workerService.IsEmailExist(model.Worker.User.Email, model.Worker.UserId);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
             }
+
             if (!ModelState.IsValid)
             {
+                model.Categorys = catigoryService.GetAll();
                 return View(model);
             }
-            model.Worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Worker.User.PasswordHash);
-            workerService.UpdateWorkerWithUser(model.Worker);
-            TempData["msg"] = "Update successfully";
+
+            var worker = workerService.GetWorkerWithUserById(model.Worker.Id);
+            if (worker == null)
+                return NotFound();
+            if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
+            {
+                if (string.IsNullOrWhiteSpace(model.Password) ||
+                    string.IsNullOrWhiteSpace(model.ConfirmPassword))
+                {
+                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا.");
+                    return View(model);
+                }
+
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين.");
+                    return View(model);
+                }
+
+                worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            }
+
+            //worker.Area = model.Worker.Area;
+            //worker.Bio = model.Worker.Bio;
+            //worker.IsAvailable = model.Worker.IsAvailable;
+            //worker.CategoryId = model.Worker.CategoryId;
+
+            //worker.User.Name = model.Worker.User.Name;
+            //worker.User.Email = model.Worker.User.Email;
+            //worker.User.Phone = model.Worker.User.Phone;
+            //worker.User.City = model.Worker.User.City;
+
+
+
+            //if (model.ProfileImage != null)
+            //{
+            //    if (!string.IsNullOrEmpty(worker.ProfileImagePath))
+            //    {
+            //        Upload.RemoveProfileImage("ProfileImages", worker.User.ImageUrl);
+            //    }
+
+            //    var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
+            //    worker.User.ImageUrl = fileName;
+            //}
+
+            workerService.UpdateWorkerWithUser(worker);
+
+            TempData["msg"] = "تم تحديث بيانات العامل بنجاح.";
             return RedirectToAction("ManageWorkers");
         }
+
         [HttpPost]
         public IActionResult DeleteWorkers ( int id )
         {
@@ -378,7 +450,7 @@ namespace HandyHub.Controllers
         }
 
 
-        public IActionResult logout()
+        public IActionResult logout ()
         {
             Response.Cookies.Delete("jwt");
             return RedirectToAction("Index", "Home");

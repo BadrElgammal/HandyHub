@@ -14,16 +14,19 @@
             <div class="h-32 bg-gradient-to-br from-teal-600 to-blue-600 w-full"></div>
 
             <div class="px-6 pb-6">
-                <div class="flex flex-col md:flex-row items-center md:items-end -mt-12 gap-6">
+
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
 
                     <!-- Profile Image -->
-                    <div class="relative">
-                        <img src="@Model.Client.User?.ImageUrl" class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" />
+                    <div class="relative -mt-12">
+                        <img src="~/ProfileImages/@(string.IsNullOrEmpty(Model.Client.User?.ImageUrl) ? "default-avatar-admin.png" : Model.Client.User?.ImageUrl)"
+                             class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover" />
                         <div class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
                     </div>
 
                     <!-- Name & Info -->
-                    <div class="flex-1  md:text-right mt-2 md:mt-0">
+                    <div class="flex-1 md:text-right">
+
                         <h2 class="text-3xl font-bold text-gray-800">@Model.Client.User.Name</h2>
 
                         <div class="flex flex-wrap justify-center md:justify-start gap-4 mt-3 text-sm text-gray-600">
@@ -31,26 +34,31 @@
                             <span class="flex items-center gap-1"><i class="ri-phone-line"></i>@Model.Client.User.Phone</span>
                             <span class="flex items-center gap-1"><i class="ri-mail-line"></i>@Model.Client.User.Email</span>
                         </div>
+
                     </div>
 
                     <!-- Buttons -->
-                    <div class="flex gap-3 mt-4 md:mt-0">
+                    <div class="flex gap-3">
+
                         <a asp-action="EditClient" asp-route-id="@Model.Client.Id"
                            class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:text-blue-600 transition shadow-sm">
                             <i class="ri-edit-box-line ml-1"></i> تعديل
                         </a>
 
-
-                        <form asp-action="DeleteWorker" asp-route-id="@Model.Client.Id" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');">
-
-                            <button type="submit" class="px-5 py-2.5 bg-red-50 border border-red-100 text-red-600 font-medium rounded-lg hover:bg-red-100 transition shadow-sm">
-
+                        <form asp-action="DeleteClient" asp-route-id="@Model.Client.Id" method="post"
+                              onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');">
+                            <button type="submit"
+                                    class="px-5 py-2.5 bg-red-50 border border-red-100 text-red-600 font-medium rounded-lg hover:bg-red-100 transition shadow-sm">
                                 <i class="ri-delete-bin-line ml-1"></i> حذف الحساب
                             </button>
                         </form>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
         <!-- 🟨 البطاقات الإحصائية -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 text-right">
@@ -125,21 +133,25 @@
                             if (worker != null)
                             {
                                 <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
-                                    <img alt="@worker.User.Name" class="w-full h-60 object-cover object-top" src="@worker.User.ImageUrl" />
+                                    <img alt="@worker.User.Name" class="w-full h-60 object-cover object-top" src="~/ProfileImages/@(string.IsNullOrEmpty(worker.User?.ImageUrl) ? "default-avatar-admin.png" : worker.User?.ImageUrl)" />
                                     <div class="p-4">
                                         <div class="flex items-center justify-between mb-2">
                                             <h3 class="text-lg font-semibold text-gray-900">@worker.User.Name</h3>
-                                            <form method="post" asp-controller="Favorites" asp-action="Remove" asp-route-id="@fav.Id">
+                                            <form  >
                                                 <button class="w-8 h-8 flex items-center justify-center text-pink-600 hover:bg-pink-50 rounded-full" title="إزالة">
                                                     <i class="ri-heart-fill text-xl"></i>
                                                 </button>
                                             </form>
                                         </div>
-                                        <p class="text-gray-600 mb-2">@worker.Category?.Name</p>
+                                        <p class="text-gray-600 mb-2">@Model.Categories.Where(c => c.Id == worker.CategoryId).FirstOrDefault()?.Name</p>
                                         <div class="flex items-center justify-between mb-4 text-sm">
                                             <div class="flex items-center space-x-1 space-x-reverse">
                                                 <i class="ri-star-fill text-yellow-400"></i>
-                                                <span class="font-semibold text-gray-900">@Model.Reviews.Where(r => r.WorkerId == worker.Id && r.ClientId == Model.Client.Id).FirstOrDefault().Rating</span>
+                                                <span class="font-semibold text-gray-900">
+                                                    @(Model.Reviews
+                                                                                                .Where(r => r.WorkerId == worker.Id && r.ClientId == Model.Client.Id)
+                                                                                                .FirstOrDefault()?.Rating ?? 0)
+                                        </span>
                                             </div>
                                             <span class="text-gray-600"><i class="ri-map-pin-line ml-1"></i> @worker.User.City</span>
                                         </div>
@@ -159,39 +171,55 @@
                     </div>
                 </div>
 
-                <!-- ⭐ التقييمات -->
-                <div id="content-reviews" class="hidden space-y-4">
-                    @foreach (var review in Model.Reviews)
-                    {
-                        var worker = Model.Workers.FirstOrDefault(w => w.Id == review.WorkerId);
-                        if (worker != null)
-                        {
-                            <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                                <div class="flex items-start space-x-4 space-x-reverse">
-                                    <img class="w-16 h-16 rounded-lg object-cover" src="@worker.User.ImageUrl" alt="@worker.User.Name" />
-                                    <div class="flex-1">
-                                        <div class="flex justify-between mb-2">
-                                            <a href="/Worker/Profile/@worker.Id"
-                                               class="text-lg font-semibold text-gray-900 hover:text-teal-600">@worker.User.Name</a>
-                                            <span class="text-sm text-gray-600">@review.CreatedAt.ToShortDateString()</span>
-                                        </div>
-                                        <div class="flex items-center mb-3 space-x-1 space-x-reverse">
-                                            @for (int i = 0; i < review.Rating; i++)
-                                            {
-                                                <i class="ri-star-fill text-yellow-400"></i>
-                                            }
-                                        </div>
-                                        <p class="text-gray-700">@review.Comment</p>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
+                <!-- ⭐ التقييمات بشكل محسّن -->
+                <div id="content-reviews" class="hidden">
 
-                    @if (!Model.Reviews.Any())
-                    {
-                        <p class="text-gray-500">لا توجد تقييمات بعد.</p>
-                    }
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6 border-b pb-4">تقييماتي</h2>
+
+                        <div class="space-y-6">
+
+                            @foreach (var review in Model.Reviews)
+                            {
+                                var worker = Model.Workers.FirstOrDefault(w => w.Id == review.WorkerId);
+
+                                if (worker != null)
+                                {
+                                    <div class="flex gap-4">
+                                        <img src="~/ProfileImages/@(string.IsNullOrEmpty(worker.User?.ImageUrl) ? "default-avatar-admin.png" : worker.User?.ImageUrl)"
+                                             class="w-12 h-12 rounded-full object-cover" />
+
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <a href="/Worker/Profile/@worker.Id"
+                                                   class="font-bold text-gray-900 hover:text-teal-600">@worker.User.Name</a>
+
+                                                <span class="text-xs text-gray-400">@review.CreatedAt.ToShortDateString()</span>
+                                            </div>
+
+                                            <div class="flex items-center mb-3 space-x-1 space-x-reverse">
+                                                @for (int i = 0; i < review.Rating; i++)
+                                                {
+                                                    <i class="ri-star-fill text-yellow-400"></i>
+                                                }
+                                            </div>
+
+                                            <p class="text-gray-600 text-sm leading-relaxed bg-gray-50 p-3 rounded-lg rounded-tr-none mt-1 inline-block">
+                                                @review.Comment
+                                            </p>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                            @if (!Model.Reviews.Any())
+                            {
+                                <p class="text-gray-500">لا توجد تقييمات بعد.</p>
+                            }
+
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
