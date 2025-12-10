@@ -14,6 +14,7 @@ namespace HandyHub.Models.ViewModels
 
         [Required(ErrorMessage = "رقم الهاتف مطلوب")]
         [Phone(ErrorMessage = "الرجاء إدخال رقم هاتف صحيح")]
+        [RegularExpression(@"^(010|011|012|015)[0-9]{8}$")]
         public string Phone { get; set; }
 
         [Required(ErrorMessage = "المدينة مطلوبة")]
