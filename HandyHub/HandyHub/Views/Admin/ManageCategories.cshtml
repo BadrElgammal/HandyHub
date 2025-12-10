@@ -6,68 +6,261 @@
     ViewData["Title"] = "إدارة الفئات";
 }
 
-<section class="py-5">
-    <div class="container">
-        <h2 class="fw-bold mb-4">
-            <i class="fas fa-tags text-info me-2"></i> إدارة الفئات
-        </h2>
+@section Styles {
+    <link href="~/css/Admin/ManageCategories.css" rel="stylesheet" />
+}
 
-        <!-- إضافة فئة جديدة -->
-        <form asp-action="AddCategory" method="post" class="p-4 bg-light rounded-4 shadow mb-4">
-            <div class="row g-3 align-items-center">
-                <div class="col-md-4">
-                    <input type="text" name="Name" class="form-control" placeholder="اسم الفئة" required />
-                </div>
-                <div class="col-md-6">
-                    <input type="text" name="Description" class="form-control" placeholder="الوصف" />
-                </div>
-                <div class="col-md-2 d-grid">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-plus"></i> إضافة
-                    </button>
-                </div>
+@* ===========================
+   ✅ Alerts
+   =========================== *@
+@if (ViewBag.errorMessage != null)
+{
+    <div class="alert-custom alert-danger-custom">
+        <div class="alert-icon">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <span>@ViewBag.errorMessage</span>
+    </div>
+}
+
+@if (TempData["msg"] != null)
+{
+    <div class="alert-custom alert-success-custom">
+        <div class="alert-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <span>@TempData["msg"]</span>
+    </div>
+}
+
+@* ===========================
+   ✅ Page Header Banner
+   =========================== *@
+<div class="page-header-banner">
+    <i class="fas fa-tags page-header-icon"></i>
+    <div class="page-header-content">
+        <div class="page-header-info">
+            <h1>
+                <i class="fas fa-tags me-2"></i>
+                إدارة الفئات
+            </h1>
+            <p>إنشاء وإدارة فئات الخدمات المتاحة في النظام</p>
+        </div>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Stats Summary
+   =========================== *@
+<div class="stats-summary">
+    <div class="summary-card total">
+        <div class="summary-icon">
+            <i class="fas fa-tags"></i>
+        </div>
+        <div class="summary-info">
+            <h3>@Model.Count()</h3>
+            <p>إجمالي الفئات</p>
+        </div>
+    </div>
+    <div class="summary-card active">
+        <div class="summary-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="summary-info">
+            <h3>@Model.Count(c => !string.IsNullOrEmpty(c.Description))</h3>
+            <p>فئات مع وصف</p>
+        </div>
+    </div>
+    <div class="summary-card new">
+        <div class="summary-icon">
+            <i class="fas fa-layer-group"></i>
+        </div>
+        <div class="summary-info">
+            <h3>@Model.Count()</h3>
+            <p>فئات نشطة</p>
+        </div>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Add Category Form
+   =========================== *@
+<div class="add-form-card">
+    <h3 class="add-form-title">
+        <i class="fas fa-plus"></i>
+        إضافة فئة جديدة
+    </h3>
+    <form asp-action="AddCategory" method="post">
+        <div class="d-flex gap-3 flex-wrap form-row">
+            <div style="flex: 1; min-width: 200px;">
+                <input type="text"
+                       name="Name"
+                       class="form-input"
+                       placeholder="اسم الفئة *"
+                       required />
             </div>
-        </form>
+            <div style="flex: 2; min-width: 250px;">
+                <input type="text"
+                       name="Description"
+                       class="form-input"
+                       placeholder="وصف الفئة (اختياري)" />
+            </div>
+            <div>
+                <button type="submit" class="btn-add">
+                    <i class="fas fa-plus-circle"></i>
+                    إضافة الفئة
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
 
-        <!-- عرض الفئات -->
-        <div class="card shadow border-0 rounded-4 overflow-hidden">
-            <table class="table table-hover mb-0 text-center align-middle">
-                <thead class="bg-info text-white">
+@* ===========================
+   ✅ Desktop Table View
+   =========================== *@
+<div class="table-card">
+    <div class="table-header">
+        <h3>
+            <i class="fas fa-list"></i>
+            قائمة الفئات
+        </h3>
+        <span class="badge">@Model.Count() فئة</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-tags"></i>
+            </div>
+            <h4>لا توجد فئات حالياً</h4>
+            <p>ابدأ بإضافة أول فئة باستخدام النموذج أعلاه</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
                     <tr>
-                        <th style="width: 30%">الاسم</th>
-                        <th style="width: 50%">الوصف</th>
-                        <th style="width: 20%">الإجراءات</th>
+                        <th>الفئة</th>
+                        <th>الوصف</th>
+                        <th class="text-center">إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (!Model.Any())
+                    @foreach (var cat in Model)
                     {
                         <tr>
-                            <td colspan="3" class="text-muted py-4">
-                                لا توجد فئات مسجلة حاليًا.
+                            <td>
+                                <div class="category-cell">
+                                    <div class="category-icon">
+                                        <i class="fas fa-tag"></i>
+                                    </div>
+                                    <span class="category-name">@cat.Name</span>
+                                </div>
                             </td>
-                        </tr>
-                    }
-                    else
-                    {
-                        @foreach (var cat in Model)
-                        {
-                            <tr>
-                                <td>@cat.Name</td>
-                                <td>@cat.Description</td>
-                                <td>
-                                    <form asp-action="DeleteCategory" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذه الفئة؟');">
+                            <td>
+                                @if (string.IsNullOrEmpty(cat.Description))
+                                {
+                                    <span class="no-description">لا يوجد وصف</span>
+                                }
+                                else
+                                {
+                                    <span class="description-text">@cat.Description</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-btns">
+                                    <a asp-action="EditCategory"
+                                       asp-route-id="@cat.Id"
+                                       class="btn-action btn-action-edit"
+                                       title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="DeleteCategory"
+                                          method="post"
+                                          onsubmit="return confirm('هل أنت متأكد من حذف هذه الفئة؟');"
+                                          style="display:inline-block;">
                                         <input type="hidden" name="id" value="@cat.Id" />
-                                        <button type="submit" class="btn btn-sm btn-danger rounded-3">
-                                            <i class="fas fa-trash"></i> حذف
+                                        <button type="submit"
+                                                class="btn-action btn-action-delete"
+                                                title="حذف">
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
-                                </td>
-                            </tr>
-                        }
+                                </div>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
         </div>
-    </div>
-</section>
+    }
+</div>
+
+@* ===========================
+   ✅ Mobile Cards View
+   =========================== *@
+<div class="mobile-cards">
+    @if (!Model.Any())
+    {
+        <div class="empty-state" style="background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+            <div class="empty-icon">
+                <i class="fas fa-tags"></i>
+            </div>
+            <h4>لا توجد فئات حالياً</h4>
+            <p>ابدأ بإضافة أول فئة باستخدام النموذج أعلاه</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var cat in Model)
+        {
+            <div class="category-card">
+                <div class="category-card-header">
+                    <div class="category-card-icon">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div class="category-card-title">
+                        <h4>@cat.Name</h4>
+                    </div>
+                </div>
+
+                <div class="category-card-body">
+                    <div class="category-card-description">
+                        <i class="fas fa-align-right"></i>
+                        <span>
+                            @(string.IsNullOrEmpty(cat.Description) ? "لا يوجد وصف لهذه الفئة" : cat.Description)
+                        </span>
+                    </div>
+
+                    <div class="category-card-actions">
+                        <a asp-action="EditCategory"
+                           asp-route-id="@cat.Id"
+                           class="btn btn-edit">
+                            <i class="fas fa-edit"></i>
+                            تعديل
+                        </a>
+                        <form asp-action="DeleteCategory"
+                              method="post"
+                              onsubmit="return confirm('هل أنت متأكد من حذف هذه الفئة؟');"
+                              style="flex: 1;">
+                            <input type="hidden" name="id" value="@cat.Id" />
+                            <button type="submit" class="btn btn-delete w-100">
+                                <i class="fas fa-trash-alt"></i>
+                                حذف
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // يمكن إضافة أي سكريبتات إضافية هنا
+    </script>
+}

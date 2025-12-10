@@ -5,91 +5,297 @@
     Layout = "_AdminLayout";
     ViewData["Title"] = "إدارة العملاء";
 }
+@section Styles {
+    <link href="~/css/Admin/ManageClients.css" rel="stylesheet" />
+}
 
+@* ===========================
+   ✅ Alerts
+   =========================== *@
 @if (ViewBag.errorMessage != null)
 {
-    <div class="alert alert-danger">
-        @ViewBag.errorMessage
+    <div class="alert-custom alert-danger-custom">
+        <div class="alert-icon">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <span>@ViewBag.errorMessage</span>
     </div>
 }
 
 @if (TempData["msg"] != null)
 {
-    <div class="alert alert-success">
-        @TempData["msg"]
+    <div class="alert-custom alert-success-custom">
+        <div class="alert-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <span>@TempData["msg"]</span>
     </div>
 }
 
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">
-                <i class="fas fa-users text-primary me-2"></i> إدارة العملاء
-            </h2>
-            <a asp-action="CreateClient" class="btn btn-primary rounded-3">
-                <i class="fas fa-plus-circle"></i> إضافة عميل جديد
+@* ===========================
+   ✅ Page Header Banner
+   =========================== *@
+<div class="page-header-banner">
+    <i class="fas fa-users page-header-icon"></i>
+    <div class="page-header-content">
+        <div class="page-header-info">
+            <h1>
+                <i class="fas fa-users me-2"></i>
+                إدارة العملاء
+            </h1>
+            <p>عرض وإدارة جميع العملاء المسجلين في النظام</p>
+        </div>
+        <a asp-action="CreateClient" class="btn-add-new">
+            <i class="fas fa-plus-circle"></i>
+            إضافة عميل جديد
+        </a>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Stats Summary
+   =========================== *@
+<div class="stats-summary">
+    <div class="summary-card total">
+        <div class="summary-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="summary-info">
+            <h3>@Model.Count()</h3>
+            <p>إجمالي العملاء</p>
+        </div>
+    </div>
+    <div class="summary-card active">
+        <div class="summary-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <div class="summary-info">
+            <h3>@Model.Count()</h3>
+            <p>العملاء النشطين</p>
+        </div>
+    </div>
+    <div class="summary-card new">
+        <div class="summary-icon">
+            <i class="fas fa-user-plus"></i>
+        </div>
+        <div class="summary-info">
+            <h3>@Model.Count(c => c.CreatedAt >= DateTime.Now.AddDays(-30))</h3>
+            <p>عملاء جدد (30 يوم)</p>
+        </div>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Search & Filter Bar
+   =========================== *@
+<div class="filter-bar">
+    <div class="search-input-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="ابحث عن عميل بالاسم أو البريد..." />
+    </div>
+    
+</div>
+
+@* ===========================
+   ✅ Desktop Table View
+   =========================== *@
+<div class="table-card">
+    <div class="table-header">
+        <h3>
+            <i class="fas fa-list"></i>
+            قائمة العملاء
+        </h3>
+        <span class="badge">@Model.Count() عميل</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h4>لا يوجد عملاء حالياً</h4>
+            <p>ابدأ بإضافة أول عميل للنظام</p>
+            <a asp-action="CreateClient" class="btn-empty-action">
+                <i class="fas fa-plus-circle"></i>
+                إضافة عميل جديد
             </a>
         </div>
-
-        <div class="card shadow border-0 rounded-4 overflow-hidden">
-            <table class="table table-hover mb-0 text-center align-middle">
-                <thead class="bg-primary text-white">
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
                     <tr>
-                        <th>الاسم</th>
-                        <th>البريد الإلكتروني</th>
+                        <th>العميل</th>
                         <th>المدينة</th>
                         <th>تاريخ التسجيل</th>
-                        <th>إجراءات</th>
+                        <th class="text-center">إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (!Model.Any())
+                    @foreach (var client in Model)
                     {
                         <tr>
-                            <td colspan="5" class="text-muted py-4">لا يوجد عملاء حالياً</td>
-                        </tr>
-                    }
-                    else
-                    {
-                        @foreach (var client in Model)
-                        {
-                            <tr>
-                                <td>@client.User?.Name</td>
-                                <td>@client.User?.Email</td>
-                                <td>@client.User?.City</td>
-                                <td>@client.CreatedAt.ToShortDateString()</td>
-                                <td>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">
+                                        @(client.User?.Name?.Substring(0, 1).ToUpper() ?? "U")
+                                    </div>
+                                    <div class="user-info">
+                                        <span class="user-name">@client.User?.Name</span>
+                                        <span class="user-email">@client.User?.Email</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="city-badge">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    @(client.User?.City ?? "غير محدد")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="date-badge">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    @client.CreatedAt.ToShortDateString()
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-btns">
                                     <a asp-action="ClientDetails"
                                        asp-route-id="@client.Id"
-                                       class="btn btn-sm btn-info text-white rounded-3 me-1"
+                                       class="btn-action btn-action-view"
                                        title="تفاصيل العميل">
-                                        <i class="fas fa-info-circle"></i>
+                                        <i class="fas fa-eye"></i>
                                     </a>
-
                                     <a asp-action="EditClient"
                                        asp-route-id="@client.Id"
-                                       class="btn btn-sm btn-warning text-white rounded-3 me-1"
+                                       class="btn-action btn-action-edit"
                                        title="تعديل">
                                         <i class="fas fa-edit"></i>
                                     </a>
-
                                     <form asp-action="DeleteClient"
                                           method="post"
                                           onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');"
                                           style="display:inline-block;">
                                         <input type="hidden" name="id" value="@client.Id" />
                                         <button type="submit"
-                                                class="btn btn-sm btn-danger rounded-3"
+                                                class="btn-action btn-action-delete"
                                                 title="حذف">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
-                                </td>
-                            </tr>
-                        }
+                                </div>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
         </div>
-    </div>
-</section>
+    }
+</div>
+
+@* ===========================
+   ✅ Mobile Cards View
+   =========================== *@
+<div class="mobile-cards">
+    @if (!Model.Any())
+    {
+        <div class="empty-state" style="background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+            <div class="empty-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h4>لا يوجد عملاء حالياً</h4>
+            <p>ابدأ بإضافة أول عميل للنظام</p>
+            <a asp-action="CreateClient" class="btn-empty-action">
+                <i class="fas fa-plus-circle"></i>
+                إضافة عميل جديد
+            </a>
+        </div>
+    }
+    else
+    {
+        @foreach (var client in Model)
+        {
+            <div class="client-card">
+                <div class="client-card-header">
+                    <div class="client-card-avatar">
+                        @(client.User?.Name?.Substring(0, 1).ToUpper() ?? "U")
+                    </div>
+                    <div class="client-card-name">
+                        <h4>@client.User?.Name</h4>
+                        <span>@client.User?.Email</span>
+                    </div>
+                    <span class="client-card-date">
+                        @client.CreatedAt.ToShortDateString()
+                    </span>
+                </div>
+
+                <div class="client-card-body">
+                    <div class="client-card-info">
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>@client.User?.Email</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>@(client.User?.City ?? "غير محدد")</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>انضم في @client.CreatedAt.ToShortDateString()</span>
+                        </div>
+                    </div>
+
+                    <div class="client-card-actions">
+                        <a asp-action="ClientDetails"
+                           asp-route-id="@client.Id"
+                           class="btn btn-view">
+                            <i class="fas fa-eye"></i>
+                            تفاصيل
+                        </a>
+                        <a asp-action="EditClient"
+                           asp-route-id="@client.Id"
+                           class="btn btn-edit">
+                            <i class="fas fa-edit"></i>
+                            تعديل
+                        </a>
+                        <form asp-action="DeleteClient"
+                              method="post"
+                              onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');"
+                              style="flex: 1;">
+                            <input type="hidden" name="id" value="@client.Id" />
+                            <button type="submit" class="btn btn-delete w-100">
+                                <i class="fas fa-trash-alt"></i>
+                                حذف
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            // For desktop table
+            document.querySelectorAll('.table tbody tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+            
+            // For mobile cards
+            document.querySelectorAll('.client-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+    </script>
+}

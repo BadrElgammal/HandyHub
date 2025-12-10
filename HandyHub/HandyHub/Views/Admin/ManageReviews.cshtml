@@ -6,57 +6,399 @@
     ViewData["Title"] = "إدارة التقييمات";
 }
 
-<section class="py-5">
-    <div class="container">
-        <h2 class="fw-bold mb-4">
-            <i class="fas fa-comments text-warning me-2"></i> جميع التقييمات
-        </h2>
+@section Styles {
+    <link href="~/css/Admin/ManageReviews.css" rel="stylesheet" />
+}
 
-        <div class="card border-0 shadow rounded-4 overflow-hidden">
-            <table class="table table-hover mb-0 text-center align-middle">
-                <thead class="bg-warning text-white">
+@* ===========================
+   ✅ Alerts
+   =========================== *@
+@if (ViewBag.errorMessage != null)
+{
+    <div class="alert-custom alert-danger-custom">
+        <div class="alert-icon">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <span>@ViewBag.errorMessage</span>
+    </div>
+}
+
+@if (TempData["msg"] != null)
+{
+    <div class="alert-custom alert-success-custom">
+        <div class="alert-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <span>@TempData["msg"]</span>
+    </div>
+}
+
+@* ===========================
+   ✅ Page Header Banner
+   =========================== *@
+<div class="page-header-banner">
+    <i class="fas fa-star page-header-icon"></i>
+    <div class="page-header-content">
+        <div class="page-header-info">
+            <h1>
+                <i class="fas fa-star me-2"></i>
+                إدارة التقييمات
+            </h1>
+            <p>عرض ومراقبة جميع تقييمات العملاء للعمال</p>
+        </div>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Stats Summary
+   =========================== *@
+@{
+    var totalReviews = Model.Count();
+    var excellentReviews = Model.Count(r => r.Rating >= 4);
+    var goodReviews = Model.Count(r => r.Rating == 3);
+    var lowReviews = Model.Count(r => r.Rating <= 2);
+    var averageRating = totalReviews > 0 ? Model.Average(r => r.Rating) : 0;
+}
+
+<div class="stats-summary">
+    <div class="summary-card total">
+        <div class="summary-icon">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="summary-info">
+            <h3>@totalReviews</h3>
+            <p>إجمالي التقييمات</p>
+        </div>
+    </div>
+    <div class="summary-card excellent">
+        <div class="summary-icon">
+            <i class="fas fa-grin-stars"></i>
+        </div>
+        <div class="summary-info">
+            <h3>@excellentReviews</h3>
+            <p>ممتاز (4-5 ⭐)</p>
+        </div>
+    </div>
+    <div class="summary-card good">
+        <div class="summary-icon">
+            <i class="fas fa-smile"></i>
+        </div>
+        <div class="summary-info">
+            <h3>@goodReviews</h3>
+            <p>جيد (3 ⭐)</p>
+        </div>
+    </div>
+    <div class="summary-card average">
+        <div class="summary-icon">
+            <i class="fas fa-meh"></i>
+        </div>
+        <div class="summary-info">
+            <h3>@lowReviews</h3>
+            <p>يحتاج تحسين (1-2 ⭐)</p>
+        </div>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Average Rating Card
+   =========================== *@
+@if (totalReviews > 0)
+{
+    <div class="average-rating-card">
+        <div class="average-rating-value">
+            <h2>@averageRating.ToString("F1")</h2>
+            <div class="average-stars">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= Math.Round(averageRating))
+                    {
+                        <i class="fas fa-star"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-star empty"></i>
+                    }
+                }
+            </div>
+            <p class="average-rating-label">متوسط التقييم العام</p>
+        </div>
+        <div class="rating-distribution">
+            @for (int stars = 5; stars >= 1; stars--)
+            {
+                var count = Model.Count(r => r.Rating == stars);
+                var percentage = totalReviews > 0 ? (count * 100.0 / totalReviews) : 0;
+                <div class="distribution-row">
+                    <span class="distribution-label">@stars ⭐</span>
+                    <div class="distribution-bar">
+                        <div class="distribution-fill" style="width: @percentage%"></div>
+                    </div>
+                    <span class="distribution-count">@count</span>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@* ===========================
+   ✅ Search & Filter Bar
+   =========================== *@
+<div class="filter-bar">
+    <div class="search-input-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="ابحث بالعميل أو العامل..." />
+    </div>
+    <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">الكل</button>
+        <button class="filter-btn" data-filter="5"><span class="stars">★★★★★</span></button>
+        <button class="filter-btn" data-filter="4"><span class="stars">★★★★</span></button>
+        <button class="filter-btn" data-filter="3"><span class="stars">★★★</span></button>
+        <button class="filter-btn" data-filter="low">أقل من 3</button>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Desktop Table View
+   =========================== *@
+<div class="table-card">
+    <div class="table-header">
+        <h3>
+            <i class="fas fa-list"></i>
+            قائمة التقييمات
+        </h3>
+        <span class="badge">@Model.Count() تقييم</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <h4>لا توجد تقييمات حالياً</h4>
+            <p>ستظهر التقييمات هنا عندما يقوم العملاء بتقييم العمال</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
                     <tr>
                         <th>العميل</th>
                         <th>العامل</th>
                         <th>التقييم</th>
                         <th>التعليق</th>
-                        <th>الإجراءات</th>
+                        <th class="text-center">إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (!Model.Any())
+                    @foreach (var review in Model)
                     {
-                        <tr>
-                            <td colspan="5" class="text-muted py-4">
-                                لا توجد تقييمات حالياً
+                        <tr data-rating="@review.Rating">
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar user-avatar-client">
+                                        @(review.Client?.User?.Name?.Substring(0, 1).ToUpper() ?? "C")
+                                    </div>
+                                    <span class="user-name">@review.Client?.User?.Name</span>
+                                </div>
                             </td>
-                        </tr>
-                    }
-                    else
-                    {
-                        @foreach (var r in Model)
-                        {
-                            <tr>
-                                <td>@r.Client?.User?.Name</td>
-                                <td>@r.Worker?.User?.Name</td>
-                                <td>@r.Rating ⭐</td>
-                                <td>@r.Comment</td>
-                                <td>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar user-avatar-worker">
+                                        @(review.Worker?.User?.Name?.Substring(0, 1).ToUpper() ?? "W")
+                                    </div>
+                                    <span class="user-name">@review.Worker?.User?.Name</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="rating-badge rating-@review.Rating">
+                                    @review.Rating
+                                    <i class="fas fa-star"></i>
+                                </span>
+                            </td>
+                            <td class="comment-cell">
+                                @if (string.IsNullOrEmpty(review.Comment))
+                                {
+                                    <span class="no-comment">لا يوجد تعليق</span>
+                                }
+                                else
+                                {
+                                    <p class="comment-text" title="@review.Comment">@review.Comment</p>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-btns">
                                     <form asp-action="DeleteReview"
                                           method="post"
                                           onsubmit="return confirm('هل أنت متأكد من حذف هذا التقييم؟');"
                                           style="display:inline-block;">
-                                        <input type="hidden" name="id" value="@r.Id" />
-                                        <button type="submit" class="btn btn-sm btn-danger rounded-3">
-                                            <i class="fas fa-trash"></i>
+                                        <input type="hidden" name="id" value="@review.Id" />
+                                        <button type="submit"
+                                                class="btn-action btn-action-delete"
+                                                title="حذف">
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
-                                </td>
-                            </tr>
-                        }
+                                </div>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
         </div>
-    </div>
-</section>
+    }
+</div>
+
+@* ===========================
+   ✅ Mobile Cards View
+   =========================== *@
+<div class="mobile-cards">
+    @if (!Model.Any())
+    {
+        <div class="empty-state" style="background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+            <div class="empty-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <h4>لا توجد تقييمات حالياً</h4>
+            <p>ستظهر التقييمات هنا عندما يقوم العملاء بتقييم العمال</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var review in Model)
+        {
+            <div class="review-card" data-rating="@review.Rating">
+                <div class="review-card-header">
+                    <div class="review-card-rating">
+                        <span class="rating-number">@review.Rating</span>
+                        <div class="rating-stars-mobile">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= review.Rating)
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-star empty"></i>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <span class="rating-label">
+                        @(review.Rating >= 4 ? "ممتاز" : review.Rating == 3 ? "جيد" : "متوسط")
+                    </span>
+                </div>
+
+                <div class="review-card-body">
+                    <div class="review-users-section">
+                        <div class="review-user-item">
+                            <div class="review-user-avatar review-user-avatar-client">
+                                @(review.Client?.User?.Name?.Substring(0, 1).ToUpper() ?? "C")
+                            </div>
+                            <div class="review-user-info">
+                                <span class="review-user-label">العميل</span>
+                                <span class="review-user-name">@review.Client?.User?.Name</span>
+                            </div>
+                        </div>
+                        <div class="review-user-item">
+                            <div class="review-user-avatar review-user-avatar-worker">
+                                @(review.Worker?.User?.Name?.Substring(0, 1).ToUpper() ?? "W")
+                            </div>
+                            <div class="review-user-info">
+                                <span class="review-user-label">العامل</span>
+                                <span class="review-user-name">@review.Worker?.User?.Name</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(review.Comment))
+                    {
+                        <div class="review-comment-section">
+                            <p class="review-comment-text">@review.Comment</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="review-comment-section">
+                            <div class="review-no-comment">
+                                <i class="fas fa-comment-slash"></i>
+                                لا يوجد تعليق
+                            </div>
+                        </div>
+                    }
+
+                    <div class="review-card-actions">
+                        <form asp-action="DeleteReview"
+                              method="post"
+                              onsubmit="return confirm('هل أنت متأكد من حذف هذا التقييم؟');"
+                              style="flex: 1;">
+                            <input type="hidden" name="id" value="@review.Id" />
+                            <button type="submit" class="btn btn-delete w-100">
+                                <i class="fas fa-trash-alt"></i>
+                                حذف التقييم
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+
+            // For desktop table
+            document.querySelectorAll('.table tbody tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+
+            // For mobile cards
+            document.querySelectorAll('.review-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active button
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.dataset.filter;
+
+                // Filter table rows
+                document.querySelectorAll('.table tbody tr[data-rating]').forEach(row => {
+                    const rating = parseInt(row.dataset.rating);
+                    if (filter === 'all') {
+                        row.style.display = '';
+                    } else if (filter === 'low') {
+                        row.style.display = rating < 3 ? '' : 'none';
+                    } else {
+                        row.style.display = rating === parseInt(filter) ? '' : 'none';
+                    }
+                });
+
+                // Filter mobile cards
+                document.querySelectorAll('.review-card[data-rating]').forEach(card => {
+                    const rating = parseInt(card.dataset.rating);
+                    if (filter === 'all') {
+                        card.style.display = '';
+                    } else if (filter === 'low') {
+                        card.style.display = rating < 3 ? '' : 'none';
+                    } else {
+                        card.style.display = rating === parseInt(filter) ? '' : 'none';
+                    }
+                });
+            });
+        });
+    </script>
+}
