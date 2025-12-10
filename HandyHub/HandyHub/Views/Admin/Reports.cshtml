@@ -6,107 +6,1639 @@
     ViewData["Title"] = "التقارير";
 }
 
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="fw-bold mb-5">
-            <i class="fas fa-chart-line text-success me-2"></i> التقارير والإحصاءات
-        </h2>
+<style>
+    /* ===========================
+           ✅ Page Header Banner
+           =========================== */
+    .page-header-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
 
-        <!-- بطاقات الإحصاءات -->
-        <div class="row g-4 mb-5 text-center">
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm rounded-4 bg-primary text-white">
-                    <div class="card-body">
-                        <h4 class="fw-bold">@Model.TotalClients</h4>
-                        <p class="text-white-50 mb-0">العملاء</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm rounded-4 bg-success text-white">
-                    <div class="card-body">
-                        <h4 class="fw-bold">@Model.TotalWorkers</h4>
-                        <p class="text-white-50 mb-0">العمال</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm rounded-4 bg-warning text-white">
-                    <div class="card-body">
-                        <h4 class="fw-bold">@Model.TotalReviews</h4>
-                        <p class="text-white-50 mb-0">التقييمات</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm rounded-4 bg-info text-white">
-                    <div class="card-body">
-                        <h4 class="fw-bold">@Model.AverageRating.ToString("F1") ⭐</h4>
-                        <p class="text-white-50 mb-0">متوسط التقييم</p>
-                    </div>
-                </div>
-            </div>
+        .page-header-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+
+        50% {
+            transform: scale(1.1);
+            opacity: 0.3;
+        }
+    }
+
+    .page-header-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-header-info h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .page-header-info p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+
+    .page-header-icon {
+        position: absolute;
+        left: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 5rem;
+        opacity: 0.15;
+    }
+
+    .btn-print {
+        padding: 0.875rem 1.75rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+    }
+
+        .btn-print:hover {
+            background: #fff;
+            color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+    /* ===========================
+           ✅ Enhanced Stats Cards
+           =========================== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            transition: height 0.3s ease;
+        }
+
+        .stat-card.card-clients::before {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .stat-card.card-workers::before {
+            background: linear-gradient(90deg, #11998e, #38ef7d);
+        }
+
+        .stat-card.card-reviews::before {
+            background: linear-gradient(90deg, #fa709a, #fee140);
+        }
+
+        .stat-card.card-rating::before {
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+            .stat-card:hover::before {
+                height: 100%;
+                opacity: 0.1;
+            }
+
+    .stat-card-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .stat-card-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.75rem;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover .stat-card-icon {
+        transform: rotateY(360deg);
+    }
+
+    .card-clients .stat-card-icon {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .card-workers .stat-card-icon {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        box-shadow: 0 10px 20px rgba(17, 153, 142, 0.3);
+    }
+
+    .card-reviews .stat-card-icon {
+        background: linear-gradient(135deg, #fa709a, #fee140);
+        box-shadow: 0 10px 20px rgba(250, 112, 154, 0.3);
+    }
+
+    .card-rating .stat-card-icon {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+        box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
+    }
+
+    .stat-card h3 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0.75rem 0;
+        background: linear-gradient(135deg, #2c3e50, #4a5568);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-card p {
+        font-size: 1rem;
+        color: #6c757d;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .stat-card-bg-icon {
+        position: absolute;
+        bottom: -20px;
+        left: -20px;
+        font-size: 8rem;
+        opacity: 0.05;
+        transform: rotate(-15deg);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover .stat-card-bg-icon {
+        opacity: 0.1;
+        transform: rotate(0deg) scale(1.1);
+    }
+
+    /* ===========================
+           ✅ Quick Stats Row
+           =========================== */
+    .quick-stats {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .quick-stat-item {
+        background: #fff;
+        border-radius: 16px;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        flex: 1;
+        min-width: 200px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .quick-stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            border-radius: 0 16px 16px 0;
+        }
+
+        .quick-stat-item.active-workers::before {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
+
+        .quick-stat-item.new-clients::before {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .quick-stat-item.recent-reviews::before {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+        }
+
+        .quick-stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+    .quick-stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: #fff;
+    }
+
+    .quick-stat-item.active-workers .quick-stat-icon {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+
+    .quick-stat-item.new-clients .quick-stat-icon {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .quick-stat-item.recent-reviews .quick-stat-icon {
+        background: linear-gradient(135deg, #fa709a, #fee140);
+    }
+
+    .quick-stat-info h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        color: #2c3e50;
+    }
+
+    .quick-stat-info p {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    /* ===========================
+           ✅ Average Rating Card
+           =========================== */
+    .rating-overview-card {
+        background: linear-gradient(135deg, #fff9e6, #fff3cd);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 2rem;
+        border: 2px solid rgba(251, 191, 36, 0.3);
+        box-shadow: 0 10px 40px rgba(251, 191, 36, 0.1);
+    }
+
+    .rating-main {
+        text-align: center;
+    }
+
+        .rating-main h2 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+    .rating-stars {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        margin: 0.75rem 0;
+    }
+
+        .rating-stars i {
+            color: #fbbf24;
+            font-size: 1.5rem;
+        }
+
+            .rating-stars i.empty {
+                color: #e2e8f0;
+            }
+
+    .rating-label {
+        font-size: 1rem;
+        color: #92400e;
+        font-weight: 600;
+    }
+
+    .rating-breakdown {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        min-width: 280px;
+    }
+
+    .breakdown-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .breakdown-label {
+        width: 70px;
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .breakdown-bar {
+        flex: 1;
+        height: 12px;
+        background: #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    .breakdown-fill {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 0.5s ease;
+    }
+
+    .breakdown-fill-5 {
+        background: linear-gradient(90deg, #11998e, #38ef7d);
+    }
+
+    .breakdown-fill-4 {
+        background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+
+    .breakdown-fill-3 {
+        background: linear-gradient(90deg, #fa709a, #fee140);
+    }
+
+    .breakdown-fill-2 {
+        background: linear-gradient(90deg, #f093fb, #f5576c);
+    }
+
+    .breakdown-fill-1 {
+        background: linear-gradient(90deg, #ff6b6b, #ee5a5a);
+    }
+
+    .breakdown-count {
+        width: 50px;
+        text-align: left;
+        color: #64748b;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* ===========================
+           ✅ Top Workers Section
+           =========================== */
+    .section-title {
+        font-size: 1.5rem;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+        .section-title i {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+    .top-workers-card {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        border: none;
+        margin-bottom: 2rem;
+    }
+
+    .top-workers-header {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .top-workers-header h3 {
+            color: #fff;
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .top-workers-header .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+    .table {
+        margin: 0;
+    }
+
+        .table thead {
+            background: #f8fafc;
+        }
+
+            .table thead th {
+                font-weight: 600;
+                color: #475569;
+                padding: 1rem 1.25rem;
+                border: none;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+            .table tbody tr:hover {
+                background: #f8fafc;
+            }
+
+            .table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+        .table td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+            color: #334155;
+        }
+
+    /* Rank Badges */
+    .rank-badge {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1rem;
+    }
+
+    .rank-1 {
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        color: #fff;
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    }
+
+    .rank-2 {
+        background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+        color: #fff;
+        box-shadow: 0 5px 15px rgba(192, 192, 192, 0.4);
+    }
+
+    .rank-3 {
+        background: linear-gradient(135deg, #CD7F32, #8B4513);
+        color: #fff;
+        box-shadow: 0 5px 15px rgba(205, 127, 50, 0.4);
+    }
+
+    .rank-other {
+        background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+        color: #475569;
+    }
+
+    /* Worker Cell */
+    .worker-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .worker-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #fff;
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        flex-shrink: 0;
+    }
+
+    .worker-name {
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 0.95rem;
+    }
+
+    /* Category Badge */
+    .category-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, rgba(17, 153, 142, 0.1), rgba(56, 239, 125, 0.1));
+        padding: 0.4rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: #11998e;
+        font-weight: 500;
+    }
+
+    /* Reviews Count Badge */
+    .reviews-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f1f5f9;
+        padding: 0.4rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    /* Rating Badge */
+    .rating-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, rgba(250, 112, 154, 0.15), rgba(254, 225, 64, 0.15));
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #f59e0b;
+    }
+
+        .rating-badge i {
+            color: #fbbf24;
+        }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .empty-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(17, 153, 142, 0.1), rgba(56, 239, 125, 0.1));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+
+        .empty-icon i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+    .empty-state h4 {
+        color: #334155;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .empty-state p {
+        color: #94a3b8;
+        margin-bottom: 0;
+    }
+
+    /* ===========================
+           ✅ Mobile Cards View
+           =========================== */
+    .mobile-workers-cards {
+        display: none;
+    }
+
+    .worker-rank-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 0;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .worker-rank-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+    .worker-rank-header {
+        padding: 1rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .worker-rank-card.rank-1 .worker-rank-header {
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+    }
+
+    .worker-rank-card.rank-2 .worker-rank-header {
+        background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+    }
+
+    .worker-rank-card.rank-3 .worker-rank-header {
+        background: linear-gradient(135deg, #CD7F32, #8B4513);
+    }
+
+    .worker-rank-card.rank-other .worker-rank-header {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+
+    .worker-rank-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #fff;
+    }
+
+    .worker-rank-number {
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1rem;
+    }
+
+    .worker-rank-name {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .worker-rank-rating {
+        background: rgba(255,255,255,0.25);
+        padding: 0.4rem 0.85rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .worker-rank-body {
+        padding: 1.25rem;
+    }
+
+    .worker-rank-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+        color: #475569;
+    }
+
+        .detail-item i {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #11998e;
+            font-size: 0.85rem;
+        }
+
+    /* ===========================
+           ✅ Categories Distribution
+           =========================== */
+    .categories-section {
+        background: #fff;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+    }
+
+    .categories-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .categories-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .categories-header h3 i {
+                color: #f093fb;
+            }
+
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .category-item {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .category-item:hover {
+            background: linear-gradient(135deg, rgba(240, 147, 251, 0.1), rgba(245, 87, 108, 0.1));
+            transform: translateY(-3px);
+        }
+
+    .category-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+    .category-info h4 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .category-info p {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin: 0;
+    }
+
+    /* ===========================
+           ✅ Alert Styles
+           =========================== */
+    .alert-custom {
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, rgba(17, 153, 142, 0.1), rgba(56, 239, 125, 0.1));
+        color: #11998e;
+    }
+
+    .alert-danger-custom {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(238, 90, 90, 0.1));
+        color: #ee5a5a;
+    }
+
+    .alert-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .alert-success-custom .alert-icon {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        color: #fff;
+    }
+
+    .alert-danger-custom .alert-icon {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+        color: #fff;
+    }
+
+    /* ===========================
+           ✅ Responsive - Tablet
+           =========================== */
+    @@media (max-width: 991.98px) {
+        .page-header-banner {
+            padding: 1.5rem;
+        }
+
+        .page-header-info h1 {
+            font-size: 1.5rem;
+        }
+
+        .page-header-icon {
+            display: none;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card-content {
+            padding: 1rem;
+        }
+
+        .stat-card-icon {
+            width: 55px;
+            height: 55px;
+            font-size: 1.5rem;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+        }
+
+        .quick-stats {
+            flex-wrap: wrap;
+        }
+
+        .quick-stat-item {
+            min-width: calc(50% - 0.5rem);
+        }
+
+        .rating-overview-card {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .table thead th,
+        .table td {
+            padding: 0.875rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .worker-avatar {
+            width: 40px;
+            height: 40px;
+        }
+
+        .rank-badge {
+            width: 35px;
+            height: 35px;
+        }
+
+        .categories-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* ===========================
+           ✅ Responsive - Mobile
+           =========================== */
+    @@media (max-width: 767.98px) {
+        .page-header-banner {
+            padding: 1.25rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .page-header-content {
+            flex-direction: column;
+        }
+
+        .page-header-info h1 {
+            font-size: 1.25rem;
+        }
+
+        .page-header-info p {
+            font-size: 0.9rem;
+        }
+
+        .btn-print {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .stat-card {
+            padding: 1rem;
+            border-radius: 16px;
+        }
+
+        .stat-card-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.25rem;
+            border-radius: 14px;
+        }
+
+        .stat-card h3 {
+            font-size: 1.5rem;
+        }
+
+        .stat-card p {
+            font-size: 0.8rem;
+        }
+
+        .stat-card-bg-icon {
+            font-size: 5rem;
+        }
+
+        .quick-stats {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quick-stat-item {
+            min-width: 100%;
+        }
+
+        .quick-stat-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 1.1rem;
+        }
+
+        .quick-stat-info h4 {
+            font-size: 1.25rem;
+        }
+
+        .rating-overview-card {
+            padding: 1.25rem;
+            border-radius: 16px;
+        }
+
+        .rating-main h2 {
+            font-size: 3rem;
+        }
+
+        .rating-stars i {
+            font-size: 1.25rem;
+        }
+
+        .rating-breakdown {
+            width: 100%;
+            min-width: auto;
+        }
+        /* Hide Table, Show Cards */
+        .desktop-table {
+            display: none;
+        }
+
+        .mobile-workers-cards {
+            display: block;
+            padding: 1rem;
+        }
+
+        .categories-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ===========================
+           ✅ Responsive - Small Mobile
+           =========================== */
+    @@media (max-width: 575.98px) {
+        .page-header-banner {
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .page-header-info h1 {
+            font-size: 1.1rem;
+        }
+
+        .page-header-info p {
+            font-size: 0.85rem;
+        }
+
+        .btn-print {
+            padding: 0.75rem 1.25rem;
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            gap: 0.625rem;
+        }
+
+        .stat-card {
+            padding: 0.875rem;
+            border-radius: 14px;
+        }
+
+        .stat-card-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-card h3 {
+            font-size: 1.25rem;
+        }
+
+        .stat-card p {
+            font-size: 0.75rem;
+        }
+
+        .stat-card-bg-icon {
+            font-size: 4rem;
+            bottom: -15px;
+            left: -15px;
+        }
+
+        .quick-stat-item {
+            padding: 1rem;
+        }
+
+        .quick-stat-icon {
+            width: 38px;
+            height: 38px;
+            font-size: 1rem;
+            border-radius: 10px;
+        }
+
+        .quick-stat-info h4 {
+            font-size: 1.1rem;
+        }
+
+        .quick-stat-info p {
+            font-size: 0.8rem;
+        }
+
+        .rating-overview-card {
+            padding: 1rem;
+        }
+
+        .rating-main h2 {
+            font-size: 2.5rem;
+        }
+
+        .rating-stars i {
+            font-size: 1rem;
+        }
+
+        .rating-label {
+            font-size: 0.9rem;
+        }
+
+        .breakdown-row {
+            gap: 8px;
+        }
+
+        .breakdown-label {
+            width: 60px;
+            font-size: 0.8rem;
+        }
+
+        .breakdown-bar {
+            height: 10px;
+        }
+
+        .breakdown-count {
+            font-size: 0.8rem;
+            width: 40px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+            .section-title i {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+
+        .top-workers-card {
+            border-radius: 16px;
+        }
+
+        .top-workers-header {
+            padding: 1rem 1.25rem;
+        }
+
+            .top-workers-header h3 {
+                font-size: 1rem;
+            }
+
+        .mobile-workers-cards {
+            padding: 0.875rem;
+        }
+
+        .worker-rank-card {
+            border-radius: 14px;
+            margin-bottom: 0.875rem;
+        }
+
+        .worker-rank-header {
+            padding: 0.875rem 1rem;
+        }
+
+        .worker-rank-number {
+            width: 30px;
+            height: 30px;
+            font-size: 0.9rem;
+        }
+
+        .worker-rank-name {
+            font-size: 0.95rem;
+        }
+
+        .worker-rank-rating {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.65rem;
+        }
+
+        .worker-rank-body {
+            padding: 1rem;
+        }
+
+        .detail-item {
+            font-size: 0.85rem;
+        }
+
+            .detail-item i {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
+
+        .categories-section {
+            padding: 1.25rem;
+            border-radius: 16px;
+        }
+
+        .categories-header h3 {
+            font-size: 1rem;
+        }
+
+        .category-item {
+            padding: 0.875rem;
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 0.9rem;
+        }
+
+        .category-info h4 {
+            font-size: 0.9rem;
+        }
+
+        .category-info p {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* ===========================
+           ✅ Print Styles
+           =========================== */
+    @@media print {
+        .sidebar, .mobile-menu-btn, .sidebar-overlay, .btn-print, .top-header {
+            display: none !important;
+        }
+
+        .content {
+            margin-right: 0 !important;
+            width: 100% !important;
+        }
+
+        .page-header-banner {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .stat-card, .rating-overview-card, .top-workers-card {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            break-inside: avoid;
+        }
+
+        .mobile-workers-cards {
+            display: none !important;
+        }
+
+        .desktop-table {
+            display: block !important;
+        }
+    }
+</style>
+
+@* ===========================
+   ✅ Page Header Banner
+   =========================== *@
+<div class="page-header-banner">
+    <i class="fas fa-chart-line page-header-icon"></i>
+    <div class="page-header-content">
+        <div class="page-header-info">
+            <h1>
+                <i class="fas fa-chart-pie me-2"></i>
+                التقارير والإحصاءات
+            </h1>
+            <p>نظرة شاملة على أداء النظام وإحصائيات المستخدمين</p>
         </div>
+        <button class="btn-print" onclick="window.print()">
+            <i class="fas fa-print"></i>
+            طباعة التقرير
+        </button>
+    </div>
+</div>
 
-        <!-- أفضل ٥ عمال -->
-        <div class="card border-0 shadow rounded-4">
-            <div class="card-header bg-success text-white fw-bold">
-                <i class="fas fa-trophy me-2"></i> أفضل ٥ عمال تقييماً
+@* ===========================
+   ✅ Main Stats Cards
+   =========================== *@
+<div class="stats-grid">
+    <div class="stat-card card-clients">
+        <div class="stat-card-content">
+            <div class="stat-card-icon">
+                <i class="fas fa-users"></i>
             </div>
-            <div class="card-body p-0">
-                @if (Model.TopWorkers != null && Model.TopWorkers.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover mb-0 align-middle text-center">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>الاسم</th>
-                                    <th>الفئة</th>
-                                    <th>عدد التقييمات</th>
-                                    <th>متوسط التقييم</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var w in Model.TopWorkers)
-                                {
-                                    var avg = (w.Reviews != null && w.Reviews.Any()) ? w.Reviews.Average(r => r.Rating) : 0;
-                                    <tr>
-                                        <td class="fw-semibold">@w.User?.Name</td>
-                                        <td>
-                                            @foreach (var c in Model.Categories)
-                                            {
-                                                if (c.Id == w.CategoryId)
-                                                {
-                                                    @c.Name
-                                                }
-                                            }
-                                        </td>
-                                        <td>@(w.Reviews?.Count ?? 0)</td>
-                                        <td>
-                                            <span class="badge bg-warning text-dark">
-                                                @avg.ToString("F1") ⭐
-                                            </span>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="p-4 text-center text-muted">
-                        لا توجد بيانات متاحة حالياً.
-                    </div>
-                }
-            </div>
+            <h3>@Model.TotalClients</h3>
+            <p>إجمالي العملاء</p>
         </div>
+        <i class="fas fa-users stat-card-bg-icon"></i>
+    </div>
 
-        <!-- زر الطباعة -->
-        <div class="text-end mt-4">
-            <button class="btn btn-outline-secondary" onclick="window.print()">
-                <i class="fas fa-print"></i> طباعة التقرير
-            </button>
+    <div class="stat-card card-workers">
+        <div class="stat-card-content">
+            <div class="stat-card-icon">
+                <i class="fas fa-hard-hat"></i>
+            </div>
+            <h3>@Model.TotalWorkers</h3>
+            <p>إجمالي العمال</p>
+        </div>
+        <i class="fas fa-hard-hat stat-card-bg-icon"></i>
+    </div>
+
+    <div class="stat-card card-reviews">
+        <div class="stat-card-content">
+            <div class="stat-card-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <h3>@Model.TotalReviews</h3>
+            <p>إجمالي التقييمات</p>
+        </div>
+        <i class="fas fa-comments stat-card-bg-icon"></i>
+    </div>
+
+    <div class="stat-card card-rating">
+        <div class="stat-card-content">
+            <div class="stat-card-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <h3>@Model.AverageRating.ToString("F1")</h3>
+            <p>متوسط التقييم</p>
+        </div>
+        <i class="fas fa-star stat-card-bg-icon"></i>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Quick Stats
+   =========================== *@
+@{
+    var activeWorkers = Model.TopWorkers?.Count(w => w.IsAvailable) ?? 0;
+    var totalCategories = Model.Categories?.Count() ?? 0;
+}
+
+<div class="quick-stats">
+    <div class="quick-stat-item active-workers">
+        <div class="quick-stat-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <div class="quick-stat-info">
+            <h4>@activeWorkers</h4>
+            <p>عمال متاحين حالياً</p>
         </div>
     </div>
-</section>
+    <div class="quick-stat-item new-clients">
+        <div class="quick-stat-icon">
+            <i class="fas fa-tags"></i>
+        </div>
+        <div class="quick-stat-info">
+            <h4>@totalCategories</h4>
+            <p>فئات الخدمات</p>
+        </div>
+    </div>
+    <div class="quick-stat-item recent-reviews">
+        <div class="quick-stat-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <div class="quick-stat-info">
+            <h4>@(Model.TopWorkers?.Count() ?? 0)</h4>
+            <p>أفضل العمال</p>
+        </div>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Average Rating Overview
+   =========================== *@
+@if (Model.TotalReviews > 0)
+{
+    var avgRating = Model.AverageRating;
+    <div class="rating-overview-card">
+        <div class="rating-main">
+            <h2>@avgRating.ToString("F1")</h2>
+            <div class="rating-stars">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= Math.Round(avgRating))
+                    {
+                        <i class="fas fa-star"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-star empty"></i>
+                    }
+                }
+            </div>
+            <p class="rating-label">متوسط التقييم العام من @Model.TotalReviews تقييم</p>
+        </div>
+        <div class="rating-breakdown">
+            @for (int stars = 5; stars >= 1; stars--)
+            {
+                var percentage = 20 * stars; // Placeholder - ideally calculate from actual data
+                                             <div class="breakdown-row">
+                                                 <span class="breakdown-label">@stars نجوم</span>
+                                                 <div class="breakdown-bar">
+                                                     <div class="breakdown-fill breakdown-fill-@stars" style="width: @percentage%"></div>
+                                                 </div>
+                                                 <span class="breakdown-count">@percentage%</span>
+                                             </div>
+            }
+        </div>
+    </div>
+}
+
+@* ===========================
+   ✅ Categories Distribution
+   =========================== *@
+@if (Model.Categories != null && Model.Categories.Any())
+{
+    <div class="categories-section">
+        <div class="categories-header">
+            <h3>
+                <i class="fas fa-layer-group"></i>
+                توزيع الفئات
+            </h3>
+        </div>
+        <div class="categories-grid">
+            @foreach (var category in Model.Categories)
+            {
+                var workersInCategory = Model.TopWorkers?.Count(w => w.CategoryId == category.Id) ?? 0;
+                <div class="category-item">
+                    <div class="category-icon">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div class="category-info">
+                        <h4>@category.Name</h4>
+                        <p>@workersInCategory عامل</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@* ===========================
+   ✅ Top Workers Section Title
+   =========================== *@
+<h3 class="section-title">
+    <i class="fas fa-trophy"></i>
+    أفضل 5 عمال تقييماً
+</h3>
+
+@* ===========================
+   ✅ Top Workers Card
+   =========================== *@
+<div class="top-workers-card">
+    <div class="top-workers-header">
+        <h3>
+            <i class="fas fa-medal"></i>
+            قائمة المتميزين
+        </h3>
+        <span class="badge">@(Model.TopWorkers?.Count() ?? 0) عامل</span>
+    </div>
+
+    @if (Model.TopWorkers != null && Model.TopWorkers.Any())
+    {
+        <!-- Desktop Table -->
+        <div class="desktop-table">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">الترتيب</th>
+                            <th>العامل</th>
+                            <th>التخصص</th>
+                            <th>عدد التقييمات</th>
+                            <th>متوسط التقييم</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int rank = 1;
+                        }
+                        @foreach (var worker in Model.TopWorkers)
+                        {
+                            var avg = (worker.Reviews != null && worker.Reviews.Any()) ? worker.Reviews.Average(r => r.Rating) : 0;
+                            var rankClass = rank <= 3 ? $"rank-{rank}" : "rank-other";
+                            <tr>
+                                <td>
+                                    <span class="rank-badge @rankClass">@rank</span>
+                                </td>
+                                <td>
+                                    <div class="worker-cell">
+                                        <div class="worker-avatar">
+                                            @(worker.User?.Name?.Substring(0, 1).ToUpper() ?? "W")
+                                        </div>
+                                        <span class="worker-name">@worker.User?.Name</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @foreach (var c in Model.Categories)
+                                    {
+                                        if (c.Id == worker.CategoryId)
+                                        {
+                                            <span class="category-badge">
+                                                <i class="fas fa-briefcase"></i>
+                                                @c.Name
+                                            </span>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    <span class="reviews-count">
+                                        <i class="fas fa-comments"></i>
+                                        @(worker.Reviews?.Count ?? 0) تقييم
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="rating-badge">
+                                        @avg.ToString("F1")
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                </td>
+                            </tr>
+                            rank++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="mobile-workers-cards">
+            @{
+                int mobileRank = 1;
+            }
+            @foreach (var worker in Model.TopWorkers)
+            {
+                var avg = (worker.Reviews != null && worker.Reviews.Any()) ? worker.Reviews.Average(r => r.Rating) : 0;
+                var rankClass = mobileRank <= 3 ? $"rank-{mobileRank}" : "rank-other";
+
+                <div class="worker-rank-card @rankClass">
+                    <div class="worker-rank-header">
+                        <div class="worker-rank-info">
+                            <span class="worker-rank-number">@mobileRank</span>
+                            <span class="worker-rank-name">@worker.User?.Name</span>
+                        </div>
+                        <span class="worker-rank-rating">
+                            @avg.ToString("F1")
+                            <i class="fas fa-star"></i>
+                        </span>
+                    </div>
+
+                    <div class="worker-rank-body">
+                        <div class="worker-rank-details">
+                            <div class="detail-item">
+                                <i class="fas fa-briefcase"></i>
+                                <span>
+                                    @foreach (var c in Model.Categories)
+                                    {
+                                        if (c.Id == worker.CategoryId)
+                                        {
+                                            @c.Name
+                                        }
+                                    }
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-comments"></i>
+                                <span>@(worker.Reviews?.Count ?? 0) تقييم</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>@(worker.User?.City ?? "غير محدد")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                mobileRank++;
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h4>لا توجد بيانات متاحة</h4>
+            <p>ستظهر قائمة أفضل العمال عند توفر تقييمات كافية</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // يمكن إضافة أي سكريبتات إضافية للتقارير هنا
+        // مثل الرسوم البيانية أو التحديث التلقائي
+    </script>
+}

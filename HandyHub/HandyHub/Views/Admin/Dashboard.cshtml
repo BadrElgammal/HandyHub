@@ -5,62 +5,134 @@
     ViewData["Title"] = "لوحة التحكم";
 }
 
-<section class="py-5">
+@section Styles {
+    <link href="~/css/Admin/Dashboard.css" rel="stylesheet" />
+}
+
+<section class="dashboard-section py-5">
     <div class="container">
-        <h2 class="fw-bold mb-4">
-            <i class="fas fa-crown text-warning me-2"></i> لوحة تحكم المدير
-        </h2>
-
-        <!-- Cards -->
-        <div class="row g-4 mb-5">
-            <div class="col-md-3">
-                <div class="card text-center shadow border-0 rounded-4 p-4">
-                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
-                    <h5>@Model.TotalClients</h5>
-                    <p class="text-muted small">عدد العملاء</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card text-center shadow border-0 rounded-4 p-4">
-                    <i class="fas fa-hard-hat fa-2x text-success mb-2"></i>
-                    <h5>@Model.TotalWorkers</h5>
-                    <p class="text-muted small">عدد العمال</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card text-center shadow border-0 rounded-4 p-4">
-                    <i class="fas fa-tags fa-2x text-warning mb-2"></i>
-                    <h5>@Model.TotalCategories</h5>
-                    <p class="text-muted small">عدد الفئات</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card text-center shadow border-0 rounded-4 p-4">
-                    <i class="fas fa-star fa-2x text-danger mb-2"></i>
-                    <h5>@Model.TotalReviews</h5>
-                    <p class="text-muted small">عدد التقييمات</p>
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <i class="fas fa-chart-line welcome-icon"></i>
+            <div class="welcome-content">
+                <h1 class="welcome-title">
+                    <i class="fas fa-hand-sparkles me-2"></i>
+                    مرحباً بك في لوحة التحكم
+                </h1>
+                <p class="welcome-subtitle">
+                    إدارة شاملة للعملاء والعمال والتقييمات في مكان واحد
+                </p>
+                <div class="quick-actions">
+                    <a asp-action="CreateClient" class="quick-action-btn">
+                        <i class="fas fa-user-plus me-2"></i> إضافة عميل
+                    </a>
+                    <a asp-action="CreateWorker" class="quick-action-btn">
+                        <i class="fas fa-hard-hat me-2"></i> إضافة عامل
+                    </a>
+                    <a asp-action="Reports" class="quick-action-btn">
+                        <i class="fas fa-chart-bar me-2"></i> التقارير
+                    </a>
                 </div>
             </div>
         </div>
 
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-5 stats-row">
+            <div class="col-6 col-md-3">
+                <div class="card text-center shadow-sm border-0 rounded-4 stat-card card-clients h-100">
+                    <div class="stat-card-content">
+                        <div class="stat-card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h5>@Model.TotalClients</h5>
+                        <p>عدد العملاء</p>
+                    </div>
+                    <i class="fas fa-users stat-card-bg-icon"></i>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card text-center shadow-sm border-0 rounded-4 stat-card card-workers h-100">
+                    <div class="stat-card-content">
+                        <div class="stat-card-icon">
+                            <i class="fas fa-hard-hat"></i>
+                        </div>
+                        <h5>@Model.TotalWorkers</h5>
+                        <p>عدد العمال</p>
+                    </div>
+                    <i class="fas fa-hard-hat stat-card-bg-icon"></i>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card text-center shadow-sm border-0 rounded-4 stat-card card-categories h-100">
+                    <div class="stat-card-content">
+                        <div class="stat-card-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <h5>@Model.TotalCategories</h5>
+                        <p>عدد الفئات</p>
+                    </div>
+                    <i class="fas fa-tags stat-card-bg-icon"></i>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card text-center shadow-sm border-0 rounded-4 stat-card card-reviews h-100">
+                    <div class="stat-card-content">
+                        <div class="stat-card-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h5>@Model.TotalReviews</h5>
+                        <p>عدد التقييمات</p>
+                    </div>
+                    <i class="fas fa-star stat-card-bg-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Lists Section Title -->
+        <h3 class="recent-section-title">
+            <i class="fas fa-clock text-primary"></i>
+            آخر النشاطات
+        </h3>
+
         <!-- Recent lists -->
-        <div class="row g-4">
+        <div class="row g-4 recent-row">
             <!-- أحدث العملاء -->
-            <div class="col-md-6">
-                <div class="card border-0 shadow rounded-4">
-                    <div class="card-header bg-primary text-white fw-bold rounded-top-4">
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 recent-card clients-card h-100">
+                    <div class="card-header text-white fw-bold rounded-top-4">
                         <i class="fas fa-users me-2"></i> أحدث العملاء
                     </div>
 
                     <ul class="list-group list-group-flush">
-                        @foreach (var c in Model.RecentClients)
+                        @if (Model.RecentClients != null && Model.RecentClients.Any())
                         {
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>@c.User?.Name</span>
-                                <small class="text-muted">@c.CreatedAt.ToShortDateString()</small>
+                            @foreach (var c in Model.RecentClients)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            @(c.User?.Name?.Substring(0, 1).ToUpper() ?? "U")
+                                        </div>
+                                        <div class="user-details">
+                                            <span class="user-name">@c.User?.Name</span>
+                                            <span class="user-email">@c.User?.Email</span>
+                                        </div>
+                                    </div>
+                                    <span class="date-badge">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        @c.CreatedAt.ToShortDateString()
+                                    </span>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="list-group-item text-center text-muted py-4">
+                                <i class="fas fa-inbox fa-2x mb-2 d-block opacity-50"></i>
+                                لا يوجد عملاء جدد
                             </li>
                         }
                     </ul>
@@ -68,18 +140,39 @@
             </div>
 
             <!-- أحدث العمال -->
-            <div class="col-md-6">
-                <div class="card border-0 shadow rounded-4">
-                    <div class="card-header bg-success text-white fw-bold rounded-top-4">
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 recent-card workers-card h-100">
+                    <div class="card-header text-white fw-bold rounded-top-4">
                         <i class="fas fa-hard-hat me-2"></i> أحدث العمال
                     </div>
 
                     <ul class="list-group list-group-flush">
-                        @foreach (var w in Model.RecentWorkers)
+                        @if (Model.RecentWorkers != null && Model.RecentWorkers.Any())
                         {
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>@w.User?.Name</span>
-                                <small class="text-muted">@w.CreatedAt.ToShortDateString()</small>
+                            @foreach (var w in Model.RecentWorkers)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            @(w.User?.Name?.Substring(0, 1).ToUpper() ?? "W")
+                                        </div>
+                                        <div class="user-details">
+                                            <span class="user-name">@w.User?.Name</span>
+                                            <span class="user-email">@w.Category?.Name</span>
+                                        </div>
+                                    </div>
+                                    <span class="date-badge">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        @w.CreatedAt.ToShortDateString()
+                                    </span>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="list-group-item text-center text-muted py-4">
+                                <i class="fas fa-inbox fa-2x mb-2 d-block opacity-50"></i>
+                                لا يوجد عمال جدد
                             </li>
                         }
                     </ul>

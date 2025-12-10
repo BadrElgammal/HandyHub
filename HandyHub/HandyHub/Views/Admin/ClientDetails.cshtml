@@ -5,35 +5,1003 @@
     ViewData["Title"] = "تفاصيل العميل";
 }
 
-<div class="container py-5" dir="rtl">
-    <div class="card shadow border-0 rounded-4 p-4 bg-white">
-        <h3 class="fw-bold mb-4 text-primary text-center">تفاصيل العميل</h3>
+<style>
+    /* ===========================
+           ✅ Page Header Banner
+           =========================== */
+    .page-header-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <strong>الاسم:</strong>
-                    <p class="mb-0">@Model.User?.Name</p>
-                </div>
-                <div class="mb-3">
-                    <strong>البريد الإلكتروني:</strong>
-                    <p class="mb-0">@Model.User?.Email</p>
-                </div>
-                <div class="mb-3">
-                    <strong>رقم الهاتف:</strong>
-                    <p class="mb-0">@Model.User?.Phone</p>
-                </div>
-                <div class="mb-3">
-                    <strong>المدينة:</strong>
-                    <p class="mb-0">@Model.User?.City</p>
-                </div>
-                <div class="mb-3">
-                    <strong>تاريخ التسجيل:</strong>
-                    <p class="mb-0">@Model.CreatedAt.ToShortDateString()</p>
+        .page-header-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+
+        50% {
+            transform: scale(1.1);
+            opacity: 0.3;
+        }
+    }
+
+    .page-header-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-header-info {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .client-avatar-large {
+        width: 100px;
+        height: 100px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #fff;
+        border: 3px solid rgba(255,255,255,0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .client-header-details h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .client-header-details p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .header-badge {
+        background: rgba(255,255,255,0.2);
+        padding: 0.3rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 0.5rem;
+    }
+
+    .page-header-icon {
+        position: absolute;
+        left: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 6rem;
+        opacity: 0.1;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-header {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(10px);
+    }
+
+        .btn-header:hover {
+            background: #fff;
+            color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-header.btn-edit {
+            background: rgba(240, 147, 251, 0.3);
+            border-color: rgba(240, 147, 251, 0.5);
+        }
+
+            .btn-header.btn-edit:hover {
+                background: #f093fb;
+                color: #fff;
+            }
+
+        .btn-header.btn-delete {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+            .btn-header.btn-delete:hover {
+                background: #ef4444;
+                color: #fff;
+            }
+
+    /* ===========================
+           ✅ Info Cards Grid
+           =========================== */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 0 16px 16px 0;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+    .info-card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .info-card-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        color: #fff;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        flex-shrink: 0;
+    }
+
+    .info-card-title {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-card-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+        word-break: break-word;
+    }
+
+    .info-card-value-small {
+        font-size: 1rem;
+    }
+
+    /* Different icon colors for variety */
+    .info-card.email .info-card-icon {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+
+    .info-card.phone .info-card-icon {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+    }
+
+    .info-card.city .info-card-icon {
+        background: linear-gradient(135deg, #fa709a, #fee140);
+    }
+
+    .info-card.date .info-card-icon {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .info-card.email::before {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+
+    .info-card.phone::before {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+    }
+
+    .info-card.city::before {
+        background: linear-gradient(135deg, #fa709a, #fee140);
+    }
+
+    /* ===========================
+           ✅ Full Width Info Card
+           =========================== */
+    .info-card-full {
+        grid-column: span 2;
+    }
+
+    /* ===========================
+           ✅ Additional Info Section
+           =========================== */
+    .additional-info-card {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+    }
+
+    .additional-info-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .additional-info-header h3 {
+            color: #fff;
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    .additional-info-body {
+        padding: 1.5rem;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-row-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #667eea;
+        margin-left: 15px;
+    }
+
+    .info-row-content {
+        flex: 1;
+    }
+
+    .info-row-label {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-row-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    /* ===========================
+           ✅ Stats Mini Cards
+           =========================== */
+    .stats-mini-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-mini-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 1.25rem;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-mini-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .stat-mini-card.reviews::before {
+            background: linear-gradient(90deg, #fa709a, #fee140);
+        }
+
+        .stat-mini-card.orders::before {
+            background: linear-gradient(90deg, #11998e, #38ef7d);
+        }
+
+        .stat-mini-card.joined::before {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .stat-mini-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+    .stat-mini-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.75rem;
+        font-size: 1.25rem;
+        color: #fff;
+    }
+
+    .stat-mini-card.reviews .stat-mini-icon {
+        background: linear-gradient(135deg, #fa709a, #fee140);
+    }
+
+    .stat-mini-card.orders .stat-mini-icon {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+
+    .stat-mini-card.joined .stat-mini-icon {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .stat-mini-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-mini-label {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    /* ===========================
+           ✅ Action Buttons
+           =========================== */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 0.875rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-back {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #475569;
+            transform: translateY(-3px);
+        }
+
+    .btn-edit-action {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+        color: #fff;
+    }
+
+        .btn-edit-action:hover {
+            box-shadow: 0 10px 25px rgba(240, 147, 251, 0.3);
+            transform: translateY(-3px);
+            color: #fff;
+        }
+
+    .btn-delete-action {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+        color: #fff;
+    }
+
+        .btn-delete-action:hover {
+            box-shadow: 0 10px 25px rgba(238, 90, 90, 0.3);
+            transform: translateY(-3px);
+            color: #fff;
+        }
+
+    /* ===========================
+           ✅ Responsive - Tablet
+           =========================== */
+    @@media (max-width: 991.98px) {
+        .page-header-banner {
+            padding: 1.5rem;
+        }
+
+        .client-avatar-large {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
+
+        .client-header-details h1 {
+            font-size: 1.5rem;
+        }
+
+        .page-header-icon {
+            display: none;
+        }
+
+        .info-grid {
+            gap: 1rem;
+        }
+
+        .info-card {
+            padding: 1.25rem;
+        }
+
+        .stats-mini-grid {
+            gap: 0.75rem;
+        }
+
+        .stat-mini-card {
+            padding: 1rem;
+        }
+
+        .stat-mini-value {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* ===========================
+           ✅ Responsive - Mobile
+           =========================== */
+    @@media (max-width: 767.98px) {
+        .page-header-banner {
+            padding: 1.25rem;
+            border-radius: 16px;
+        }
+
+        .page-header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .page-header-info {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .client-avatar-large {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
+
+        .client-header-details h1 {
+            font-size: 1.25rem;
+        }
+
+        .client-header-details p {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .header-actions {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-header {
+            flex: 1;
+            justify-content: center;
+            padding: 0.65rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .info-card-full {
+            grid-column: span 1;
+        }
+
+        .info-card {
+            padding: 1rem;
+        }
+
+        .info-card-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+
+        .info-card-value {
+            font-size: 1.1rem;
+        }
+
+        .stats-mini-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .stat-mini-card {
+            display: flex;
+            align-items: center;
+            text-align: right;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .stat-mini-icon {
+            margin: 0;
+            width: 45px;
+            height: 45px;
+            font-size: 1.1rem;
+        }
+
+        .stat-mini-content {
+            flex: 1;
+        }
+
+        .stat-mini-value {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .stat-mini-label {
+            margin: 0;
+        }
+
+        .additional-info-header {
+            padding: 1rem 1.25rem;
+        }
+
+            .additional-info-header h3 {
+                font-size: 1rem;
+            }
+
+        .additional-info-body {
+            padding: 1rem;
+        }
+
+        .info-row {
+            padding: 0.75rem 0;
+        }
+
+        .info-row-icon {
+            width: 35px;
+            height: 35px;
+            margin-left: 12px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    /* ===========================
+           ✅ Responsive - Small Mobile
+           =========================== */
+    @@media (max-width: 575.98px) {
+        .page-header-banner {
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .client-avatar-large {
+            width: 70px;
+            height: 70px;
+            font-size: 1.75rem;
+            border-radius: 16px;
+        }
+
+        .client-header-details h1 {
+            font-size: 1.1rem;
+        }
+
+        .client-header-details p {
+            font-size: 0.85rem;
+        }
+
+        .header-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+        }
+
+        .btn-header {
+            padding: 0.6rem 0.875rem;
+            font-size: 0.85rem;
+        }
+
+        .info-card {
+            padding: 0.875rem;
+            border-radius: 14px;
+        }
+
+        .info-card-header {
+            gap: 10px;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .info-card-icon {
+            width: 38px;
+            height: 38px;
+            font-size: 0.95rem;
+            border-radius: 10px;
+        }
+
+        .info-card-title {
+            font-size: 0.75rem;
+        }
+
+        .info-card-value {
+            font-size: 1rem;
+        }
+
+        .stats-mini-grid {
+            gap: 0.625rem;
+        }
+
+        .stat-mini-card {
+            padding: 0.875rem;
+            border-radius: 14px;
+        }
+
+        .stat-mini-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+            border-radius: 10px;
+        }
+
+        .stat-mini-value {
+            font-size: 1.25rem;
+        }
+
+        .stat-mini-label {
+            font-size: 0.8rem;
+        }
+
+        .additional-info-card {
+            border-radius: 16px;
+        }
+
+        .additional-info-header {
+            padding: 0.875rem 1rem;
+        }
+
+            .additional-info-header h3 {
+                font-size: 0.95rem;
+            }
+
+        .additional-info-body {
+            padding: 0.875rem;
+        }
+
+        .info-row {
+            padding: 0.625rem 0;
+        }
+
+        .info-row-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+
+        .info-row-label {
+            font-size: 0.75rem;
+        }
+
+        .info-row-value {
+            font-size: 0.9rem;
+        }
+
+        .btn-action {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+@* ===========================
+   ✅ Page Header Banner
+   =========================== *@
+<div class="page-header-banner">
+    <i class="fas fa-user page-header-icon"></i>
+    <div class="page-header-content">
+        <div class="page-header-info">
+            <div class="client-avatar-large">
+                @(Model.User?.Name?.Substring(0, 1).ToUpper() ?? "C")
+            </div>
+            <div class="client-header-details">
+                <h1>@Model.User?.Name</h1>
+                <p>
+                    <i class="fas fa-envelope"></i>
+                    @Model.User?.Email
+                </p>
+                <span class="header-badge">
+                    <i class="fas fa-user-check"></i>
+                    عميل مسجل
+                </span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a asp-action="EditClient" asp-route-id="@Model.Id" class="btn-header btn-edit">
+                <i class="fas fa-edit"></i>
+                تعديل
+            </a>
+            <form asp-action="DeleteClient" method="post" style="display: inline;"
+                  onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn-header btn-delete">
+                    <i class="fas fa-trash-alt"></i>
+                    حذف
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Stats Mini Cards
+   =========================== *@
+@{
+    var reviewsCount = Model.Reviews?.Count ?? 0;
+    var daysSinceJoined = (DateTime.Now - Model.CreatedAt).Days;
+}
+
+<div class="stats-mini-grid">
+    <div class="stat-mini-card reviews">
+        <div class="stat-mini-icon">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="stat-mini-content">
+            <div class="stat-mini-value">@reviewsCount</div>
+            <div class="stat-mini-label">تقييمات</div>
+        </div>
+    </div>
+    <div class="stat-mini-card orders">
+        <div class="stat-mini-icon">
+            <i class="fas fa-clipboard-list"></i>
+        </div>
+        <div class="stat-mini-content">
+            <div class="stat-mini-value">0</div>
+            <div class="stat-mini-label">طلبات</div>
+        </div>
+    </div>
+    <div class="stat-mini-card joined">
+        <div class="stat-mini-icon">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-mini-content">
+            <div class="stat-mini-value">@daysSinceJoined</div>
+            <div class="stat-mini-label">يوم منذ الانضمام</div>
+        </div>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Info Cards Grid
+   =========================== *@
+<div class="info-grid">
+    <div class="info-card name">
+        <div class="info-card-header">
+            <div class="info-card-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div>
+                <p class="info-card-title">الاسم الكامل</p>
+                <p class="info-card-value">@(Model.User?.Name ?? "غير محدد")</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-card email">
+        <div class="info-card-header">
+            <div class="info-card-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div>
+                <p class="info-card-title">البريد الإلكتروني</p>
+                <p class="info-card-value info-card-value-small">@(Model.User?.Email ?? "غير محدد")</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-card phone">
+        <div class="info-card-header">
+            <div class="info-card-icon">
+                <i class="fas fa-phone"></i>
+            </div>
+            <div>
+                <p class="info-card-title">رقم الهاتف</p>
+                <p class="info-card-value">@(Model.User?.Phone ?? "غير محدد")</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-card city">
+        <div class="info-card-header">
+            <div class="info-card-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+                <p class="info-card-title">المدينة</p>
+                <p class="info-card-value">@(Model.User?.City ?? "غير محدد")</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-card date info-card-full">
+        <div class="info-card-header">
+            <div class="info-card-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div>
+                <p class="info-card-title">تاريخ التسجيل</p>
+                <p class="info-card-value">@Model.CreatedAt.ToString("dddd، d MMMM yyyy")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ===========================
+   ✅ Additional Information
+   =========================== *@
+<div class="additional-info-card">
+    <div class="additional-info-header">
+        <h3>
+            <i class="fas fa-info-circle"></i>
+            معلومات إضافية
+        </h3>
+    </div>
+    <div class="additional-info-body">
+        <div class="info-row">
+            <div class="info-row-icon">
+                <i class="fas fa-fingerprint"></i>
+            </div>
+            <div class="info-row-content">
+                <div class="info-row-label">معرف العميل</div>
+                <div class="info-row-value">@Model.Id</div>
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-row-icon">
+                <i class="fas fa-user-tag"></i>
+            </div>
+            <div class="info-row-content">
+                <div class="info-row-label">معرف المستخدم</div>
+                <div class="info-row-value">@Model.UserId</div>
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-row-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="info-row-content">
+                <div class="info-row-label">وقت التسجيل</div>
+                <div class="info-row-value">@Model.CreatedAt.ToString("hh:mm tt")</div>
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-row-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="info-row-content">
+                <div class="info-row-label">حالة الحساب</div>
+                <div class="info-row-value" style="color: #11998e;">
+                    <i class="fas fa-check-circle me-1"></i>
+                    نشط
                 </div>
             </div>
         </div>
-
-        <a asp-action="ManageClients" class="btn btn-secondary mt-3">رجوع</a>
     </div>
 </div>
+
+@* ===========================
+   ✅ Action Buttons
+   =========================== *@
+<div class="action-buttons">
+    <a asp-action="ManageClients" class="btn-action btn-back">
+        <i class="fas fa-arrow-right"></i>
+        رجوع للقائمة
+    </a>
+    <a asp-action="EditClient" asp-route-id="@Model.Id" class="btn-action btn-edit-action">
+        <i class="fas fa-edit"></i>
+        تعديل البيانات
+    </a>
+    <form asp-action="DeleteClient" method="post" style="display: contents;"
+          onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل نهائياً؟');">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn-action btn-delete-action">
+            <i class="fas fa-trash-alt"></i>
+            حذف العميل
+        </button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // يمكن إضافة أي سكريبتات إضافية هنا
+    </script>
+}

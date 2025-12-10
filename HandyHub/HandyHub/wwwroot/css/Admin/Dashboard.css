@@ -1,0 +1,678 @@
+﻿/* ===========================
+           ✅ Dashboard Base Styles
+           =========================== */
+.dashboard-section {
+    padding: 2rem 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    min-height: calc(100vh - 60px);
+}
+
+.dashboard-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+    position: relative;
+    display: inline-block;
+}
+
+    .dashboard-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        right: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, #ffc107, #ff9800);
+        border-radius: 2px;
+    }
+
+    .dashboard-title i {
+        background: linear-gradient(135deg, #ffc107, #ff9800);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+/* ===========================
+           ✅ Enhanced Stats Cards - Desktop
+           =========================== */
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    background: #fff;
+}
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 4px;
+        transition: height 0.3s ease;
+    }
+
+    .stat-card.card-clients::before {
+        background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+
+    .stat-card.card-workers::before {
+        background: linear-gradient(90deg, #11998e, #38ef7d);
+    }
+
+    .stat-card.card-categories::before {
+        background: linear-gradient(90deg, #f093fb, #f5576c);
+    }
+
+    .stat-card.card-reviews::before {
+        background: linear-gradient(90deg, #fa709a, #fee140);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+    }
+
+        .stat-card:hover::before {
+            height: 100%;
+            opacity: 0.1;
+        }
+
+.stat-card-content {
+    position: relative;
+    z-index: 2;
+    padding: 1.75rem;
+}
+
+.stat-card-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.75rem;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-card-icon {
+    transform: rotateY(360deg);
+}
+
+.card-clients .stat-card-icon {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.card-workers .stat-card-icon {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+    box-shadow: 0 10px 20px rgba(17, 153, 142, 0.3);
+}
+
+.card-categories .stat-card-icon {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
+}
+
+.card-reviews .stat-card-icon {
+    background: linear-gradient(135deg, #fa709a, #fee140);
+    box-shadow: 0 10px 20px rgba(250, 112, 154, 0.3);
+}
+
+.stat-card h5 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0.75rem 0;
+    background: linear-gradient(135deg, #2c3e50, #4a5568);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-card p {
+    font-size: 1rem;
+    color: #6c757d;
+    font-weight: 500;
+    margin: 0;
+}
+
+.stat-card-bg-icon {
+    position: absolute;
+    bottom: -20px;
+    left: -20px;
+    font-size: 8rem;
+    opacity: 0.05;
+    transform: rotate(-15deg);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-card-bg-icon {
+    opacity: 0.1;
+    transform: rotate(0deg) scale(1.1);
+}
+
+/* ===========================
+           ✅ Enhanced Recent Cards - Desktop
+           =========================== */
+.recent-section-title {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .recent-section-title i {
+        font-size: 1.25rem;
+    }
+
+.recent-card {
+    overflow: hidden;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+    .recent-card:hover {
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    }
+
+    .recent-card .card-header {
+        padding: 1.25rem 1.5rem;
+        font-size: 1.1rem;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .recent-card .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+        }
+
+        .recent-card .card-header i {
+            font-size: 1.25rem;
+        }
+
+    .recent-card.clients-card .card-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .recent-card.workers-card .card-header {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+
+    .recent-card .list-group-item {
+        padding: 1rem 1.5rem;
+        border-color: #f0f0f0;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+        .recent-card .list-group-item::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+    .recent-card.clients-card .list-group-item::before {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .recent-card.workers-card .list-group-item::before {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+
+    .recent-card .list-group-item:hover {
+        background: #f8f9fa;
+        padding-right: 2rem;
+    }
+
+        .recent-card .list-group-item:hover::before {
+            opacity: 1;
+        }
+
+.user-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #fff;
+    margin-left: 12px;
+}
+
+.clients-card .user-avatar {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.workers-card .user-avatar {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.user-email {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.date-badge {
+    background: #f0f0f0;
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+    .date-badge i {
+        font-size: 0.7rem;
+    }
+
+/* ===========================
+           ✅ Welcome Banner
+           =========================== */
+.welcome-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+    .welcome-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.3;
+    }
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 2;
+}
+
+.welcome-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-subtitle {
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.welcome-icon {
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 5rem;
+    opacity: 0.2;
+}
+
+/* ===========================
+           ✅ Quick Actions
+           =========================== */
+.quick-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.quick-action-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    text-decoration: none;
+}
+
+    .quick-action-btn:hover {
+        background: #fff;
+        color: #667eea;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+/* ===========================
+           ✅ Tablet (max-width: 991px)
+           =========================== */
+@media (max-width: 991.98px) {
+    .dashboard-section {
+        padding: 1.5rem 0;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+        text-align: center;
+        display: block;
+    }
+
+        .dashboard-title::after {
+            right: 50%;
+            transform: translateX(50%);
+        }
+
+    .welcome-banner {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .welcome-title {
+        font-size: 1.5rem;
+    }
+
+    .welcome-icon {
+        display: none;
+    }
+
+    .quick-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .stat-card-content {
+        padding: 1.25rem;
+    }
+
+    .stat-card-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+
+    .stat-card h5 {
+        font-size: 2rem;
+    }
+
+    .stat-card-bg-icon {
+        font-size: 6rem;
+    }
+
+    .recent-card .card-header {
+        padding: 1rem 1.25rem;
+    }
+
+    .recent-card .list-group-item {
+        padding: 0.875rem 1.25rem;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ===========================
+           ✅ Mobile (max-width: 767px)
+           =========================== */
+@media (max-width: 767.98px) {
+    .dashboard-section {
+        padding: 1rem 0;
+        background: #f5f7fa;
+    }
+
+        .dashboard-section .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+    .dashboard-title {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+        .dashboard-title::after {
+            width: 40px;
+            height: 3px;
+        }
+
+    .welcome-banner {
+        padding: 1.25rem;
+        border-radius: 15px;
+        margin-bottom: 1.5rem;
+    }
+
+    .welcome-title {
+        font-size: 1.25rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .quick-actions {
+        flex-direction: column;
+        margin-top: 1rem;
+    }
+
+    .quick-action-btn {
+        text-align: center;
+        padding: 0.625rem 1rem;
+        font-size: 0.9rem;
+    }
+    /* Stats Cards - 2 per row */
+    .stats-row .col-md-3 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .stat-card-content {
+        padding: 1rem;
+    }
+
+    .stat-card-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+        border-radius: 15px;
+        margin-bottom: 0.75rem;
+    }
+
+    .stat-card h5 {
+        font-size: 1.5rem;
+    }
+
+    .stat-card p {
+        font-size: 0.8rem;
+    }
+
+    .stat-card-bg-icon {
+        font-size: 4rem;
+        bottom: -10px;
+        left: -10px;
+    }
+    /* Recent Cards */
+    .recent-section-title {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        justify-content: center;
+    }
+
+    .recent-card .card-header {
+        padding: 0.875rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .recent-card .list-group-item {
+        padding: 0.75rem 1rem;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .user-avatar {
+        width: 38px;
+        height: 38px;
+        font-size: 0.85rem;
+        margin-left: 10px;
+    }
+
+    .user-name {
+        font-size: 0.9rem;
+    }
+
+    .user-email {
+        display: none;
+    }
+
+    .date-badge {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+    }
+}
+
+/* ===========================
+           ✅ Small Mobile (max-width: 575px)
+           =========================== */
+@media (max-width: 575.98px) {
+    .dashboard-title {
+        font-size: 1.1rem;
+    }
+
+    .welcome-banner {
+        padding: 1rem;
+    }
+
+    .welcome-title {
+        font-size: 1.1rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .stats-row {
+        margin-left: -6px;
+        margin-right: -6px;
+    }
+
+        .stats-row .col-md-3 {
+            padding-left: 6px;
+            padding-right: 6px;
+            margin-bottom: 12px;
+        }
+
+    .stat-card {
+        border-radius: 15px !important;
+    }
+
+    .stat-card-content {
+        padding: 0.875rem;
+    }
+
+    .stat-card-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+        border-radius: 12px;
+    }
+
+    .stat-card h5 {
+        font-size: 1.35rem;
+    }
+
+    .stat-card p {
+        font-size: 0.75rem;
+    }
+
+    .recent-row {
+        margin-left: -6px;
+        margin-right: -6px;
+    }
+
+        .recent-row > div {
+            padding-left: 6px;
+            padding-right: 6px;
+        }
+
+    .recent-card {
+        border-radius: 15px !important;
+    }
+
+        .recent-card .card-header {
+            padding: 0.75rem 0.875rem;
+            font-size: 0.9rem;
+        }
+
+        .recent-card .list-group-item {
+            padding: 0.625rem 0.875rem;
+        }
+
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
+        border-radius: 10px;
+    }
+
+    .user-name {
+        font-size: 0.85rem;
+    }
+
+    .date-badge {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.65rem;
+    }
+
+        .date-badge i {
+            display: none;
+        }
+}
