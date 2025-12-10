@@ -108,7 +108,10 @@ namespace HandyHub.Controllers
             {
                 if (!string.IsNullOrEmpty(client.User.ImageUrl))
                 {
-                    Upload.RemoveProfileImage("ProfileImages", client.User.ImageUrl);
+                    if (client.User.ImageUrl != "default-avatar-admin.png")
+                    {
+                        Upload.RemoveProfileImage("ProfileImages", client.User.ImageUrl);
+                    }
                 }
 
                 var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);

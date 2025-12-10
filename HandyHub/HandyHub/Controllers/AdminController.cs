@@ -2,6 +2,7 @@
 using HandyHub.Helper;
 using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels;
+using HandyHub.Models.ViewModels.AdminVM;
 using HandyHub.Models.ViewModels.ClientVM;
 using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
@@ -19,14 +20,16 @@ namespace HandyHub.Controllers
         private readonly WorkerService workerService;
         private readonly GenericService<Category> catigoryService;
         private readonly GenericService<Review> ReviewService;
+        private readonly AdminService adminService;
 
-        public AdminController ( HandyHubDbContext context, ClientService _clientService, WorkerService _workerService, GenericService<Category> _catigoryService, GenericService<Review> _ReviewService )
+        public AdminController ( HandyHubDbContext context, ClientService _clientService, WorkerService _workerService, GenericService<Category> _catigoryService, GenericService<Review> _ReviewService ,AdminService _adminService)
         {
             _context = context;
             clientService = _clientService;
             workerService = _workerService;
             catigoryService = _catigoryService;
             ReviewService = _ReviewService;
+            adminService = _adminService;
         }
 
         // =============================== Dashboard ===============================
@@ -53,6 +56,92 @@ namespace HandyHub.Controllers
             };
 
             return View(model);
+        }
+
+
+        [HttpGet]
+        public IActionResult EditAdmin()
+        {
+            var userId = int.Parse(User.FindFirst("UserId").Value);
+            var id = _context.Admins.FirstOrDefault(a => a.UserId == userId)?.Id ?? 0;
+            var admin = adminService.GetAdminWithUserById(id);
+            if (admin == null)
+                return NotFound();
+
+            var vm = new EditAdminVM
+            {
+                Id = admin.Id,
+                UserId = (int)admin.UserId,
+                Name = admin.User.Name,
+                Email = admin.User.Email,
+                Phone = admin.User.Phone,
+                City = admin.User.City,
+                ExistingProfileImagePath = admin.User.ImageUrl   // جديد
+            };
+
+            return View(vm);
+        }
+
+
+        [HttpPost]
+        public IActionResult EditAdmin(EditAdminVM model)
+        {
+            var exist = clientService.IsEmailExist(model.Email, model.UserId);
+            if (exist)
+            {
+                ModelState.AddModelError("", "email already exists");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var admin = adminService.GetAdminWithUserById(model.Id);
+            if (admin == null)
+                return NotFound();
+
+            if (model.ProfileImage != null)
+            {
+                if (!string.IsNullOrEmpty(admin.User.ImageUrl))
+                {
+                    if(admin.User.ImageUrl!= "default-avatar-admin.png")
+                    {
+                        Upload.RemoveProfileImage("ProfileImages", admin.User.ImageUrl);
+                    }    
+                    
+                }
+
+                var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
+                admin.User.ImageUrl = fileName;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
+            {
+                if (string.IsNullOrWhiteSpace(model.Password) ||
+                    string.IsNullOrWhiteSpace(model.ConfirmPassword))
+                {
+                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا.");
+                    return View(model);
+                }
+
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين.");
+                    return View(model);
+                }
+
+                admin.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            }
+
+            admin.User.Name = model.Name;
+            admin.User.Email = model.Email;
+            admin.User.Phone = model.Phone;
+            admin.User.City = model.City;
+
+            adminService.UpdateAdminWithUser(admin);
+
+            TempData["msg"] = "تم تحديث البيانات بنجاح.";
+            return RedirectToAction("ManageClients");
         }
 
         // =============================== Manage Users ===============================

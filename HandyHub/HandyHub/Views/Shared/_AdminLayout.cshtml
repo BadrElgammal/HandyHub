@@ -1,9 +1,13 @@
 ﻿@using System.Security.Claims
+@using HandyHub.Data
+@inject HandyHubDbContext _context;
 @{
     var userEmail = User?.FindFirst(ClaimTypes.Email)?.Value ?? "email@example.com";
     var userRole = User?.FindFirst(ClaimTypes.Role)?.Value ?? "Admin";
     var userName = User?.FindFirst(ClaimTypes.Name)?.Value ?? "Administrator";
-    var adminImage = ViewBag.AdminImage ?? "/images/OIP.jpeg";
+    var userId = int.Parse(User.FindFirst("UserId").Value);
+    var userImage = _context.Users.FirstOrDefault(u => u.Id == userId)?.ImageUrl ?? "default-avatar-admin.png";
+
 }
 
 <!DOCTYPE html>
@@ -48,7 +52,7 @@
                 <!-- Profile Section -->
                 <div class="sidebar-header">
                     <div class="profile-image-container">
-                        <img src="@adminImage" alt="Profile" />
+                        <img src="~/ProfileImages/@userImage" alt="Profile" />
                         <span class="online-status"></span>
                     </div>
                     <h5>@userName</h5>
@@ -109,7 +113,7 @@
                 <!-- Sidebar Footer -->
                 <div class="sidebar-footer">
                     <li>
-                        <a class="logout-btn" href="@Url.Action("Logout", "Admin")">
+                        <a class="logout-btn" href="@Url.Action("logout", "Admin")">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>تسجيل الخروج</span>
                         </a>
@@ -133,10 +137,6 @@
                     </div>
                 </div>
                 <div class="header-actions">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="ابحث هنا..." />
-                    </div>
 
                     <!-- 🔔 Notifications Button -->
                     <button class="header-btn" title="الإشعارات">
@@ -150,20 +150,12 @@
                             <i class="fas fa-cog"></i>
                         </button>
                         <div class="settings-menu">
-                            <a href="@Url.Action("EditProfile", "Admin")">
+                            <a asp-action="EditAdmin"  >
                                 <i class="fas fa-user-edit"></i>
                                 <span>تعديل الملف الشخصي</span>
                             </a>
-                            <a href="@Url.Action("ChangePassword", "Admin")">
-                                <i class="fas fa-key"></i>
-                                <span>تغيير كلمة المرور</span>
-                            </a>
-                            <a href="@Url.Action("Settings", "Admin")">
-                                <i class="fas fa-sliders-h"></i>
-                                <span>إعدادات النظام</span>
-                            </a>
                             <div class="divider"></div>
-                            <a href="@Url.Action("Logout", "Admin")" class="danger-item">
+                            <a href="@Url.Action("logout", "Admin")" class="danger-item">
                                 <i class="fas fa-sign-out-alt"></i>
                                 <span>تسجيل الخروج</span>
                             </a>
