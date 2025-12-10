@@ -5,35 +5,52 @@
     ViewData["Title"] = "تفاصيل العميل";
 }
 
-<div class="container py-5" dir="rtl">
+<div class="container py-4 px-3" dir="rtl">
     <div class="card shadow border-0 rounded-4 p-4 bg-white">
+
         <h3 class="fw-bold mb-4 text-primary text-center">تفاصيل العميل</h3>
 
-        <div class="row mb-3">
-            <div class="col-md-6">
+        <div class="row gy-3">
+
+            <!-- العمود كده بقى responsive:
+                 موبايل: ياخد 12
+                 تابلت: ياخد 12
+                 لابتوب وفوق: ياخد 6 -->
+            <div class="col-12 col-md-10 col-lg-6 mx-auto">
+
                 <div class="mb-3">
-                    <strong>الاسم:</strong>
-                    <p class="mb-0">@Model.User?.Name</p>
+                    <strong class="text-secondary">الاسم:</strong>
+                    <p class="mb-1">@Model.User?.Name</p>
                 </div>
+
                 <div class="mb-3">
-                    <strong>البريد الإلكتروني:</strong>
-                    <p class="mb-0">@Model.User?.Email</p>
+                    <strong class="text-secondary">البريد الإلكتروني:</strong>
+                    <p class="mb-1">@Model.User?.Email</p>
                 </div>
+
                 <div class="mb-3">
-                    <strong>رقم الهاتف:</strong>
-                    <p class="mb-0">@Model.User?.Phone</p>
+                    <strong class="text-secondary">رقم الهاتف:</strong>
+                    <p class="mb-1">@Model.User?.Phone</p>
                 </div>
+
                 <div class="mb-3">
-                    <strong>المدينة:</strong>
-                    <p class="mb-0">@Model.User?.City</p>
+                    <strong class="text-secondary">المدينة:</strong>
+                    <p class="mb-1">@Model.User?.City</p>
                 </div>
+
                 <div class="mb-3">
-                    <strong>تاريخ التسجيل:</strong>
-                    <p class="mb-0">@Model.CreatedAt.ToShortDateString()</p>
+                    <strong class="text-secondary">تاريخ التسجيل:</strong>
+                    <p class="mb-1">@Model.CreatedAt.ToShortDateString()</p>
                 </div>
+
             </div>
         </div>
 
-        <a asp-action="ManageClients" class="btn btn-secondary mt-3">رجوع</a>
+        <div class="text-center mt-4">
+            <a asp-action="ManageClients" class="btn btn-secondary px-4 py-2">
+                رجوع
+            </a>
+        </div>
+
     </div>
 </div>

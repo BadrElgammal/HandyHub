@@ -9,46 +9,46 @@
     <div class="card shadow border-0 rounded-4 p-4 bg-white">
         <h3 class="fw-bold mb-4 text-primary text-center">تفاصيل العامل</h3>
 
-        <div class="row mb-3">
+        <div class="row g-3">
             <!-- العمود الأول -->
-            <div class="col-md-6">
-                <div class="mb-3">
+            <div class="col-12 col-md-6">
+                <div class="mb-2">
                     <strong>الاسم:</strong>
                     <p class="mb-0">@Model.User?.Name</p>
                 </div>
-                <div class="mb-3">
+                <div class="mb-2">
                     <strong>البريد الإلكتروني:</strong>
                     <p class="mb-0">@Model.User?.Email</p>
                 </div>
-                <div class="mb-3">
+                <div class="mb-2">
                     <strong>رقم الهاتف:</strong>
                     <p class="mb-0">@Model.User?.Phone</p>
                 </div>
-                <div class="mb-3">
+                <div class="mb-2">
                     <strong>المدينة:</strong>
                     <p class="mb-0">@Model.User?.City</p>
                 </div>
-                <div class="mb-3">
+                <div class="mb-2">
                     <strong>المنطقة:</strong>
                     <p class="mb-0">@Model.Area</p>
                 </div>
             </div>
 
             <!-- العمود الثاني -->
-            <div class="col-md-6">
-                <div class="mb-3">
+            <div class="col-12 col-md-6">
+                <div class="mb-2">
                     <strong>نبذة:</strong>
                     <p class="mb-0">@Model.Bio</p>
                 </div>
-                <div class="mb-3">
+                <div class="mb-2">
                     <strong>التخصص:</strong>
                     <p class="mb-0">@Model.Category?.Name</p>
                 </div>
-                <div class="mb-3">
+                <div class="mb-2">
                     <strong>تاريخ التسجيل:</strong>
                     <p class="mb-0">@Model.CreatedAt.ToShortDateString()</p>
                 </div>
-                <div class="mb-3">
+                <div class="mb-2">
                     <strong>الحالة:</strong>
                     <p class="mb-0">
                         @(Model.IsAvailable ? "✅ متاح" : "⛔ غير متاح")
@@ -57,6 +57,8 @@
             </div>
         </div>
 
-        <a asp-action="ManageWorkers" class="btn btn-secondary mt-3">رجوع</a>
+        <div class="text-center text-md-start mt-3">
+            <a asp-action="ManageWorkers" class="btn btn-secondary">رجوع</a>
+        </div>
     </div>
 </div>

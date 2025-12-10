@@ -17,85 +17,84 @@
 
 <section class="py-5 bg-light">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+            <h2 class="fw-bold mb-0">
                 <i class="fas fa-hard-hat text-success me-2"></i> إدارة العمال
             </h2>
-            <a asp-action="CreateWorker" class="btn btn-success rounded-3">
+            <a asp-action="CreateWorker" class="btn btn-success rounded-3 d-block">
                 <i class="fas fa-plus-circle"></i> إضافة عامل جديد
             </a>
         </div>
 
         <div class="card border-0 shadow rounded-4 overflow-hidden">
-            <table class="table table-hover mb-0 text-center align-middle">
-                <thead class="bg-success text-white">
-                    <tr>
-                        <th>الاسم</th>
-                        <th>التخصص</th>
-                        <th>المدينة</th>
-                        <th>الحالة</th>
-                        <th>إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (!Model.Any())
-                    {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 text-center align-middle">
+                    <thead class="bg-success text-white">
                         <tr>
-                            <td colspan="5" class="text-muted py-4">لا يوجد عمال حالياً</td>
+                            <th>الاسم</th>
+                            <th>التخصص</th>
+                            <th>المدينة</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
                         </tr>
-                    }
-                    else
-                    {
-                        @foreach (var w in Model)
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
                         {
                             <tr>
-                                <td>@w.User?.Name</td>
-                                <td>@w.Category?.Name</td>
-                                <td>@w.User?.City</td>
-                                <td>
-                                    @(w.IsAvailable ? "✅ متاح" : "⛔ غير متاح")
-                                </td>
-                                <td>
-                                    <form asp-action="SuspendWorker"
-                                          method="post"
-                                          style="display:inline-block;">
-                                        <input type="hidden" name="id" value="@w.Id" />
-                                        <button type="submit" class="btn btn-sm btn-warning rounded-3" title="تعطيل / تفعيل">
-                                            <i class="fas fa-pause"></i>
-                                        </button>
-                                    </form>
-
-                                    <a asp-action="WorkerDetails"
-                                       asp-route-id="@w.Id"
-                                       class="btn btn-sm btn-info text-white rounded-3 me-1"
-                                       title="تفاصيل العامل">
-                                        <i class="fas fa-info-circle"></i>
-                                    </a>
-
-                                    <a asp-action="EditWorker"
-                                       asp-route-id="@w.Id"
-                                       class="btn btn-sm btn-warning text-white rounded-3 me-1"
-                                       title="تعديل">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-
-                                    <form asp-action="DeleteWorker"
-                                          method="post"
-                                          onsubmit="return confirm('هل أنت متأكد من حذف هذا العامل؟');"
-                                          style="display:inline-block;">
-                                        <input type="hidden" name="id" value="@w.Id" />
-                                        <button type="submit"
-                                                class="btn btn-sm btn-danger rounded-3"
-                                                title="حذف">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
+                                <td colspan="5" class="text-muted py-4">لا يوجد عمال حالياً</td>
                             </tr>
                         }
-                    }
-                </tbody>
-            </table>
+                        else
+                        {
+                            @foreach (var w in Model)
+                            {
+                                <tr>
+                                    <td>@w.User?.Name</td>
+                                    <td>@w.Category?.Name</td>
+                                    <td>@w.User?.City</td>
+                                    <td>
+                                        @(w.IsAvailable ? "✅ متاح" : "⛔ غير متاح")
+                                    </td>
+                                    <td class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-1 gap-md-2">
+                                        <form asp-action="SuspendWorker" method="post">
+                                            <input type="hidden" name="id" value="@w.Id" />
+                                            <button type="submit" class="btn btn-sm btn-warning rounded-3" title="تعطيل / تفعيل">
+                                                <i class="fas fa-pause"></i>
+                                            </button>
+                                        </form>
+
+                                        <a asp-action="WorkerDetails"
+                                           asp-route-id="@w.Id"
+                                           class="btn btn-sm btn-info text-white rounded-3"
+                                           title="تفاصيل العامل">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+
+                                        <a asp-action="EditWorker"
+                                           asp-route-id="@w.Id"
+                                           class="btn btn-sm btn-warning text-white rounded-3"
+                                           title="تعديل">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <form asp-action="DeleteWorker"
+                                              method="post"
+                                              onsubmit="return confirm('هل أنت متأكد من حذف هذا العامل؟');">
+                                            <input type="hidden" name="id" value="@w.Id" />
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger rounded-3"
+                                                    title="حذف">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </section>
