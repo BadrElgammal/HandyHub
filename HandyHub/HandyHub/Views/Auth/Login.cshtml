@@ -10,6 +10,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>تسجيل الدخول | HandyHub</title>
+    <link href="~/images/logo.png" rel="icon" type="image/png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -70,7 +71,7 @@
             <h2 class="text-2xl font-bold text-gray-900 text-center mb-6">
                 تسجيل الدخول 👋
             </h2>
-
+            <div asp-validation-summary="ModelOnly" class="text-red-500"></div>
             <form method="post" autocomplete="off" class="space-y-5 text-right">
 
                 <!-- البريد الإلكتروني -->
@@ -80,7 +81,7 @@
                     </label>
                     <input asp-for="Email"
                            type="email"
-                           required
+                           
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm transition duration-200"
                            placeholder="example@email.com" />
                     <span asp-validation-for="Email" class="text-red-500 text-xs mt-1 block"></span>
@@ -93,7 +94,7 @@
                     </label>
                     <input asp-for="Password"
                            type="password"
-                           required
+                           
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm transition duration-200"
                            placeholder="••••••••" />
                     <span asp-validation-for="Password" class="text-red-500 text-xs mt-1 block"></span>
@@ -106,7 +107,7 @@
                     </label>
                     <div class="flex gap-6">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" asp-for="Role" value="Client" required
+                            <input type="radio" asp-for="Role" value="Client" 
                                    class="w-4 h-4 text-teal-600" />
                             <span class="text-sm text-gray-700">👤 عميل</span>
                         </label>
