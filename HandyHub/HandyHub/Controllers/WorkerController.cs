@@ -323,7 +323,10 @@ namespace HandyHub.Controllers
             {
                 if (!string.IsNullOrEmpty(worker.User.ImageUrl))
                 {
-                    Upload.RemoveProfileImage("ProfileImages", worker.User.ImageUrl);
+                    if (worker.User.ImageUrl != "default-avatar-admin.png")
+                    {
+                        Upload.RemoveProfileImage("ProfileImages", worker.User.ImageUrl);
+                    }
                 }
 
                 var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
