@@ -172,12 +172,6 @@
                             </td>
                             <td>
                                 <div class="action-btns">
-                                    <a asp-action="EditCategory"
-                                       asp-route-id="@cat.Id"
-                                       class="btn-action btn-action-edit"
-                                       title="تعديل">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
                                     <form asp-action="DeleteCategory"
                                           method="post"
                                           onsubmit="return confirm('هل أنت متأكد من حذف هذه الفئة؟');"
