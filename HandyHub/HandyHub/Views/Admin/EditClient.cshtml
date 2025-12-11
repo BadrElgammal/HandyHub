@@ -24,11 +24,32 @@
 <div class="container py-5">
     <h3 class="fw-bold mb-4 text-warning">تعديل بيانات العميل</h3>
 
-    <form asp-action="EditClient" method="post" class="bg-white p-4 shadow rounded-3">
+    <form asp-action="EditClient" method="post" class="bg-white p-4 shadow rounded-3" enctype="multipart/form-data">
 
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="UserId" />
+        <!-- تعديل الصورة -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">الصورة الشخصية</label>
 
+            <div class="flex items-center gap-4">
+
+                <!-- إضافة id لعمل Preview -->
+                <img id="avatarPreview"
+                     src="~/ProfileImages/@(string.IsNullOrEmpty(Model.ExistingProfileImagePath) ? "default-avatar-admin.png" : Model.ExistingProfileImagePath)"
+                     alt="Profile"
+                     class="w-20 h-20 rounded-full border object-cover" />
+
+                <!-- إضافة id للـ input -->
+                <input asp-for="ProfileImage"
+                       id="profileImageInput"
+                       type="file"
+                       accept="image/*"
+                       class="text-sm text-gray-700" />
+            </div>
+
+            <span asp-validation-for="ProfileImage" class="text-red-600 text-sm"></span>
+        </div>
         <div class="mb-3">
             <label class="form-label">الاسم</label>
             <input asp-for="@Model.Name" class="form-control" />
@@ -69,3 +90,20 @@
         <a asp-action="ManageClients" class="btn btn-secondary">رجوع</a>
     </form>
 </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <!-- عرض الصورة مباشرة بدون رفع -->
+    <script>
+        document.getElementById('profileImageInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}
