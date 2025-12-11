@@ -676,3 +676,32 @@
             display: none;
         }
 }
+
+.user-avatar {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+    background: #eee;
+}
+
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+/* للعملاء */
+.clients-card .user-avatar {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+/* للعمال */
+.workers-card .user-avatar {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+}

@@ -901,3 +901,16 @@
         font-size: 1rem;
     }
 }
+.user-avatar-img img,
+.client-card-avatar-img img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e2e8f0;
+}
+
+.client-card-avatar-img img {
+    width: 55px;
+    height: 55px;
+}

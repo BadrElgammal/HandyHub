@@ -230,7 +230,10 @@ namespace HandyHub.Controllers
             {
                 if (!string.IsNullOrEmpty(client.User.ImageUrl))
                 {
-                    Upload.RemoveProfileImage("ProfileImages", client.User.ImageUrl);
+                    if (client.User.ImageUrl != "default-avatar-admin.png")
+                    {
+                        Upload.RemoveProfileImage("ProfileImages", client.User.ImageUrl);
+                    }
                 }
 
                 var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
@@ -368,8 +371,17 @@ namespace HandyHub.Controllers
 
             var vm = new EditWorkerVM
             {
-                Worker = worker,
-                Categorys = catigoryService.GetAll()
+                Id = worker.Id,
+                UserId = (int)worker.UserId,
+                Name = worker.User.Name,
+                Email = worker.User.Email,
+                Phone = worker.User.Phone,
+                City = worker.User.City,
+                Bio = worker.Bio,
+                Area = worker.Area,
+                CategoryId = worker.CategoryId,
+                Categorys = catigoryService.GetAll(),
+                ExistingProfileImagePath = worker.User.ImageUrl
             };
             return View(vm);
         }
@@ -378,7 +390,7 @@ namespace HandyHub.Controllers
         [HttpPost]
         public IActionResult EditWorker ( EditWorkerVM model )
         {
-            var exist = workerService.IsEmailExist(model.Worker.User.Email, model.Worker.UserId);
+            var exist = workerService.IsEmailExist(model.Email, model.UserId);
             if (exist)
             {
                 ModelState.AddModelError("", "email already exists");
@@ -390,7 +402,7 @@ namespace HandyHub.Controllers
                 return View(model);
             }
 
-            var worker = workerService.GetWorkerWithUserById(model.Worker.Id);
+            var worker = workerService.GetWorkerWithUserById(model.Id);
             if (worker == null)
                 return NotFound();
             if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
@@ -411,28 +423,30 @@ namespace HandyHub.Controllers
                 worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
             }
 
-            worker.Area = model.Worker.Area;
-            worker.Bio = model.Worker.Bio;
-            worker.IsAvailable = model.Worker.IsAvailable;
-            worker.CategoryId = model.Worker.CategoryId;
+            worker.Area = model.Area;
+            worker.Bio = model.Bio;
+            worker.CategoryId = model.CategoryId;
 
-            worker.User.Name = model.Worker.User.Name;
-            worker.User.Email = model.Worker.User.Email;
-            worker.User.Phone = model.Worker.User.Phone;
-            worker.User.City = model.Worker.User.City;
-
+            worker.User.Name = model.Name;
+            worker.User.Email = model.Email;
+            worker.User.Phone = model.Phone;
+            worker.User.City = model.City;
 
 
-            //if (model.ProfileImage != null)
-            //{
-            //    if (!string.IsNullOrEmpty(worker.ProfileImagePath))
-            //    {
-            //        Upload.RemoveProfileImage("ProfileImages", worker.User.ImageUrl);
-            //    }
 
-            //    var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
-            //    worker.User.ImageUrl = fileName;
-            //}
+            if (model.ProfileImage != null)
+            {
+                if (!string.IsNullOrEmpty(worker.User.ImageUrl))
+                {
+                    if (worker.User.ImageUrl != "default-avatar-admin.png")
+                    {
+                        Upload.RemoveProfileImage("ProfileImages", worker.User.ImageUrl);
+                    }
+                }
+
+                var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
+                worker.User.ImageUrl = fileName;
+            }
 
             workerService.UpdateWorkerWithUser(worker);
 

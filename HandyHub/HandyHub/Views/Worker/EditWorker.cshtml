@@ -4,7 +4,6 @@
     ViewData["Title"] = "تعديل بيانات العامل";
 }
 
-
 <div class="min-h-screen bg-gray-50 py-12 text-right" dir="rtl">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <main class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 lg:p-10 border border-gray-100">
@@ -15,18 +14,24 @@
 
         <form asp-action="EditWorker" method="post" enctype="multipart/form-data" class="space-y-6">
 
-            <input type="hidden" asp-for="Worker.Id" />
-            <input type="hidden" asp-for="Worker.UserId" />
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="UserId" />
+
             <!-- تعديل الصورة -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">الصورة الشخصية</label>
 
                 <div class="flex items-center gap-4">
-                    <img src="~/ProfileImages/@(string.IsNullOrEmpty(Model.ExistingProfileImagePath) ? "default-avatar-admin.png" : Model.ExistingProfileImagePath)"
+
+                    <!-- تم إضافة id="avatarPreview" -->
+                    <img id="avatarPreview"
+                         src="~/ProfileImages/@(string.IsNullOrEmpty(Model.ExistingProfileImagePath) ? "default-avatar-admin.png" : Model.ExistingProfileImagePath)"
                          alt="Profile"
                          class="w-20 h-20 rounded-full border object-cover" />
 
+                    <!-- تم إضافة id="profileImageInput" -->
                     <input asp-for="@Model.ProfileImage"
+                           id="profileImageInput"
                            type="file"
                            accept="image/*"
                            class="text-sm text-gray-700" />
@@ -37,42 +42,42 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
-                <input asp-for="Worker.User.Name"
+                <input asp-for="Name"
                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
-                <span asp-validation-for="Worker.User.Name" class="text-red-600 text-sm"></span>
+                <span asp-validation-for="Name" class="text-red-600 text-sm"></span>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
-                <input asp-for="Worker.User.Email"
+                <input asp-for="Email"
                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
-                <span asp-validation-for="Worker.User.Email" class="text-red-600 text-sm"></span>
+                <span asp-validation-for="Email" class="text-red-600 text-sm"></span>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف</label>
-                <input asp-for="Worker.User.Phone"
+                <input asp-for="Phone"
                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
-                <span asp-validation-for="Worker.User.Phone" class="text-red-600 text-sm"></span>
+                <span asp-validation-for="Phone" class="text-red-600 text-sm"></span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">المدينة</label>
-                    <input asp-for="Worker.User.City"
+                    <input asp-for="City"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">المنطقة</label>
-                    <input asp-for="Worker.Area"
+                    <input asp-for="Area"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm" />
                 </div>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">الفئة (المهنة)</label>
-                <select asp-for="Worker.CategoryId"
+                <select asp-for="CategoryId"
                         asp-items="@(new SelectList(Model.Categorys, "Id", "Name"))"
                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm cursor-pointer">
                     <option value="">اختر المهنة</option>
@@ -81,7 +86,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">النبذة الشخصية وخبراتك</label>
-                <textarea asp-for="Worker.Bio" rows="5"
+                <textarea asp-for="Bio" rows="5"
                           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 text-sm resize-none"></textarea>
             </div>
 
@@ -121,4 +126,18 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <!-- عرض الصورة مباشرة بعد اختيارها -->
+    <script>
+        document.getElementById('profileImageInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 }
