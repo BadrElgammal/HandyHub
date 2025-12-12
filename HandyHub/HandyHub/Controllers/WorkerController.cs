@@ -406,6 +406,71 @@ namespace HandyHub.Controllers
 
             return View(vm);
         }
+        [HttpGet]
+        public IActionResult AddProfile(int id)
+        {
+            // التأكد من أن العامل موجود
+            var worker = workerService.GetById(id);
+            if (worker == null)
+            {
+                return NotFound();
+            }
 
+            // إرسال موديل فارغ مع تثبيت رقم العامل
+            var model = new WorkerPortfolio { WorkerId = id };
+            return View(model);
+        }
+
+        // ==========================================
+        // 2. حفظ العمل الجديد (POST)
+        // ==========================================
+        [HttpPost]
+        public IActionResult AddProfile(WorkerPortfolio model, IFormFile image)
+        {
+            try
+            {
+                // 1. نتأكد إن فيه صورة مبعوتة
+                if (image == null || image.Length == 0)
+                    throw new Exception("يجب اختيار صورة للعمل.");
+
+                // 2. نتأكد إن رقم العامل (WorkerId) وصل صح
+                if (model.WorkerId == 0)
+                    throw new Exception("حدث خطأ في تحديد هوية العامل.");
+
+                // 3. رفع الصورة (تم تصحيح اسم الفولدر لـ worker-portfolio)
+                string fileName = Upload.UploadProfileImage("worker-portfolio", image);
+
+                if (string.IsNullOrEmpty(fileName))
+                    throw new Exception("فشل رفع الصورة.. يرجى التأكد من صلاحيات المجلد.");
+
+                // 4. تجهيز البيانات للحفظ
+                model.ImageUrl = fileName;
+
+                // =========================================================
+                // الحل النهائي لمشكلة (Identity column) اللي ظهرتلك
+                // بنخلي الـ Id بصفر عشان الداتابيز هي اللي تحط الرقم التلقائي
+                // =========================================================
+                model.Id = 0;
+
+                // 5. الحفظ في قاعدة البيانات
+                Workerprotfilio.Insert(model);
+
+                TempData["msg"] = "تم إضافة العمل الجديد بنجاح!";
+                return RedirectToAction("Profile");
+            }
+            catch (Exception ex)
+            {
+                // دي المصيدة عشان لو حصل أي خطأ تاني يعرضهولك بدل ما السيرفر يقفل
+                var realError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+
+                ModelState.AddModelError("", $"عفواً حدث خطأ: {realError}");
+
+                // بنرجع نفس البيانات عشان متكتبش من الأول
+                return View(model);
+            }
+        }
     }
+
 }
+
+

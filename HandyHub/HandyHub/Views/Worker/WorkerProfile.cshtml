@@ -42,7 +42,7 @@
                             @if (Model.Worker.Category != null)
                             {
                                 <span class="inline-flex items-center gap-1
-                                        bg-teal-50 text-teal-700 px-3 py-1 rounded-lg text-sm font-medium border border-teal-200">
+                                            bg-teal-50 text-teal-700 px-3 py-1 rounded-lg text-sm font-medium border border-teal-200">
                                     <i class="ri-tools-line"></i>
                                     @Model.Worker.Category.Name
                                 </span>
@@ -62,9 +62,11 @@
                                 <span class="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded">
                                     <i class="ri-star-fill text-yellow-400"></i>
                                     <span class="text-gray-900 font-bold">
-                                        @(Model.Worker.Reviews.Any()
+                                        @(
+                                                                                Model.Worker.Reviews.Any()
                                                                                 ? Model.Worker.Reviews.Average(r => r.Rating).ToString("0.0")
-                                                                                : "0")
+                                                                                : "0"
+                                                                                )
                                     </span>
                                     ( @Model.Review.Count تقييم )
                                 </span>
@@ -87,7 +89,7 @@
                                 <i class="ri-whatsapp-line text-xl"></i> واتساب
                             </a>
 
-                            
+
 
                         </div>
                     </div>
@@ -119,8 +121,9 @@
                     {
                         <div class="group bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
                             <div class="relative h-48 overflow-hidden">
-                                <img src="@item.ImageUrl"
-                                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <img src="~/worker-portfolio/@item.ImageUrl"
+                                     class="..."
+                                     alt="صورة العمل" />
                             </div>
 
                             <div class="p-4">
