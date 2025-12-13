@@ -5,7 +5,7 @@
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAq+jRC742sEag8DMT9tCtkQAAAAACAAAAAAAQZgAAAAEAACAAAAC79YhDccwsDUh2JxqMtOusOFDwX6k/e13uApMRaNWPywAAAAAOgAAAAAIAACAAAAAPY3Cyp3+Jy4utUv1KW12QJGAdoApeEkhzHQyKIVJE5CAAAACGkU1zkKDDIlDH6bQVuAu2+Mlm0Pf4h9CKJXltBvNX1UAAAABZSUx/585Y+rFnFxCOaeAaPZa0THgcG/FqiPuBI2i7LCTKV+dnbPypgIjxORMBjnhtwqYvfChZFtMOyzOb13II</EncryptedPassword>
     <_PublishTargetUrl>ftp://handyhub.runasp.net/wwwroot</_PublishTargetUrl>
-    <History>True|2025-12-07T20:43:20.7610056Z||;True|2025-12-04T19:39:54.5151817+02:00||;True|2025-12-04T18:31:27.9705732+02:00||;True|2025-12-04T17:17:16.7414732+02:00||;True|2025-11-30T20:26:10.9815282+02:00||;False|2025-11-30T20:20:27.3182968+02:00||;False|2025-11-30T20:08:27.5903290+02:00||;False|2025-11-30T19:36:40.8619665+02:00||;False|2025-11-28T22:17:52.8313216+02:00||;False|2025-11-28T21:49:18.3138156+02:00||;</History>
+    <History>True|2025-12-11T09:09:56.1597566Z||;True|2025-12-11T10:40:30.1731742+02:00||;True|2025-12-07T22:43:20.7610056+02:00||;True|2025-12-04T19:39:54.5151817+02:00||;True|2025-12-04T18:31:27.9705732+02:00||;True|2025-12-04T17:17:16.7414732+02:00||;True|2025-11-30T20:26:10.9815282+02:00||;False|2025-11-30T20:20:27.3182968+02:00||;False|2025-11-30T20:08:27.5903290+02:00||;False|2025-11-30T19:36:40.8619665+02:00||;False|2025-11-28T22:17:52.8313216+02:00||;False|2025-11-28T21:49:18.3138156+02:00||;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -157,22 +157,22 @@
       <publishTime>11/08/2023 19:52:00</publishTime>
     </File>
     <File Include="HandyHub.deps.json">
-      <publishTime>12/07/2025 22:41:26</publishTime>
+      <publishTime>12/11/2025 11:07:40</publishTime>
     </File>
     <File Include="HandyHub.dll">
-      <publishTime>12/07/2025 22:40:54</publishTime>
+      <publishTime>12/11/2025 11:07:11</publishTime>
     </File>
     <File Include="HandyHub.exe">
-      <publishTime>12/07/2025 22:40:55</publishTime>
+      <publishTime>12/11/2025 11:07:11</publishTime>
     </File>
     <File Include="HandyHub.pdb">
-      <publishTime>12/07/2025 22:40:54</publishTime>
+      <publishTime>12/11/2025 11:07:11</publishTime>
     </File>
     <File Include="HandyHub.runtimeconfig.json">
-      <publishTime>12/04/2025 17:13:04</publishTime>
+      <publishTime>12/11/2025 10:36:22</publishTime>
     </File>
     <File Include="HandyHub.staticwebassets.endpoints.json">
-      <publishTime>12/07/2025 22:41:26</publishTime>
+      <publishTime>12/11/2025 11:07:40</publishTime>
     </File>
     <File Include="he/Humanizer.resources.dll">
       <publishTime>01/29/2022 17:04:08</publishTime>
@@ -697,7 +697,25 @@
       <publishTime>01/29/2022 17:04:12</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>12/07/2025 22:41:27</publishTime>
+      <publishTime>12/11/2025 11:07:41</publishTime>
+    </File>
+    <File Include="wwwroot/css/Admin/AdminLayout.css">
+      <publishTime>12/11/2025 11:04:07</publishTime>
+    </File>
+    <File Include="wwwroot/css/Admin/Dashboard.css">
+      <publishTime>12/11/2025 10:22:58</publishTime>
+    </File>
+    <File Include="wwwroot/css/Admin/ManageCategories.css">
+      <publishTime>12/10/2025 13:07:20</publishTime>
+    </File>
+    <File Include="wwwroot/css/Admin/ManageClients.css">
+      <publishTime>12/11/2025 09:41:36</publishTime>
+    </File>
+    <File Include="wwwroot/css/Admin/ManageReviews.css">
+      <publishTime>12/10/2025 13:11:45</publishTime>
+    </File>
+    <File Include="wwwroot/css/Admin/ManageWorkers.css">
+      <publishTime>12/11/2025 10:19:32</publishTime>
     </File>
     <File Include="wwwroot/css/bootstrap-override.css">
       <publishTime>11/04/2025 22:47:12</publishTime>
@@ -712,7 +730,7 @@
       <publishTime>10/27/2025 18:05:19</publishTime>
     </File>
     <File Include="wwwroot/HandyHub.styles.css">
-      <publishTime>12/04/2025 17:13:02</publishTime>
+      <publishTime>12/11/2025 10:36:20</publishTime>
     </File>
     <File Include="wwwroot/images/default-avatar-admin.png">
       <publishTime>11/30/2025 18:23:16</publishTime>
@@ -909,8 +927,26 @@
     <File Include="wwwroot/lib/jquery/LICENSE.txt">
       <publishTime>11/04/2025 23:46:07</publishTime>
     </File>
+    <File Include="wwwroot/ProfileImages/077f5fe5-0b89-4629-a4c8-0b441c119090.jpeg">
+      <publishTime>12/11/2025 10:29:12</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/221b604d-89e7-4ec0-8b52-4cd6515954cd.jpg">
+      <publishTime>12/10/2025 15:16:54</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/286b2315-44b5-47eb-9175-ba47951ba0db.jpeg">
+      <publishTime>12/09/2025 22:03:47</publishTime>
+    </File>
     <File Include="wwwroot/ProfileImages/362d81d5-318b-4d93-944f-155d34d9cd5f.png">
       <publishTime>12/04/2025 07:16:23</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/423b71e7-2008-4c7d-8992-3a487a3184a1.jpg">
+      <publishTime>12/10/2025 15:17:38</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/450fee2b-b012-4e04-badd-62b94d89e11a.jpeg">
+      <publishTime>12/11/2025 10:28:50</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/47f0c322-4eab-4f66-bb76-1b308b42a3f6.jpeg">
+      <publishTime>12/11/2025 09:37:34</publishTime>
     </File>
     <File Include="wwwroot/ProfileImages/4f2d2030-78a7-4d97-8bc5-0ed4dac43ccd.jpeg">
       <publishTime>12/04/2025 07:12:12</publishTime>
@@ -918,11 +954,23 @@
     <File Include="wwwroot/ProfileImages/5b120d09-5551-4d20-8950-eb9632f66ce0.jpeg">
       <publishTime>12/04/2025 07:19:50</publishTime>
     </File>
+    <File Include="wwwroot/ProfileImages/86efcaf3-8da7-40e2-842d-884a70193f89.jpeg">
+      <publishTime>12/11/2025 10:04:35</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/ab405631-3f86-4d34-a584-38fbddc5b8bf.jpeg">
+      <publishTime>12/09/2025 21:53:15</publishTime>
+    </File>
     <File Include="wwwroot/ProfileImages/c3d741c6-87d0-4efd-9589-92abd41743d4.jpeg">
       <publishTime>12/04/2025 13:02:31</publishTime>
     </File>
+    <File Include="wwwroot/ProfileImages/c3f11d4e-c04f-4c7d-a72d-ff90dfb02726.jpeg">
+      <publishTime>12/11/2025 10:05:06</publishTime>
+    </File>
     <File Include="wwwroot/ProfileImages/cde4519e-7e0d-4a96-b767-d9099c8b5966.jpeg">
       <publishTime>12/07/2025 22:00:17</publishTime>
+    </File>
+    <File Include="wwwroot/ProfileImages/d4f37288-6017-4e44-aba5-91de876efbb6.jpeg">
+      <publishTime>12/11/2025 10:05:42</publishTime>
     </File>
     <File Include="wwwroot/ProfileImages/dcf43896-36a8-48ce-a281-990f9b352106.jpeg">
       <publishTime>12/04/2025 14:20:26</publishTime>

@@ -16,13 +16,13 @@ namespace HandyHub.Controllers
     public class AdminController : Controller
     {
         private readonly HandyHubDbContext _context;
-        private readonly ClientService clientService;
-        private readonly WorkerService workerService;
-        private readonly GenericService<Category> catigoryService;
-        private readonly GenericService<Review> ReviewService;
-        private readonly AdminService adminService;
+        private readonly IClientService clientService;
+        private readonly IWorkerService workerService;
+        private readonly IService<Category> catigoryService;
+        private readonly IService<Review> ReviewService;
+        private readonly IAdminService adminService;
 
-        public AdminController ( HandyHubDbContext context, ClientService _clientService, WorkerService _workerService, GenericService<Category> _catigoryService, GenericService<Review> _ReviewService ,AdminService _adminService)
+        public AdminController(HandyHubDbContext context, IClientService _clientService, IWorkerService _workerService, IService<Category> _catigoryService, IService<Review> _ReviewService, IAdminService _adminService)
         {
             _context = context;
             clientService = _clientService;
@@ -34,7 +34,7 @@ namespace HandyHub.Controllers
 
         // =============================== Dashboard ===============================
         [Route("/Admin")]
-        public IActionResult Dashboard ()
+        public IActionResult Dashboard()
         {
             var model = new AdminDashboardViewModel
             {
@@ -43,13 +43,11 @@ namespace HandyHub.Controllers
                 TotalCategories = catigoryService.GetAll().Count(),
                 TotalReviews = ReviewService.GetAll().Count(),
                 AverageRating = ReviewService.GetAll().Any() ? Math.Round(ReviewService.GetAll().Average(r => r.Rating), 2) : 0,
-                RecentClients = _context.Clients
-                    .Include(c => c.User)
+                RecentClients = clientService.GetAllWithUser()
                     .OrderByDescending(c => c.CreatedAt)
                     .Take(5)
                     .ToList(),
-                RecentWorkers = _context.Workers
-                    .Include(w => w.User)
+                RecentWorkers = workerService.GetAllWithUser()
                     .OrderByDescending(w => w.CreatedAt)
                     .Take(5)
                     .ToList(),
@@ -57,7 +55,6 @@ namespace HandyHub.Controllers
 
             return View(model);
         }
-
 
         [HttpGet]
         public IActionResult EditAdmin()
@@ -76,12 +73,11 @@ namespace HandyHub.Controllers
                 Email = admin.User.Email,
                 Phone = admin.User.Phone,
                 City = admin.User.City,
-                ExistingProfileImagePath = admin.User.ImageUrl   // جديد
+                ExistingProfileImagePath = admin.User.ImageUrl
             };
 
             return View(vm);
         }
-
 
         [HttpPost]
         public IActionResult EditAdmin(EditAdminVM model)
@@ -89,7 +85,7 @@ namespace HandyHub.Controllers
             var exist = clientService.IsEmailExist(model.Email, model.UserId);
             if (exist)
             {
-                ModelState.AddModelError("", "email already exists");
+                ModelState.AddModelError("Email", "البريد الإلكتروني مستخدم بالفعل");
             }
             if (!ModelState.IsValid)
             {
@@ -102,13 +98,9 @@ namespace HandyHub.Controllers
 
             if (model.ProfileImage != null)
             {
-                if (!string.IsNullOrEmpty(admin.User.ImageUrl))
+                if (!string.IsNullOrEmpty(admin.User.ImageUrl) && admin.User.ImageUrl != "default-avatar-admin.png")
                 {
-                    if(admin.User.ImageUrl!= "default-avatar-admin.png")
-                    {
-                        Upload.RemoveProfileImage("ProfileImages", admin.User.ImageUrl);
-                    }    
-                    
+                    Upload.RemoveProfileImage("ProfileImages", admin.User.ImageUrl);
                 }
 
                 var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
@@ -117,16 +109,15 @@ namespace HandyHub.Controllers
 
             if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
             {
-                if (string.IsNullOrWhiteSpace(model.Password) ||
-                    string.IsNullOrWhiteSpace(model.ConfirmPassword))
+                if (string.IsNullOrWhiteSpace(model.Password) || string.IsNullOrWhiteSpace(model.ConfirmPassword))
                 {
-                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا.");
+                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا");
                     return View(model);
                 }
 
                 if (model.Password != model.ConfirmPassword)
                 {
-                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين.");
+                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين");
                     return View(model);
                 }
 
@@ -140,30 +131,30 @@ namespace HandyHub.Controllers
 
             adminService.UpdateAdminWithUser(admin);
 
-            TempData["msg"] = "تم تحديث البيانات بنجاح.";
+            TempData["Success"] = "تم تحديث البيانات بنجاح";
             return RedirectToAction("ManageClients");
         }
 
-        // =============================== Manage Users ===============================
-        public IActionResult ManageClients ()
+        // =============================== Manage Clients ===============================
+        public IActionResult ManageClients()
         {
             var clients = clientService.GetAllWithUser();
             return View(clients);
         }
 
         [HttpGet]
-        public IActionResult CreateClient ()
+        public IActionResult CreateClient()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult CreateClient ( Client model )
+        public IActionResult CreateClient(Client model)
         {
             var exist = clientService.IsEmailExist(model.User.Email);
             if (exist)
             {
-                ModelState.AddModelError("", "email already exists");
+                ModelState.AddModelError("User.Email", "البريد الإلكتروني مستخدم بالفعل");
             }
             if (!ModelState.IsValid)
             {
@@ -172,27 +163,31 @@ namespace HandyHub.Controllers
 
             model.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.User.PasswordHash);
             clientService.CreateClientWithUser(model);
-            TempData["msg"] = "created successfully";
+
+            TempData["Success"] = "تم إنشاء العميل بنجاح";
             return RedirectToAction("ManageClients");
         }
 
-
-        public IActionResult ClientDetails ( int id )
+        public IActionResult ClientDetails(int id)
         {
             var client = clientService.GetClientWithUserById(id);
             if (client == null)
-                return NotFound();
+            {
+                TempData["Error"] = "العميل غير موجود";
+                return RedirectToAction("ManageClients");
+            }
             return View(client);
         }
 
-
-
         [HttpGet]
-        public IActionResult EditClient ( int id )
+        public IActionResult EditClient(int id)
         {
             var client = clientService.GetClientWithUserById(id);
             if (client == null)
-                return NotFound();
+            {
+                TempData["Error"] = "العميل غير موجود";
+                return RedirectToAction("ManageClients");
+            }
 
             var vm = new EditClientVM
             {
@@ -202,20 +197,19 @@ namespace HandyHub.Controllers
                 Email = client.User.Email,
                 Phone = client.User.Phone,
                 City = client.User.City,
-                ExistingProfileImagePath = client.User.ImageUrl   // جديد
+                ExistingProfileImagePath = client.User.ImageUrl
             };
 
             return View(vm);
         }
 
-
         [HttpPost]
-        public IActionResult EditClient ( EditClientVM model )
+        public IActionResult EditClient(EditClientVM model)
         {
             var exist = clientService.IsEmailExist(model.Email, model.UserId);
             if (exist)
             {
-                ModelState.AddModelError("", "email already exists");
+                ModelState.AddModelError("Email", "البريد الإلكتروني مستخدم بالفعل");
             }
             if (!ModelState.IsValid)
             {
@@ -224,16 +218,16 @@ namespace HandyHub.Controllers
 
             var client = clientService.GetClientWithUserById(model.Id);
             if (client == null)
-                return NotFound();
+            {
+                TempData["Error"] = "العميل غير موجود";
+                return RedirectToAction("ManageClients");
+            }
 
             if (model.ProfileImage != null)
             {
-                if (!string.IsNullOrEmpty(client.User.ImageUrl))
+                if (!string.IsNullOrEmpty(client.User.ImageUrl) && client.User.ImageUrl != "default-avatar-admin.png")
                 {
-                    if (client.User.ImageUrl != "default-avatar-admin.png")
-                    {
-                        Upload.RemoveProfileImage("ProfileImages", client.User.ImageUrl);
-                    }
+                    Upload.RemoveProfileImage("ProfileImages", client.User.ImageUrl);
                 }
 
                 var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
@@ -242,16 +236,15 @@ namespace HandyHub.Controllers
 
             if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
             {
-                if (string.IsNullOrWhiteSpace(model.Password) ||
-                    string.IsNullOrWhiteSpace(model.ConfirmPassword))
+                if (string.IsNullOrWhiteSpace(model.Password) || string.IsNullOrWhiteSpace(model.ConfirmPassword))
                 {
-                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا.");
+                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا");
                     return View(model);
                 }
 
                 if (model.Password != model.ConfirmPassword)
                 {
-                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين.");
+                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين");
                     return View(model);
                 }
 
@@ -265,53 +258,53 @@ namespace HandyHub.Controllers
 
             clientService.UpdateClientWithUser(client);
 
-            TempData["msg"] = "تم تحديث بيانات العميل بنجاح.";
+            TempData["Success"] = "تم تحديث بيانات العميل بنجاح";
             return RedirectToAction("ManageClients");
         }
 
-
-
-
-
         [HttpPost]
-        public IActionResult DeleteClient ( int id )
+        public IActionResult DeleteClient(int id)
         {
             clientService.DeleteClientWithUser(id);
-            TempData["msg"] = "تم حذف المستخدم بنجاح.";
+            TempData["Success"] = "تم حذف العميل بنجاح";
             return RedirectToAction("ManageClients");
         }
 
         // =============================== Manage Workers ===============================
-        public IActionResult ManageWorkers ()
+        public IActionResult ManageWorkers()
         {
             var workers = _context.Workers.Include(w => w.User).Include(w => w.Category).ToList();
             return View(workers);
         }
 
         [HttpPost]
-        public IActionResult SuspendWorker ( int id )
+        public IActionResult SuspendWorker(int id)
         {
             var worker = workerService.GetWorkerWithUserById(id);
             if (worker == null)
-                return NotFound();
+            {
+                TempData["Error"] = "العامل غير موجود";
+                return RedirectToAction("ManageWorkers");
+            }
 
             if (workerService.SuspendWorker(worker))
-                TempData["msg"] = $"تم اتاحة العامل {worker.User.Name}.";
+                TempData["Success"] = $"تم تفعيل العامل {worker.User.Name}";
             else
-                TempData["msg"] = $"تم إيقاف العامل {worker.User.Name} مؤقتاً.";
+                TempData["Warning"] = $"تم إيقاف العامل {worker.User.Name} مؤقتاً";
+
             return RedirectToAction("ManageWorkers");
         }
 
         [HttpPost]
-        public IActionResult DeleteWorker ( int id )
+        public IActionResult DeleteWorker(int id)
         {
             workerService.DeleteWorkerWithUser(id);
-            TempData["msg"] = "تم حذف العامل بنجاح.";
+            TempData["Success"] = "تم حذف العامل بنجاح";
             return RedirectToAction("ManageWorkers");
         }
 
         [HttpGet]
-        public IActionResult CreateWorker ()
+        public IActionResult CreateWorker()
         {
             var vm = new WorkerWithCatigoryViewModel
             {
@@ -320,20 +313,20 @@ namespace HandyHub.Controllers
             };
             return View(vm);
         }
+
         [HttpPost]
-        public IActionResult CreateWorker ( WorkerWithCatigoryViewModel vm )
+        public IActionResult CreateWorker(WorkerWithCatigoryViewModel vm)
         {
             var exists = workerService.IsEmailExist(vm.Worker.User.Email);
             if (exists)
             {
-                ModelState.AddModelError("", "email already exists");
+                ModelState.AddModelError("Worker.User.Email", "البريد الإلكتروني مستخدم بالفعل");
             }
             if (!ModelState.IsValid)
             {
                 vm.Categorys = catigoryService.GetAll();
                 return View(vm);
             }
-
 
             if (vm.ProfileImage != null)
             {
@@ -343,31 +336,37 @@ namespace HandyHub.Controllers
 
             vm.Worker.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(vm.Worker.User.PasswordHash);
             workerService.CreateWorkerWithUser(vm.Worker);
-            TempData["msg"] = "created successfully";
+
+            TempData["Success"] = "تم إنشاء العامل بنجاح";
             return RedirectToAction("ManageWorkers");
         }
 
-
-        public IActionResult WorkerDetails ( int? id )
+        public IActionResult WorkerDetails(int? id)
         {
             if (id == null)
                 return BadRequest();
+
             var worker = workerService.GetWorkerWithUserById(id.Value);
             if (worker == null)
-                return NotFound();
+            {
+                TempData["Error"] = "العامل غير موجود";
+                return RedirectToAction("ManageWorkers");
+            }
             return View(worker);
         }
 
-
         [HttpGet]
-        public IActionResult EditWorker ( int? id )
+        public IActionResult EditWorker(int? id)
         {
             if (id == null)
                 return BadRequest();
 
             var worker = workerService.GetWorkerWithUserById(id.Value);
             if (worker == null)
-                return NotFound();
+            {
+                TempData["Error"] = "العامل غير موجود";
+                return RedirectToAction("ManageWorkers");
+            }
 
             var vm = new EditWorkerVM
             {
@@ -386,14 +385,13 @@ namespace HandyHub.Controllers
             return View(vm);
         }
 
-
         [HttpPost]
-        public IActionResult EditWorker ( EditWorkerVM model )
+        public IActionResult EditWorker(EditWorkerVM model)
         {
             var exist = workerService.IsEmailExist(model.Email, model.UserId);
             if (exist)
             {
-                ModelState.AddModelError("", "email already exists");
+                ModelState.AddModelError("Email", "البريد الإلكتروني مستخدم بالفعل");
             }
 
             if (!ModelState.IsValid)
@@ -404,19 +402,24 @@ namespace HandyHub.Controllers
 
             var worker = workerService.GetWorkerWithUserById(model.Id);
             if (worker == null)
-                return NotFound();
+            {
+                TempData["Error"] = "العامل غير موجود";
+                return RedirectToAction("ManageWorkers");
+            }
+
             if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
             {
-                if (string.IsNullOrWhiteSpace(model.Password) ||
-                    string.IsNullOrWhiteSpace(model.ConfirmPassword))
+                if (string.IsNullOrWhiteSpace(model.Password) || string.IsNullOrWhiteSpace(model.ConfirmPassword))
                 {
-                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا.");
+                    ModelState.AddModelError("ConfirmPassword", "يجب إدخال كلمة المرور وتأكيدها معًا");
+                    model.Categorys = catigoryService.GetAll();
                     return View(model);
                 }
 
                 if (model.Password != model.ConfirmPassword)
                 {
-                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين.");
+                    ModelState.AddModelError("ConfirmPassword", "كلمتا المرور غير متطابقتين");
+                    model.Categorys = catigoryService.GetAll();
                     return View(model);
                 }
 
@@ -426,22 +429,16 @@ namespace HandyHub.Controllers
             worker.Area = model.Area;
             worker.Bio = model.Bio;
             worker.CategoryId = model.CategoryId;
-
             worker.User.Name = model.Name;
             worker.User.Email = model.Email;
             worker.User.Phone = model.Phone;
             worker.User.City = model.City;
 
-
-
             if (model.ProfileImage != null)
             {
-                if (!string.IsNullOrEmpty(worker.User.ImageUrl))
+                if (!string.IsNullOrEmpty(worker.User.ImageUrl) && worker.User.ImageUrl != "default-avatar-admin.png")
                 {
-                    if (worker.User.ImageUrl != "default-avatar-admin.png")
-                    {
-                        Upload.RemoveProfileImage("ProfileImages", worker.User.ImageUrl);
-                    }
+                    Upload.RemoveProfileImage("ProfileImages", worker.User.ImageUrl);
                 }
 
                 var fileName = Upload.UploadProfileImage("ProfileImages", model.ProfileImage);
@@ -450,72 +447,83 @@ namespace HandyHub.Controllers
 
             workerService.UpdateWorkerWithUser(worker);
 
-            TempData["msg"] = "تم تحديث بيانات العامل بنجاح.";
+            TempData["Success"] = "تم تحديث بيانات العامل بنجاح";
             return RedirectToAction("ManageWorkers");
         }
 
         [HttpPost]
-        public IActionResult DeleteWorkers ( int id )
+        public IActionResult DeleteWorkers(int id)
         {
             workerService.DeleteWorkerWithUser(id);
-            TempData["msg"] = "تم حذف العامل بنجاح.";
+            TempData["Success"] = "تم حذف العامل بنجاح";
             return RedirectToAction("ManageWorkers");
         }
 
         // =============================== Manage Categories ===============================
-        public IActionResult ManageCategories ()
+        public IActionResult ManageCategories()
         {
             var categories = catigoryService.GetAll();
             return View(categories);
         }
 
         [HttpPost]
-        public IActionResult AddCategory ( Category category )
+        public IActionResult AddCategory(Category category)
         {
             if (string.IsNullOrEmpty(category.Name))
             {
-                TempData["Error"] = "الاسم مطلوب.";
+                TempData["Error"] = "اسم الفئة مطلوب";
                 return RedirectToAction("ManageCategories");
             }
 
             catigoryService.Insert(category);
-            TempData["msg"] = "تمت الإضافة بنجاح.";
+            TempData["Success"] = "تمت إضافة الفئة بنجاح";
             return RedirectToAction("ManageCategories");
         }
 
         [HttpPost]
-        public IActionResult DeleteCategory ( int id )
+        public IActionResult DeleteCategory(int id)
         {
             var cat = catigoryService.GetById(id);
             if (cat != null)
             {
                 catigoryService.Delete(id);
-                TempData["msg"] = "تم حذف الفئة.";
+                TempData["Success"] = "تم حذف الفئة بنجاح";
+            }
+            else
+            {
+                TempData["Error"] = "الفئة غير موجودة";
             }
             return RedirectToAction("ManageCategories");
         }
 
         // =============================== Manage Reviews ===============================
-        public IActionResult ManageReviews ()
+        public IActionResult ManageReviews()
         {
-            var reviews = _context.Reviews.Include(r => r.Client).ThenInclude(c => c.User).Include(r => r.Worker).ThenInclude(w => w.User).ToList();
+            var reviews = _context.Reviews
+                .Include(r => r.Client).ThenInclude(c => c.User)
+                .Include(r => r.Worker).ThenInclude(w => w.User)
+                .ToList();
             return View(reviews);
         }
 
         [HttpPost]
-        public IActionResult DeleteReview ( int id )
+        public IActionResult DeleteReview(int id)
         {
             var review = ReviewService.GetById(id);
             if (review != null)
             {
                 ReviewService.Delete(id);
-                TempData["msg"] = "تم حذف التقييم.";
+                TempData["Success"] = "تم حذف التقييم بنجاح";
+            }
+            else
+            {
+                TempData["Error"] = "التقييم غير موجود";
             }
             return RedirectToAction("ManageReviews");
         }
 
         // =============================== Reports ===============================
-        public IActionResult Reports ()
+        public IActionResult Reports()
         {
             var model = new AdminReportViewModel
             {
@@ -537,9 +545,7 @@ namespace HandyHub.Controllers
             return View(model);
         }
 
-
-
-        public WorkerWithCatigoryViewModel GetWorkerCreateViewModel ( Worker? worker = null )
+        public WorkerWithCatigoryViewModel GetWorkerCreateViewModel(Worker? worker = null)
         {
             return new WorkerWithCatigoryViewModel
             {
@@ -547,20 +553,17 @@ namespace HandyHub.Controllers
                 Categorys = catigoryService.GetAll()
             };
         }
-        public Worker? GetByIdWithCatigory ( int id )
+
+        public Worker? GetByIdWithCatigory(int id)
         {
             return _context.Workers.Include(w => w.Category).FirstOrDefault(c => c.Id == id);
         }
 
-
-        public IActionResult logout ()
+        public IActionResult logout()
         {
             Response.Cookies.Delete("jwt");
+            TempData["Success"] = "تم تسجيل الخروج بنجاح";
             return RedirectToAction("Index", "Home");
         }
     }
 }
-
-
-
-

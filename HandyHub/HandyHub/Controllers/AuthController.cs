@@ -60,9 +60,8 @@ public class AuthController : Controller
             Expires = DateTime.UtcNow.AddHours(2)
         });
 
-        TempData["SuccessMessage"] = "Login Successfully";
         ViewBag.Token = token;
-        ViewBag.Message = "تم تسجيل الدخول بنجاح.";
+        TempData["Success"] = "تم تسجيل الدخول بنجاح";
         if (user.Role == "Admin")
         {
             return RedirectToAction("Index", "Home");
@@ -133,12 +132,13 @@ public class AuthController : Controller
         }
 
         _context.SaveChanges();
-        ViewBag.Message = "تم إنشاء الحساب بنجاح. يمكنك الآن تسجيل الدخول.";
+        TempData["Success"] = "تم إنشاء الحساب بنجاح. يمكنك الآن تسجيل الدخول.";
         return RedirectToAction("Login");
     }
     public IActionResult Logout()
     {
         Response.Cookies.Delete("jwt");
+        TempData["Success"] = "تم تسجيل الخروج بنجاح";
         return RedirectToAction("Index", "Home");
     }
 }

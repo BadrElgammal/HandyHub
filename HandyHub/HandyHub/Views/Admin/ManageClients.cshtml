@@ -9,28 +9,6 @@
     <link href="~/css/Admin/ManageClients.css" rel="stylesheet" />
 }
 
-@* ===========================
-   Alerts
-   =========================== *@
-@if (ViewBag.errorMessage != null)
-{
-    <div class="alert-custom alert-danger-custom">
-        <div class="alert-icon">
-            <i class="fas fa-exclamation-circle"></i>
-        </div>
-        <span>@ViewBag.errorMessage</span>
-    </div>
-}
-
-@if (TempData["msg"] != null)
-{
-    <div class="alert-custom alert-success-custom">
-        <div class="alert-icon">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <span>@TempData["msg"]</span>
-    </div>
-}
 
 @* ===========================
    Page Header
