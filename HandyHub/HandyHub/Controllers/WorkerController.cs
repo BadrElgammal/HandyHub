@@ -155,13 +155,14 @@ namespace HandyHub.Controllers
         {
             workerService.DeleteWorkerWithUser(id);
             Response.Cookies.Delete("jwt");
-            TempData["msg"] = "تم حذف العامل بنجاح.";
+            TempData["Success"] = "تم حذف العامل بنجاح.";
             return RedirectToAction("index", "Home");
         }
         [HttpPost]
         public IActionResult logout ()
         {
             Response.Cookies.Delete("jwt");
+            TempData["Success"] = "تم تسجيل الخروج بنجاح";
             return RedirectToAction("Index", "Home");
 
         }
@@ -342,22 +343,22 @@ namespace HandyHub.Controllers
 
             workerService.UpdateWorkerWithUser(worker);
 
-            TempData["msg"] = "تم تحديث بيانات العامل بنجاح.";
+            TempData["Success"] = "تم تحديث بيانات العامل بنجاح.";
             return RedirectToAction("Profile");
         }
 
         [HttpPost]
-        public IActionResult SuspendWorker ( int id )
+        public IActionResult ToggleAvailability( int id )
         {
             var worker = workerService.GetWorkerWithUserById(id);
             if (worker == null)
                 return NotFound();
 
             if (workerService.SuspendWorker(worker))
-                TempData["msg"] = $"تم اتاحة العامل {worker.User.Name}.";
+                TempData["Success"] = $"✅ تم تفعيل حالة التوفر - أنت الآن متاح للعمل";
             else
-                TempData["msg"] = $"تم إيقاف العامل {worker.User.Name} مؤقتاً.";
-            return RedirectToAction("ManageWorkers");
+                TempData["Warning"] = $"⏸️ تم إيقاف حالة التوفر - أنت غير متاح الآن";
+            return RedirectToAction("Profile");
         }
 
         public IActionResult Profile ()
@@ -389,7 +390,7 @@ namespace HandyHub.Controllers
             var worker = workerService.GetWorkerWithUserById(id);
             if (worker == null)
             {
-                TempData["msg"] = "العامل غير موجود.";
+                TempData["Error"] = "العامل غير موجود";
                 return RedirectToAction("Search");
             }
 
@@ -413,6 +414,7 @@ namespace HandyHub.Controllers
             var worker = workerService.GetById(id);
             if (worker == null)
             {
+                TempData["Error"] = "العامل غير موجود";
                 return NotFound();
             }
 
@@ -455,7 +457,7 @@ namespace HandyHub.Controllers
                 // 5. الحفظ في قاعدة البيانات
                 Workerprotfilio.Insert(model);
 
-                TempData["msg"] = "تم إضافة العمل الجديد بنجاح!";
+                TempData["Success"] = "تم إضافة العمل الجديد بنجاح";
                 return RedirectToAction("Profile");
             }
             catch (Exception ex)
@@ -468,6 +470,32 @@ namespace HandyHub.Controllers
                 // بنرجع نفس البيانات عشان متكتبش من الأول
                 return View(model);
             }
+        }
+        // ==========================================
+        // حذف عمل من المعرض
+        // ==========================================
+        [HttpPost]
+        public IActionResult DeletePortfolio(int id)
+        {
+            // ✅ استخدم GetAll مع FirstOrDefault بدل GetById
+            var portfolio = Workerprotfilio.GetAll().FirstOrDefault(p => p.Id == id);
+
+            if (portfolio == null)
+            {
+                TempData["Error"] = "لم يتم العثور على العمل";
+                return RedirectToAction("Profile");
+            }
+
+            // حذف الصورة
+            if (!string.IsNullOrEmpty(portfolio.ImageUrl))
+            {
+                Upload.RemoveProfileImage("worker-portfolio", portfolio.ImageUrl);
+            }
+
+            Workerprotfilio.Delete(portfolio.Id);
+
+            TempData["Success"] = "تم حذف العمل بنجاح";
+            return RedirectToAction("Profile");
         }
     }
 

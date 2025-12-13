@@ -10,28 +10,7 @@
     <link href="~/css/Admin/ManageCategories.css" rel="stylesheet" />
 }
 
-@* ===========================
-   ✅ Alerts
-   =========================== *@
-@if (ViewBag.errorMessage != null)
-{
-    <div class="alert-custom alert-danger-custom">
-        <div class="alert-icon">
-            <i class="fas fa-exclamation-circle"></i>
-        </div>
-        <span>@ViewBag.errorMessage</span>
-    </div>
-}
 
-@if (TempData["msg"] != null)
-{
-    <div class="alert-custom alert-success-custom">
-        <div class="alert-icon">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <span>@TempData["msg"]</span>
-    </div>
-}
 
 @* ===========================
    ✅ Page Header Banner
@@ -230,12 +209,7 @@
                     </div>
 
                     <div class="category-card-actions">
-                        <a asp-action="EditCategory"
-                           asp-route-id="@cat.Id"
-                           class="btn btn-edit">
-                            <i class="fas fa-edit"></i>
-                            تعديل
-                        </a>
+                        
                         <form asp-action="DeleteCategory"
                               method="post"
                               onsubmit="return confirm('هل أنت متأكد من حذف هذه الفئة؟');"

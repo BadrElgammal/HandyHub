@@ -1,5 +1,5 @@
 ﻿using HandyHub.Data;
-using HandyHub.Helper; // تأكد من الـ namespace الصحيح لكلاس Upload
+using HandyHub.Helper; 
 using HandyHub.Models.Entities;
 using HandyHub.Models.ViewModels.ClientVM;
 using HandyHub.Models.ViewModels.WorkerVM;
@@ -144,7 +144,7 @@ namespace HandyHub.Controllers
 
             clientService.UpdateClientWithUser(client);
 
-            TempData["msg"] = "تم تحديث بيانات العميل بنجاح.";
+            TempData["Success"] = "تم تحديث بيانات العميل بنجاح.";
             return RedirectToAction("Profile");
         }
 
@@ -152,7 +152,7 @@ namespace HandyHub.Controllers
         public IActionResult DeleteClient ( int id )
         {
             clientService.DeleteClientWithUser(id);
-            TempData["msg"] = "تم حذف المستخدم بنجاح.";
+            TempData["Success"] = "تم حذف المستخدم بنجاح.";
             Response.Cookies.Delete("jwt");
             return RedirectToAction("Index", "Home");
         }
@@ -187,7 +187,7 @@ namespace HandyHub.Controllers
             var worker = workerService.GetWorkerWithUserById(id);
             if (worker == null)
             {
-                TempData["msg"] = "العامل غير موجود.";
+                TempData["Error"] = "العامل غير موجود";
                 return RedirectToAction("Search");
             }
 
@@ -219,12 +219,12 @@ namespace HandyHub.Controllers
 
             if (!ModelState.IsValid)
             {
-                TempData["msg"] = "الرجاء ملء جميع الحقول.";
+                TempData["Error"] = "الرجاء ملء جميع الحقول.";
                 return RedirectToAction("WorkerProfile", "Client", new { id = model.WorkerId });
             }
 
             reviewService.Insert(model);
-            TempData["msg"] = "✅ تم إضافة التقييم بنجاح.";
+            TempData["Success"] = "✅ تم إضافة التقييم بنجاح.";
             return RedirectToAction("WorkerProfile", "Client", new { id = model.WorkerId });
         }
 
@@ -236,7 +236,7 @@ namespace HandyHub.Controllers
 
             if (clientId == 0)
             {
-                TempData["msg"] = "خطأ: العميل غير موجود.";
+                TempData["Error"] = "خطأ: العميل غير موجود.";
                 return RedirectToAction("Search");
             }
 
@@ -246,7 +246,7 @@ namespace HandyHub.Controllers
             if (favorite != null)
             {
                 favoriteService.Delete(favorite.Id);
-                TempData["msg"] = "✅ تم إزالة العامل من المفضلة.";
+                TempData["Success"] = "✅ تم إزالة العامل من المفضلة.";
             }
             else
             {
@@ -257,7 +257,7 @@ namespace HandyHub.Controllers
                     CreatedAt = DateTime.Now
                 };
                 favoriteService.Insert(newFavorite);
-                TempData["msg"] = "✅ تم إضافة العامل إلى المفضلة.";
+                TempData["Success"] = "✅ تم إضافة العامل إلى المفضلة.";
             }
 
             return RedirectToAction("WorkerProfile", new { id = workerId });
