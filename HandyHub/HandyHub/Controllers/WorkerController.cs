@@ -6,6 +6,7 @@ using HandyHub.Models.ViewModels.WorkerVM;
 using HandyHub.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 
 namespace HandyHub.Controllers
@@ -18,8 +19,6 @@ namespace HandyHub.Controllers
         GenericService<Review> ReviewService;
         GenericService<WorkerPortfolio> Workerprotfilio;
         IClientService clientService;
-        // افتراضًا اسم الخدمة
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
 
         private readonly HandyHubDbContext db;
@@ -250,7 +249,6 @@ namespace HandyHub.Controllers
         //    return View(vm);
         //}
 
-        // **ملاحظة:** يجب أن تتأكد أيضاً من تعديل الـ [HttpPost] Action بنفس الطريقة
         [HttpGet]
         public IActionResult EditWorker ( int? id )
         {
@@ -408,9 +406,8 @@ namespace HandyHub.Controllers
             return View(vm);
         }
         [HttpGet]
-        public IActionResult AddProfile(int id)
+        public IActionResult AddService(int id)
         {
-            // التأكد من أن العامل موجود
             var worker = workerService.GetById(id);
             if (worker == null)
             {
@@ -418,43 +415,30 @@ namespace HandyHub.Controllers
                 return NotFound();
             }
 
-            // إرسال موديل فارغ مع تثبيت رقم العامل
             var model = new WorkerPortfolio { WorkerId = id };
             return View(model);
         }
 
-        // ==========================================
-        // 2. حفظ العمل الجديد (POST)
-        // ==========================================
         [HttpPost]
-        public IActionResult AddProfile(WorkerPortfolio model, IFormFile image)
+        public IActionResult AddService(WorkerPortfolio model, IFormFile image)
         {
             try
             {
-                // 1. نتأكد إن فيه صورة مبعوتة
                 if (image == null || image.Length == 0)
                     throw new Exception("يجب اختيار صورة للعمل.");
 
-                // 2. نتأكد إن رقم العامل (WorkerId) وصل صح
                 if (model.WorkerId == 0)
                     throw new Exception("حدث خطأ في تحديد هوية العامل.");
 
-                // 3. رفع الصورة (تم تصحيح اسم الفولدر لـ worker-portfolio)
                 string fileName = Upload.UploadProfileImage("worker-portfolio", image);
 
                 if (string.IsNullOrEmpty(fileName))
                     throw new Exception("فشل رفع الصورة.. يرجى التأكد من صلاحيات المجلد.");
 
-                // 4. تجهيز البيانات للحفظ
                 model.ImageUrl = fileName;
 
-                // =========================================================
-                // الحل النهائي لمشكلة (Identity column) اللي ظهرتلك
-                // بنخلي الـ Id بصفر عشان الداتابيز هي اللي تحط الرقم التلقائي
-                // =========================================================
                 model.Id = 0;
 
-                // 5. الحفظ في قاعدة البيانات
                 Workerprotfilio.Insert(model);
 
                 TempData["Success"] = "تم إضافة العمل الجديد بنجاح";
@@ -462,12 +446,10 @@ namespace HandyHub.Controllers
             }
             catch (Exception ex)
             {
-                // دي المصيدة عشان لو حصل أي خطأ تاني يعرضهولك بدل ما السيرفر يقفل
                 var realError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
 
                 ModelState.AddModelError("", $"عفواً حدث خطأ: {realError}");
 
-                // بنرجع نفس البيانات عشان متكتبش من الأول
                 return View(model);
             }
         }
@@ -496,6 +478,98 @@ namespace HandyHub.Controllers
 
             TempData["Success"] = "تم حذف العمل بنجاح";
             return RedirectToAction("Profile");
+        }
+        // ==========================================
+        // 1. صفحة التعديل (GET) - لجلب البيانات الحالية
+        // ==========================================
+        [HttpGet]
+        public IActionResult EditPortfolio(int id)
+        {
+            // بنجيب العمل من الداتابيز بالـ ID بتاعه
+            var portfolioItem = Workerprotfilio.GetById(id);
+
+            if (portfolioItem == null)
+            {
+                return NotFound();
+            }
+
+            // بنتأكد إن العمل ده يخص العامل اللي فاتح دلوقتي (حماية)
+            var userId = int.Parse(User.FindFirst("UserId").Value);
+            var worker = workerService.GetAllWorkersWithPortfolioWithUserWithReviews()
+                                      .FirstOrDefault(w => w.UserId == userId);
+
+            if (worker == null || portfolioItem.WorkerId != worker.Id)
+            {
+                return Unauthorized(); // مش من حقه يعدل شغل غيره
+            }
+
+            return View(portfolioItem);
+        }
+
+        // ==========================================
+        // 2. حفظ التعديلات (POST)
+        // ==========================================
+        [HttpPost]
+        public IActionResult EditPortfolio(WorkerPortfolio model, IFormFile? image)
+        {
+            // ============================================================
+            // 1. الحل السحري: تجاهل فحص بيانات العامل لأننا مش باعتينها
+            // ============================================================
+            ModelState.Remove("Worker");
+
+            // 2. فحص باقي البيانات (العنوان، التفاصيل، إلخ)
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                // 3. جلب العمل الأصلي من قاعدة البيانات
+                var existingItem = Workerprotfilio.GetById(model.Id);
+
+                if (existingItem == null)
+                {
+                    return NotFound();
+                }
+
+                // 4. تحديث البيانات النصية
+                existingItem.Bio = model.Bio;
+                existingItem.Area = model.Area;
+
+                // 5. معالجة الصورة (لو رفع صورة جديدة فقط)
+                if (image != null && image.Length > 0)
+                {
+                    // أ. مسح الصورة القديمة لو موجودة
+                    if (!string.IsNullOrEmpty(existingItem.ImageUrl))
+                    {
+                        Upload.RemoveProfileImage("worker-portfolio", existingItem.ImageUrl);
+                    }
+
+                    // ب. رفع الصورة الجديدة
+                    string newFileName = Upload.UploadProfileImage("worker-portfolio", image);
+
+                    // ج. تحديث اسم الصورة في الداتابيز
+                    if (newFileName != null)
+                    {
+                        existingItem.ImageUrl = newFileName;
+                    }
+                }
+
+                // لو مرفعش صورة، بنسيب القديمة زي ما هي (مش بنعمل حاجة)
+
+                // 6. حفظ التعديلات النهائية
+                Workerprotfilio.Update(existingItem);
+
+                TempData["msg"] = "تم تعديل العمل بنجاح.";
+                return RedirectToAction("Profile");
+            }
+            catch (Exception ex)
+            {
+                // عرض رسالة الخطأ لو حصلت مشكلة في السيرفر
+                ModelState.AddModelError("", $"حدث خطأ أثناء الحفظ: {ex.Message}");
+                return View(model);
+            }
         }
     }
 
