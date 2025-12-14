@@ -10,25 +10,7 @@
     <link href="~/css/Admin/ManageWorkers.css" rel="stylesheet" />
 }
 
-@if (ViewBag.errorMessage != null)
-{
-    <div class="alert-custom alert-danger-custom">
-        <div class="alert-icon">
-            <i class="fas fa-exclamation-circle"></i>
-        </div>
-        <span>@ViewBag.errorMessage</span>
-    </div>
-}
 
-@if (TempData["msg"] != null)
-{
-    <div class="alert-custom alert-success-custom">
-        <div class="alert-icon">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <span>@TempData["msg"]</span>
-    </div>
-}
 
 <div class="page-header-banner">
     <i class="fas fa-hard-hat page-header-icon"></i>
