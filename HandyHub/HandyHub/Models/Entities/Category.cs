@@ -15,7 +15,7 @@ namespace HandyHub.Models.Entities
         public string Name { get; set; }
 
         [StringLength(300)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public string? IconUrl { get; set; }
 

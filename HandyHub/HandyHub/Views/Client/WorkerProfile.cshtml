@@ -94,15 +94,21 @@
                                 Model.Favorites.Any(f => f.WorkerId == Model.Worker.Id);
                             }
 
-                            <form method="post" asp-controller="Client" asp-action="AddToFavorite">
+                            <form method="post" asp-controller="Client" asp-action="AddToFavorite" id="favForm">
                                 <input type="hidden" name="workerId" value="@Model.Worker.Id" />
 
                                 <button type="submit"
+                                        id="favBtn"
                                         class="flex gap-2 px-6 py-2.5 rounded-lg font-bold shadow transition
-                                          @(isFav ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700")">
+                   @(isFav ? "bg-pink-500 hover:bg-pink-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700")">
 
-                                    <i class="@(isFav ? "ri-heart-fill text-white" : "ri-heart-add-line text-pink-600")"></i>
-                                    @(isFav ? "إزالة من المفضلة" : "إضافة إلى المفضلة")
+                                    <!-- أيقونة عادية -->
+                                    <i id="favIcon" class="@(isFav ? "ri-heart-fill" : "ri-heart-add-line text-pink-600")"></i>
+
+                                    <!-- أيقونة اللودينج (مخفية) -->
+                                    <i id="favLoading" class="ri-loader-4-line animate-spin hidden"></i>
+
+                                    <span id="favText">@(isFav ? "إزالة من المفضلة" : "إضافة للمفضلة")</span>
                                 </button>
                             </form>
 
@@ -139,7 +145,7 @@
                     {
                         <div class="group bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
                             <div class="relative h-48 overflow-hidden">
-                                <img src="@item.ImageUrl"
+                                <img src="~/worker-portfolio/@item.ImageUrl"
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             </div>
 
@@ -304,5 +310,26 @@
         });
     });
 
+    
+        const favForm = document.getElementById('favForm');
+        const favBtn = document.getElementById('favBtn');
+        const favIcon = document.getElementById('favIcon');
+        const favLoading = document.getElementById('favLoading');
+        const favText = document.getElementById('favText');
+
+        favForm.addEventListener('submit', function () {
+            // إخفاء الأيقونة الأصلية
+            favIcon.classList.add('hidden');
+
+            // إظهار اللودينج
+            favLoading.classList.remove('hidden');
+
+            // تغيير النص
+            favText.textContent = 'جاري التحميل...';
+
+            // تعطيل الزر
+            favBtn.disabled = true;
+            favBtn.classList.add('opacity-70', 'cursor-not-allowed');
+        });
 
 </script>

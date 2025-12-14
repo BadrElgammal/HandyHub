@@ -193,7 +193,9 @@ namespace HandyHub.Controllers
 
             var reviews = reviewService.GetAll().Where(r => r.WorkerId == id).ToList();
             var clients = clientService.GetAllWithUser();
-            var favorites= favoriteService.GetAll();
+            var userId = int.Parse(User.FindFirst("UserId").Value);
+            var ClientId = clients.FirstOrDefault(c => c.UserId == userId)?.Id ?? 0;
+            var favorites = favoriteService.GetAll().Where(f => f.ClientId == ClientId).ToList();
 
             var vm = new WorkerEditViewModel
             {

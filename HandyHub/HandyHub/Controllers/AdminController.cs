@@ -132,7 +132,7 @@ namespace HandyHub.Controllers
             adminService.UpdateAdminWithUser(admin);
 
             TempData["Success"] = "تم تحديث البيانات بنجاح";
-            return RedirectToAction("ManageClients");
+            return RedirectToAction("Dashboard");
         }
 
         // =============================== Manage Clients ===============================
@@ -469,13 +469,20 @@ namespace HandyHub.Controllers
         [HttpPost]
         public IActionResult AddCategory(Category category)
         {
-            if (string.IsNullOrEmpty(category.Name))
+            //if (string.IsNullOrEmpty(category.Name))
+            //{
+            //    TempData["Error"] = "اسم الفئة مطلوب";
+            //    ModelState.AddModelError("CategoryName", "اسم الفئة مطلوب");
+            //    return RedirectToAction("ManageCategories");
+            //}
+            if (!ModelState.IsValid)
             {
-                TempData["Error"] = "اسم الفئة مطلوب";
-                return RedirectToAction("ManageCategories");
+                ModelState.AddModelError("", "اسم الفئة مطلوب");
+                var categories = catigoryService.GetAll();
+                return View("ManageCategories", categories);
             }
 
-            catigoryService.Insert(category);
+                catigoryService.Insert(category);
             TempData["Success"] = "تمت إضافة الفئة بنجاح";
             return RedirectToAction("ManageCategories");
         }
