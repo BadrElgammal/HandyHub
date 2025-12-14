@@ -14,6 +14,8 @@
             <div class="mb-6 p-4 bg-green-100 border border-green-200 text-green-800 rounded-lg flex items-center gap-3">
                 <i class="ri-check-line text-2xl"></i>
                 <span>@TempData["SuccessMessage"]</span>
+                <span> @TempData["msg"]</span>
+
             </div>
         }
         )
@@ -131,7 +133,7 @@
                     <i class="ri-gallery-line text-blue-600"></i> معرض الأعمال
                 </h2>
 
-                <a asp-action="AddProfile" asp-route-id="@Model.Worker.Id" class="mt-4 md:mt-0 bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-lg shadow-lg shadow-blue-200 transition flex items-center gap-2">
+                <a asp-action="AddService" asp-route-id="@Model.Worker.Id" class="mt-4 md:mt-0 bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-lg shadow-lg shadow-blue-200 transition flex items-center gap-2">
                     <i class="ri-add-circle-line text-xl"></i> إضافة عمل جديد
                 </a>
             </div>
