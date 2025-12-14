@@ -259,6 +259,11 @@
                                        class="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow hover:bg-blue-500 hover:text-white text-blue-600 transition">
                                         <i class="ri-edit-line text-sm"></i>
                                     </a>
+                                    <a asp-action="DetailsPortfolio" asp-route-id="@item.Id"
+                                       class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"
+                                       title="عرض التفاصيل">
+                                        <i class="ri-eye-line"></i>
+                                    </a>
 
                                     <form asp-action="DeletePortfolio" asp-route-id="@item.Id" method="post"
                                           onsubmit="return confirm('هل أنت متأكد من حذف هذا العمل؟');">
