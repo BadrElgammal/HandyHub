@@ -1,0 +1,75 @@
+﻿@model HandyHub.Models.Entities.WorkerPortfolio
+
+@{
+    ViewData["Title"] = "تعديل العمل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="min-h-screen bg-gray-50 py-12 text-right" dir="rtl">
+    <main class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm p-8 my-6 border border-gray-100">
+
+        <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+            <i class="ri-edit-2-line text-teal-600"></i> تعديل بيانات العمل
+        </h1>
+        <p class="text-gray-600 mb-8 border-b pb-4">يمكنك تعديل الوصف أو تغيير صورة العمل الحالي.</p>
+
+        <form method="post" asp-action="EditPortfolio" enctype="multipart/form-data" class="space-y-6">
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="WorkerId" />
+            <input type="hidden" asp-for="ImageUrl" />
+
+            <div>
+                <label asp-for="Bio" class="block text-sm font-medium text-gray-700 mb-1">عنوان العمل</label>
+                <input asp-for="Bio" type="text"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm" />
+                <span asp-validation-for="Bio" class="text-red-600 text-sm"></span>
+            </div>
+
+            <div>
+                <label asp-for="Area" class="block text-sm font-medium text-gray-700 mb-1">تفاصيل العمل</label>
+                <textarea asp-for="Area" rows="4"
+                          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"></textarea>
+                <span asp-validation-for="Area" class="text-red-600 text-sm"></span>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">صورة العمل</label>
+
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="mb-4">
+                        <p class="text-xs text-gray-500 mb-1">الصورة الحالية:</p>
+                        <img src="~/worker-portfolio/@Model.ImageUrl" class="h-40 rounded-lg border shadow-sm object-cover" />
+                    </div>
+                }
+
+                <label for="image-upload"
+                       class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 cursor-pointer hover:border-teal-500 hover:bg-teal-50 transition relative group">
+
+                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                        <i class="ri-upload-cloud-2-line text-3xl text-gray-400 group-hover:text-teal-600 mb-2 transition-colors"></i>
+                        <p class="mb-2 text-sm text-gray-500">اضغط لتغيير الصورة (اختياري)</p>
+                    </div>
+
+                    <input id="image-upload" name="image" type="file" accept="image/*" class="hidden" />
+                </label>
+            </div>
+
+            <div class="flex justify-between items-center pt-6 border-t border-gray-100 mt-6">
+                <a asp-action="Profile" class="text-gray-600 hover:text-teal-600 font-medium flex items-center transition-colors">
+                    <i class="ri-arrow-go-back-line ml-1"></i> إلغاء
+                </a>
+
+                <button type="submit"
+                        class="px-8 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold flex items-center shadow-lg shadow-teal-500/30 transition-all">
+                    <i class="ri-save-line ml-1"></i> حفظ التعديلات
+                </button>
+            </div>
+        </form>
+    </main>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
