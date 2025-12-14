@@ -5,7 +5,7 @@
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAq+jRC742sEag8DMT9tCtkQAAAAACAAAAAAAQZgAAAAEAACAAAAC79YhDccwsDUh2JxqMtOusOFDwX6k/e13uApMRaNWPywAAAAAOgAAAAAIAACAAAAAPY3Cyp3+Jy4utUv1KW12QJGAdoApeEkhzHQyKIVJE5CAAAACGkU1zkKDDIlDH6bQVuAu2+Mlm0Pf4h9CKJXltBvNX1UAAAABZSUx/585Y+rFnFxCOaeAaPZa0THgcG/FqiPuBI2i7LCTKV+dnbPypgIjxORMBjnhtwqYvfChZFtMOyzOb13II</EncryptedPassword>
     <_PublishTargetUrl>ftp://handyhub.runasp.net/wwwroot</_PublishTargetUrl>
-    <History>True|2025-12-11T09:09:56.1597566Z||;True|2025-12-11T10:40:30.1731742+02:00||;True|2025-12-07T22:43:20.7610056+02:00||;True|2025-12-04T19:39:54.5151817+02:00||;True|2025-12-04T18:31:27.9705732+02:00||;True|2025-12-04T17:17:16.7414732+02:00||;True|2025-11-30T20:26:10.9815282+02:00||;False|2025-11-30T20:20:27.3182968+02:00||;False|2025-11-30T20:08:27.5903290+02:00||;False|2025-11-30T19:36:40.8619665+02:00||;False|2025-11-28T22:17:52.8313216+02:00||;False|2025-11-28T21:49:18.3138156+02:00||;</History>
+    <History>True|2025-12-14T07:39:41.5159590Z||;True|2025-12-14T09:17:16.2369677+02:00||;True|2025-12-13T13:13:09.2611021+02:00||;True|2025-12-13T12:06:45.8657056+02:00||;True|2025-12-11T11:09:56.1597566+02:00||;True|2025-12-11T10:40:30.1731742+02:00||;True|2025-12-07T22:43:20.7610056+02:00||;True|2025-12-04T19:39:54.5151817+02:00||;True|2025-12-04T18:31:27.9705732+02:00||;True|2025-12-04T17:17:16.7414732+02:00||;True|2025-11-30T20:26:10.9815282+02:00||;False|2025-11-30T20:20:27.3182968+02:00||;False|2025-11-30T20:08:27.5903290+02:00||;False|2025-11-30T19:36:40.8619665+02:00||;False|2025-11-28T22:17:52.8313216+02:00||;False|2025-11-28T21:49:18.3138156+02:00||;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -157,22 +157,22 @@
       <publishTime>11/08/2023 19:52:00</publishTime>
     </File>
     <File Include="HandyHub.deps.json">
-      <publishTime>12/11/2025 11:07:40</publishTime>
+      <publishTime>12/14/2025 09:38:35</publishTime>
     </File>
     <File Include="HandyHub.dll">
-      <publishTime>12/11/2025 11:07:11</publishTime>
+      <publishTime>12/14/2025 09:38:10</publishTime>
     </File>
     <File Include="HandyHub.exe">
-      <publishTime>12/11/2025 11:07:11</publishTime>
+      <publishTime>12/14/2025 09:38:10</publishTime>
     </File>
     <File Include="HandyHub.pdb">
-      <publishTime>12/11/2025 11:07:11</publishTime>
+      <publishTime>12/14/2025 09:38:10</publishTime>
     </File>
     <File Include="HandyHub.runtimeconfig.json">
       <publishTime>12/11/2025 10:36:22</publishTime>
     </File>
     <File Include="HandyHub.staticwebassets.endpoints.json">
-      <publishTime>12/11/2025 11:07:40</publishTime>
+      <publishTime>12/14/2025 09:15:44</publishTime>
     </File>
     <File Include="he/Humanizer.resources.dll">
       <publishTime>01/29/2022 17:04:08</publishTime>
@@ -697,10 +697,10 @@
       <publishTime>01/29/2022 17:04:12</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>12/11/2025 11:07:41</publishTime>
+      <publishTime>12/14/2025 09:38:36</publishTime>
     </File>
     <File Include="wwwroot/css/Admin/AdminLayout.css">
-      <publishTime>12/11/2025 11:04:07</publishTime>
+      <publishTime>12/14/2025 09:13:38</publishTime>
     </File>
     <File Include="wwwroot/css/Admin/Dashboard.css">
       <publishTime>12/11/2025 10:22:58</publishTime>
@@ -977,6 +977,15 @@
     </File>
     <File Include="wwwroot/ProfileImages/default-avatar-admin.png">
       <publishTime>11/30/2025 18:23:16</publishTime>
+    </File>
+    <File Include="wwwroot/worker-portfolio/18c9aaab-a881-4d7d-80e4-c1404b845914.jpeg">
+      <publishTime>12/13/2025 10:29:35</publishTime>
+    </File>
+    <File Include="wwwroot/worker-portfolio/7622bc69-8ed8-43b4-acd1-fde7345d4907.jpeg">
+      <publishTime>12/13/2025 00:59:48</publishTime>
+    </File>
+    <File Include="wwwroot/worker-portfolio/b6df2dea-8cc3-46a5-8dcd-28a288766096.png">
+      <publishTime>12/13/2025 00:51:46</publishTime>
     </File>
     <File Include="zh-CN/Humanizer.resources.dll">
       <publishTime>01/29/2022 17:04:12</publishTime>
