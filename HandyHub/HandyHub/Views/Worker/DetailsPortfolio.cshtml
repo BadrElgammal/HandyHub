@@ -1,0 +1,59 @@
+﻿@model HandyHub.Models.Entities.WorkerPortfolio
+
+@{
+    ViewData["Title"] = "تفاصيل العمل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="min-h-screen bg-gray-50 py-12" dir="rtl">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="mb-6">
+            <a asp-action="Profile" class="inline-flex items-center text-gray-600 hover:text-teal-600 font-medium transition-colors">
+                <i class="ri-arrow-right-line ml-2 text-xl"></i>
+                الرجوع لمعرض الأعمال
+            </a>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+
+            <div class="grid grid-cols-1 lg:grid-cols-2">
+
+                <div class="bg-gray-100 relative h-96 lg:h-auto">
+                    <img src="~/worker-portfolio/@Model.ImageUrl"
+                         class="absolute inset-0 w-full h-full object-cover"
+                         alt="@Model.Bio"
+                         onerror="this.src='/images/default-portfolio.png'" />
+                </div>
+
+                <div class="p-8 lg:p-10 flex flex-col justify-center">
+
+                    <div class="mb-6">
+                        <span class="inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm font-semibold mb-4">
+                            تفاصيل المشروع
+                        </span>
+
+                        <h1 class="text-3xl font-bold text-gray-900 mb-4">@Model.Bio</h1>
+
+                        <div class="w-16 h-1 bg-teal-500 rounded-full mb-6"></div>
+
+                        <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">وصف العمل</h3>
+                        <p class="text-gray-700 leading-relaxed text-lg">
+                            @Model.Area
+                        </p>
+                    </div>
+
+                    <div class="flex gap-3 pt-6 border-t border-gray-100 mt-auto">
+                        <a asp-action="EditPortfolio" asp-route-id="@Model.Id"
+                           class="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-center py-3 rounded-xl font-bold shadow-lg shadow-teal-500/30 transition-all">
+                            <i class="ri-edit-line ml-1"></i> تعديل
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
